@@ -1,28 +1,52 @@
 <template>
-    <v-container class="chat-container">
-        <v-card class="chat-card">
-            <v-card-title>Waves rooms</v-card-title>
-            <v-card-text class="chat-messages" ref="chatMessages">
-                <v-list>
-                    <v-list-item
-                    @click="this.$router.push(`/chat/${chat.id}`)"
-                    v-for="(chat, index) in chats" :key="index" class="chat-message">
-                        <strong>{{ chat.title }}</strong> {{ chat.description }}
-                    </v-list-item>
-                </v-list>
-            </v-card-text> 
-        </v-card>
-    </v-container>
+    <div>
+        <CreateChat @create-chat="createChat" ref="createChat" />
+        <v-container class="wave-container">
+            <v-card class="wave-card">
+                <v-card-title>Waves rooms</v-card-title>
+                <v-card-text class="wave-messages" ref="waveMessages">
+                    <v-list>
+                        <div>
+                            <v-list-item @click="$router.push(`/chat/${chat.id}`)"
+                                v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index"
+                                class="wave-message">
+                                <div class="wave-message">
+                                    <strong>{{ chat.title }}</strong>
+                                    <div class="d-flex align-center">
+                                        <div class="red-circle mr-3" />
+                                        {{ chat.livers }}
+                                    </div>
+                                </div>
+                            </v-list-item>
+                        </div>
+
+                        <div class="create-chat">
+                            <v-btn rounded @click="$refs.createChat.dialog = true">
+                                <v-icon>
+                                    mdi-plus
+                                </v-icon>
+                                Create a new chat
+                            </v-btn>
+                        </div>
+                    </v-list>
+                </v-card-text>
+            </v-card>
+        </v-container>
+    </div>
 </template>
 
 <script>
 import { supabase } from '../supabase';
+import CreateChat from '../components/CreateChat.vue';
 
 export default {
-    name: 'App',
+    name: 'waves',
+    components: {
+        CreateChat
+    },
     data() {
         return {
-            chats:  null
+            chats: null
         };
     },
     methods: {
@@ -30,18 +54,45 @@ export default {
             const { data, error } = await supabase
                 .from('chats')
                 .select('*')
-                .order('created_at', { ascending: false }); 
+                .order('created_at', { ascending: false });
             if (error) this.$toast.error(error.message);
             else this.chats = data;
         },
+        async createChat(chatName) {
+            const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
+            this.$refs.createChat.dialog = false;
+
+            await this.getRooms(); 
+            let c = this.chats.find(chat => chat.title === chatName);
+            this.$router.push(`/chat/${c.id}`);
+        }
     },
-    mounted() { 
+    mounted() {
         this.getRooms();
     }
 };              
-</script> 
+</script>
+
+<style lang="scss">
+.v-list-item__content {
+    width: 100% !important;
+}
+</style>
+
 <style scoped lang="scss">
-.chat-container {
+@keyframes fadeBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.wave-container {
     height: 100vh !important;
     width: 100vw !important;
     display: flex;
@@ -54,24 +105,56 @@ export default {
     background-size: 100px 100px;
 }
 
-.chat-card {
+.wave-card {
     width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
     height: 100%;
     border-radius: 10px;
-    background-color: rgba(204, 204, 204, 0.95);
+    background-color: rgba(46, 49, 50, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.363);
+    padding: 10px 10px 0 10px;
+
+    div {
+        color: rgb(255, 255, 255) !important;
+    }
 }
- 
- .v-list {
+
+.wave-message {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+
+    .red-circle {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: red;
+        margin-right: 5px;
+        animation: fadeBlink 2s infinite;
+    }
+}
+
+
+
+.v-list {
     background-color: rgba(255, 255, 255, 0);
     font-size: 20px;
     font-weight: bold;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+
+    .v-list-item {
+        border-radius: 10px !important;
+        padding: 10px;
+        margin: 0;
+        cursor: pointer;
     }
- }
+}
 </style>

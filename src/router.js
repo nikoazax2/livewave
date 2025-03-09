@@ -3,7 +3,7 @@ import WavesView from './views/WavesView.vue';
 import ChatView from './views/ChatView.vue';
 
 const routes = [
-    { path: '/', component: WavesView },
+    { path: '/', component: WavesView, name: 'waves' },
     { path: '/chat/:id', component: ChatView },
 ];
 

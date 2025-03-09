@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuetify": "^3.7.15"
   },
   "devDependencies": {
