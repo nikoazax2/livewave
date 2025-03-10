@@ -3,23 +3,23 @@
         <CreateChat @create-chat="createChat" ref="createChat" />
         <v-container class="wave-container">
             <v-card class="wave-card">
-                <v-card-title>Waves rooms</v-card-title>
+                <v-card-title>Salons Waves</v-card-title>
                 <v-card-text class="wave-messages" ref="waveMessages">
+                    <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" label="Chercher un évènement" hide-details="true"></v-text-field>
+
                     <v-list>
                         <div class="wave-messages-list">
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))
+                                ?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
                                 <div class="wave-message">
-                                    <strong>{{ chat.title }}</strong>
-                                    <div class="d-flex align-center">
-                                        <div class="red-circle mr-3" />
-                                        {{ chat.livers }}
-                                    </div>
+                                    <strong class="left">{{ chat.title }}</strong>
+                                    <livers :livers="chat?.livers"></livers>
                                 </div>
                             </v-list-item>
                         </div>
 
                         <div class="create-chat">
-                            <v-btn rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
+                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -37,25 +37,27 @@
 import { supabase } from '../supabase';
 import CreateChat from '../components/CreateChat.vue';
 import trends from '../../public/trends.json';
+import Livers from '../components/LiversRedDot.vue';
+
 export default {
     name: 'waves',
     components: {
-        CreateChat
+        CreateChat,
+        Livers
     },
     data() {
         return {
-            chats: null
+            chats: null,
+            search: ''
         };
     },
     methods: {
         async clickRoom(chat) {
-
             if (chat.id) this.$router.push(`/chat/${chat.id}`)
             else {
                 chat = await this.createChat(chat.title)
                 this.$router.push(`/chat/${chat.id}`)
             }
-            // $router.push(`/chat/${chat.id}`)
         },
         async getRooms() {
             const { data, error } = await supabase
@@ -65,6 +67,7 @@ export default {
             if (error) this.$toast.error(error.message);
             else {
                 this.chats = data;
+                trends.sort((a, b) => b.volume - a.volume);
                 trends.forEach(trend => {
                     if (!this.chats.find(chat => chat.title === trend.trend)) {
                         let c = this.chats.push({ title: trend.trend, livers: 0 });
@@ -96,18 +99,6 @@ export default {
 </style>
 
 <style scoped lang="scss">
-@keyframes fadeBlink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
-}
-
 .wave-container {
     height: 100vh !important;
     width: 100vw !important;
@@ -143,7 +134,7 @@ export default {
 }
 
 .wave-messages {
-    height: calc(100% - 50px);
+    height: 100%;
 }
 
 .wave-message {
@@ -153,14 +144,13 @@ export default {
     width: 100%;
     padding: 0 10px;
 
-    .red-circle {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: red;
-        margin-right: 5px;
-        animation: fadeBlink 2s infinite;
+    .left {
+        max-width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
+
 }
 
 
@@ -169,7 +159,7 @@ export default {
     background-color: rgba(255, 255, 255, 0);
     font-size: 20px;
     font-weight: bold;
-    height: 100%;
+    height: calc(100% - 80px);
     display: flex;
     justify-content: space-between;
     flex-direction: column;

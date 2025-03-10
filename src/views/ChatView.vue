@@ -1,9 +1,15 @@
 <template>
     <v-container class="chat-container">
         <v-card class="chat-card">
-            <v-card-title>
-                <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
-                {{ chat?.title }}</v-card-title>
+            <v-card-title class="d-flex justify-space-between">
+                <div>
+                    <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
+                    {{ chat?.title }}
+                </div>
+                <div>
+                    <LiversRedDot :livers="chat?.livers" />
+                </div>
+            </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message">
@@ -13,8 +19,7 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
-                    label="Écrire un message" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" label="Écrire un message" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -23,12 +28,16 @@
 <script>
 import { supabase } from '../supabase';
 import { useToast } from 'vue-toastification';
+import LiversRedDot from '../components/LiversRedDot.vue';
 
 export default {
     name: 'App',
     props: {
         username: String,
         chatId: String
+    },
+    components: {
+        LiversRedDot
     },
     data() {
         return {
@@ -104,11 +113,35 @@ export default {
                         this.chat = data[0];
                     }
                 });
+        },
+        addLiver() {
+            supabase
+                .from('chats')
+                .update({ livers: this.chat.livers + 1 })
+                .eq('id', this.$route.params.id)
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error('Error adding liver:', error);
+                    } else {
+                        this.chat.livers++;
+                    }
+                });
+        },
+        liversLoop() {
+            setInterval(() => {
+                const minutes = new Date().getMinutes();
+                const seconds = new Date().getSeconds();
+                if (minutes % 2 === 1 && seconds === 2) {
+                    this.addLiver();
+                }
+            }, 1000); // Check every second
         }
     },
     async mounted() {
         this.getMessages();
         this.getChatInfo();
+
+        this.liversLoop();
     },
 }
 </script>
