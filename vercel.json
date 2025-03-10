@@ -12,8 +12,8 @@
     ],
     "cron": [
         {
-            "path": "backend/index.js",
-            "schedule": "0 0 * * *"
+            "path": "/backend/index.js",
+            "schedule": "* * * * *"
         }
     ]
 }
