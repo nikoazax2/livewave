@@ -173,16 +173,4 @@ body {
 .chat-message {
     margin-bottom: 10px;
 }
-
-//scrollbar
-::-webkit-scrollbar {
-    width: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-}
 </style>

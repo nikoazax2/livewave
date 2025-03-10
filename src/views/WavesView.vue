@@ -6,8 +6,8 @@
                 <v-card-title>Waves rooms</v-card-title>
                 <v-card-text class="wave-messages" ref="waveMessages">
                     <v-list>
-                        <div>
-                            <v-list-item @click="$router.push(`/chat/${chat.id}`)" v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
+                        <div class="wave-messages-list">
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
                                 <div class="wave-message">
                                     <strong>{{ chat.title }}</strong>
                                     <div class="d-flex align-center">
@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="create-chat">
-                            <v-btn rounded @click="$refs.createChat.dialog = true" elevation="0">
+                            <v-btn rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -36,8 +36,7 @@
 <script>
 import { supabase } from '../supabase';
 import CreateChat from '../components/CreateChat.vue';
-import ApifyClient from 'apify-client';
-
+import trends from '../../public/trends.json';
 export default {
     name: 'waves',
     components: {
@@ -49,20 +48,14 @@ export default {
         };
     },
     methods: {
-        async getTrends() {
-            // apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN
-            // https://api.apify.com/v2/key-value-stores/uTru8z0flsPEWQGSW/records/OUTPUT?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN
-            // const trends = await fetch('https://api.apify.com/v2/key-value-stores/uTru8z0flsPEWQGSW/records/OUTPUT?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN') 
-            const apifyClient = new ApifyClient({
-                token: 'apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN'
-            });
-            debugger
-            const record = await apifyClient
-                .keyValueStore('<STORE ID>')
-                .getRecord('<RECORD KEY>');
+        async clickRoom(chat) {
 
-
-
+            if (chat.id) this.$router.push(`/chat/${chat.id}`)
+            else {
+                chat = await this.createChat(chat.title)
+                this.$router.push(`/chat/${chat.id}`)
+            }
+            // $router.push(`/chat/${chat.id}`)
         },
         async getRooms() {
             const { data, error } = await supabase
@@ -70,7 +63,15 @@ export default {
                 .select('*')
                 .order('created_at', { ascending: false });
             if (error) this.$toast.error(error.message);
-            else this.chats = data;
+            else {
+                this.chats = data;
+                trends.forEach(trend => {
+                    if (!this.chats.find(chat => chat.title === trend.trend)) {
+                        let c = this.chats.push({ title: trend.trend, livers: 0 });
+                    }
+                });
+
+            }
         },
         async createChat(chatName) {
             const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
@@ -79,11 +80,11 @@ export default {
             await this.getRooms();
             let c = this.chats.find(chat => chat.title === chatName);
             this.$router.push(`/chat/${c.id}`);
+            return c
         }
     },
     mounted() {
         this.getRooms();
-        this.getTrends();
     }
 };              
 </script>
@@ -134,6 +135,15 @@ export default {
     div {
         color: rgb(255, 255, 255) !important;
     }
+
+    .wave-messages-list {
+        height: calc(100% - 50px);
+        overflow-y: auto;
+    }
+}
+
+.wave-messages {
+    height: calc(100% - 50px);
 }
 
 .wave-message {

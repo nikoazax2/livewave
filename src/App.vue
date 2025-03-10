@@ -49,6 +49,16 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+}
 
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
 }
 </style>
