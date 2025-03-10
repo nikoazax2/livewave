@@ -1,1 +1,8 @@
-{}
+{
+    "cron": [
+        {
+            "path": "/backend/index",
+            "schedule": "0 * * * * *"
+        }
+    ]
+}

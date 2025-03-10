@@ -43,8 +43,9 @@ async function runScraper() {
 }
 
 async function main() {
+    
     //everyday at 6am run the scraper 
-    if (new Date().getHours() === 6) {
+    // if (new Date().getHours() === 6) {
         let output = await runScraper();
 
         //write the output to a file at ./public/trends.json
@@ -52,12 +53,12 @@ async function main() {
             if (err) throw err;
             console.log('Data written to file');
         });
-    }
+    // }
 
-    setTimeout(main, 1800000);
+    // setTimeout(main, 1800000);
 }
 
-// main();
+main();
 
 // Function to set all livers columns of table chats to 0
 async function resetLivers() {
