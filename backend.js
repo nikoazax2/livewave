@@ -31,7 +31,7 @@ async function runScraper() {
 
         // Wait for the actor's run to finish and retrieve the result
         await client.run(run.id).waitForFinish();
- 
+
         let output = await fetch(`https://api.apify.com/v2/datasets/${run.defaultDatasetId}/items?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN`)
         output = await output.json();
 
@@ -43,22 +43,22 @@ async function runScraper() {
 }
 
 async function main() {
-    
+
     //everyday at 6am run the scraper 
     // if (new Date().getHours() === 6) {
-        let output = await runScraper();
+    let output = await runScraper();
 
-        //write the output to a file at ./public/trends.json
-        fs.writeFile('./public/trends.json', JSON.stringify(output), (err) => {
-            if (err) throw err;
-            console.log('Data written to file');
-        });
+    //write the output to a file at ./public/trends.json
+    fs.writeFile('./public/trends.json', JSON.stringify(output), (err) => {
+        if (err) throw err;
+        console.log('Data written to file');
+    });
     // }
 
     // setTimeout(main, 1800000);
 }
 
-main();
+// main();
 
 // Function to set all livers columns of table chats to 0
 async function resetLivers() {
@@ -78,13 +78,11 @@ async function resetLivers() {
     }
 }
 
-setInterval(() => {
-    const minutes = new Date().getMinutes();
-    const seconds = new Date().getSeconds();
-    if (minutes % 2 === 1 && seconds === 0) {
-        resetLivers();
-    }
-}, 1000);
+const minutes = new Date().getMinutes();
+const seconds = new Date().getSeconds();
+if (minutes % 2 === 1 && seconds === 0) {
+    resetLivers();
+}
 
 async function deleteOldMessages() {
     try {
@@ -127,17 +125,14 @@ async function deleteOldMessages() {
                     }
                 }
             }
-        } 
+        }
     } catch (error) {
         console.error('Error in deleteOldMessages function:', error);
     }
 }
 
-// every minutes, if a chat has more than 100 messages, delete messages created more than 5 minutes ago
-setInterval(async () => {
-    deleteOldMessages();
-}, 60000); 
+deleteOldMessages();
 
-app.listen(port, () => {
-    console.log(`Backend running on port ${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Backend running on port ${port}`);
+// });
