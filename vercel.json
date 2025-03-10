@@ -1,8 +1,13 @@
 {
-    "cron": [
+    "version": 2,
+    "builds": [
         {
-            "path": "/backend/index",
-            "schedule": "0 * * * * *"
+            "src": "dist/**",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "backend/**/*.js",
+            "use": "@vercel/node"
         }
     ]
 }
