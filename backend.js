@@ -31,11 +31,7 @@ async function runScraper() {
 
         // Wait for the actor's run to finish and retrieve the result
         await client.run(run.id).waitForFinish();
-
-        //get the run output
-
-        // https://api.apify.com/v2/datasets/NSydWVpcFfhkafNCS/items?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN
-
+ 
         let output = await fetch(`https://api.apify.com/v2/datasets/${run.defaultDatasetId}/items?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN`)
         output = await output.json();
 
@@ -59,8 +55,6 @@ async function main() {
     }
 
     setTimeout(main, 1800000);
-
-
 }
 
 // main();
@@ -91,7 +85,57 @@ setInterval(() => {
     }
 }, 1000);
 
+async function deleteOldMessages() {
+    try {
+        const { data: chats, error } = await supabase
+            .from('messages')
+            .select('*')
 
+        //group messages by chat_id
+        const groupedChats = chats.reduce((acc, message) => {
+            if (!acc[message.chat_id]) {
+                acc[message.chat_id] = [];
+            }
+            acc[message.chat_id].push(message);
+            return acc;
+        }, {});
+
+        for (const chatId in groupedChats) {
+            // If a chat has more than 10 messages, delete messages created more than 5 minutes ago
+            if (groupedChats[chatId].length > 50) {
+                const messagesToDelete = groupedChats[chatId].filter(message => {
+                    const minutesBeforeDeletion = 5;
+                    const messageDate = new Date(message.created_at);
+                    const currentDate = new Date();
+                    const diff = currentDate - messageDate;
+                    // If the difference between the current date and the message date is more than 5 minutes
+                    const diffMinutes = Math.floor(diff / 60000);
+                    return diffMinutes > minutesBeforeDeletion;
+                });
+
+                for (const message of messagesToDelete) {
+                    const { data, error } = await supabase
+                        .from('messages')
+                        .delete()
+                        .eq('id', message.id);
+
+                    if (error) {
+                        console.error('Error deleting message:', error);
+                    } else {
+                        console.log('Message deleted successfully:', data);
+                    }
+                }
+            }
+        } 
+    } catch (error) {
+        console.error('Error in deleteOldMessages function:', error);
+    }
+}
+
+// every minutes, if a chat has more than 100 messages, delete messages created more than 5 minutes ago
+setInterval(async () => {
+    deleteOldMessages();
+}, 60000); 
 
 app.listen(port, () => {
     console.log(`Backend running on port ${port}`);
