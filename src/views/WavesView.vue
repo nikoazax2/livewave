@@ -7,9 +7,7 @@
                 <v-card-text class="wave-messages" ref="waveMessages">
                     <v-list>
                         <div>
-                            <v-list-item @click="$router.push(`/chat/${chat.id}`)"
-                                v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index"
-                                class="wave-message">
+                            <v-list-item @click="$router.push(`/chat/${chat.id}`)" v-for="(chat, index) in chats?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
                                 <div class="wave-message">
                                     <strong>{{ chat.title }}</strong>
                                     <div class="d-flex align-center">
@@ -21,7 +19,7 @@
                         </div>
 
                         <div class="create-chat">
-                            <v-btn rounded @click="$refs.createChat.dialog = true">
+                            <v-btn rounded @click="$refs.createChat.dialog = true" elevation="0">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -38,6 +36,7 @@
 <script>
 import { supabase } from '../supabase';
 import CreateChat from '../components/CreateChat.vue';
+import ApifyClient from 'apify-client';
 
 export default {
     name: 'waves',
@@ -50,6 +49,21 @@ export default {
         };
     },
     methods: {
+        async getTrends() {
+            // apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN
+            // https://api.apify.com/v2/key-value-stores/uTru8z0flsPEWQGSW/records/OUTPUT?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN
+            // const trends = await fetch('https://api.apify.com/v2/key-value-stores/uTru8z0flsPEWQGSW/records/OUTPUT?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN') 
+            const apifyClient = new ApifyClient({
+                token: 'apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN'
+            });
+            debugger
+            const record = await apifyClient
+                .keyValueStore('<STORE ID>')
+                .getRecord('<RECORD KEY>');
+
+
+
+        },
         async getRooms() {
             const { data, error } = await supabase
                 .from('chats')
@@ -62,13 +76,14 @@ export default {
             const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
             this.$refs.createChat.dialog = false;
 
-            await this.getRooms(); 
+            await this.getRooms();
             let c = this.chats.find(chat => chat.title === chatName);
             this.$router.push(`/chat/${c.id}`);
         }
     },
     mounted() {
         this.getRooms();
+        this.getTrends();
     }
 };              
 </script>

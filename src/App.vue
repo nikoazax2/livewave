@@ -1,13 +1,13 @@
 <template>
     <div>
-        <SetUser @set-username="setUsername" v-if="askUsername" />
+        <!-- <SetUser @set-username="setUsername" v-if="askUsername" /> -->
         <router-view :username="username" :chatId="$route.params.id"></router-view>
     </div>
 </template>
 
 <script>
 import SetUser from './components/SetUser.vue';
-
+import username from './assets/usernames.json';
 export default {
     name: 'App',
     components: {
@@ -17,7 +17,7 @@ export default {
         return {
             username: null,
             askUsername: false,
-            config: null,
+            config: null
         };
     },
     created() {
@@ -27,7 +27,10 @@ export default {
             this.username = this.config.username
         }
         else if (!this.username) {
-            this.askUsername = true
+            let usernames = username
+            let randomIndex = Math.floor(Math.random() * usernames.length)
+            this.username = usernames[randomIndex] + Math.floor(Math.random() * 100)
+            localStorage.setItem('livewave-params', JSON.stringify({ username: this.username }))
         }
     },
     methods: {
