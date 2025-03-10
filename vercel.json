@@ -9,11 +9,5 @@
             "src": "backend/**/*.js",
             "use": "@vercel/node"
         }
-    ],
-    "cron": [
-        {
-            "path": "/backend/index.js",
-            "schedule": "* * * * *"
-        }
-    ]
+    ] 
 }
