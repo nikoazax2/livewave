@@ -12,7 +12,7 @@
     ],
     "cron": [
         {
-            "path": "/api/backend",
+            "path": "/backend/index.js",
             "schedule": "* * * * *"
         }
     ]
