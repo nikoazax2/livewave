@@ -1,13 +1,2 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "dist/**",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "backend/**/*.js",
-            "use": "@vercel/node"
-        }
-    ]
 }
