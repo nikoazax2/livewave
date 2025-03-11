@@ -9,5 +9,5 @@
             "src": "backend/**/*.js",
             "use": "@vercel/node"
         }
-    ] 
+    ]
 }
