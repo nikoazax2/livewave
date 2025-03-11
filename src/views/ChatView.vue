@@ -167,7 +167,7 @@ body {
     max-width: none !important;
     background: url('../assets/backgroundchat.png') center center fixed;
     background-size: 100px 100px;
-    padding: 16px 16px 30px 16px;
+    padding: 16px 16px 30px 16px !important;
 }
 
 .chat-card {
