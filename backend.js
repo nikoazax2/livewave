@@ -78,11 +78,7 @@ async function resetLivers() {
     }
 }
 
-const minutes = new Date().getMinutes();
-const seconds = new Date().getSeconds();
-if (minutes % 2 === 1 && seconds === 0) {
-    resetLivers();
-}
+
 
 async function deleteOldMessages() {
     try {
@@ -131,8 +127,20 @@ async function deleteOldMessages() {
     }
 }
 
-deleteOldMessages();
+console.log('Run wait deleteOldMessages and resetLivers');
 
+
+setInterval(deleteOldMessages, 60000);
+
+function waitResetLivers() {
+    const minutes = new Date().getMinutes();
+    const seconds = new Date().getSeconds();
+    if (minutes % 2 === 1 && seconds === 0) {
+        resetLivers();
+    }
+}
+
+setInterval(waitResetLivers, 60000);
 // app.listen(port, () => {
 //     console.log(`Backend running on port ${port}`);
 // });
