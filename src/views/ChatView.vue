@@ -29,6 +29,7 @@
 import { supabase } from '../supabase';
 import { useToast } from 'vue-toastification';
 import LiversRedDot from '../components/LiversRedDot.vue';
+import trends from '../../public/trends.json';
 
 export default {
     name: 'App',
@@ -43,7 +44,8 @@ export default {
             messages: [],
             newMessage: '',
             chatId: null,
-            chat: null
+            chat: null,
+            chats: null,
         };
     },
     async mounted() {
@@ -52,24 +54,52 @@ export default {
         if (this.$route.params.id.match(regexUUID)) {
             this.chatId = this.$route.params.id;
         } else {
-            supabase
+            await supabase
                 .from('chats')
                 .select('*')
                 .eq('title', this.$route.params.id)
-                .then(({ data, error }) => {
+                .then(async ({ data, error }) => {
                     if (error) {
                         console.error('Error fetching chat:', error);
                     } else {
-                        this.chatId = data[0].id;
+                        if (data?.[0]?.id) {
+                            this.chatId = data[0].id;
+                        }
+                        else {
+                            let c = await this.createChat(this.$route.params.id);
+                            this.chatId = c.id;
+                        }
                     }
                 });
         }
 
+        this.getRooms();
         this.getMessages();
         this.getChatInfo();
         this.liversLoop();
     },
     methods: {
+        async createChat(chatName) {
+            const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
+            await this.getRooms();
+            let c = this.chats.find(chat => chat.title === chatName);
+            this.$router.push(`/chat/${c.id}`);
+            return c
+        },
+        async getRooms() {
+            const { data, error } = await supabase
+                .from('chats')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            this.chats = data;
+            trends.sort((a, b) => b.volume - a.volume);
+            trends.forEach(trend => {
+                if (!this.chats.find(chat => chat.title === trend.trend)) {
+                    let c = this.chats.push({ title: trend.trend, livers: 0 });
+                }
+            });
+        },
         colorWithUsername(username) {
             // Simple hash function to generate a number from the username
             let hash = 0;
@@ -88,7 +118,7 @@ export default {
             const { data, error } = await supabase
                 .from('messages')
                 .select('*')
-                .eq('chat_id', this.$route.params.id);
+                .eq('chat_id', this.chatId)
 
             if (error) {
                 console.error('Error fetching messages:', error);
@@ -116,7 +146,7 @@ export default {
                 let mess = await supabase
                     .from('messages')
                     .insert([{
-                        chat_id: this.$route.params.id,
+                        chat_id: this.chatId,
                         username: this.username,
                         content: this.newMessage
                     }]);
@@ -127,7 +157,7 @@ export default {
             supabase
                 .from('chats')
                 .select('*')
-                .eq('id', this.$route.params.id)
+                .eq('id', this.chatId)
                 .then(({ data, error }) => {
                     if (error) {
                         console.error('Error fetching chat:', error);
@@ -140,7 +170,7 @@ export default {
             supabase
                 .from('chats')
                 .update({ livers: this.chat.livers + 1 })
-                .eq('id', this.$route.params.id)
+                .eq('id', this.chatId)
                 .then(({ data, error }) => {
                     if (error) {
                         console.error('Error adding liver:', error);
