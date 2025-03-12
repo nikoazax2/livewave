@@ -54,7 +54,7 @@ export default {
         } else {
             supabase
                 .from('chats')
-                .select('id')
+                .select('*')
                 .eq('title', this.$route.params.id)
                 .then(({ data, error }) => {
                     if (error) {
