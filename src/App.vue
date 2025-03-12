@@ -2,7 +2,7 @@
     <div>
         
         <Welcome v-if="firstVisit" :username="username"></Welcome>
-        <router-view :username="username" :chatId="$route.params.id"></router-view>
+        <router-view :username="username"></router-view>
     </div>
 </template>
 

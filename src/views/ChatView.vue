@@ -33,8 +33,7 @@ import LiversRedDot from '../components/LiversRedDot.vue';
 export default {
     name: 'App',
     props: {
-        username: String,
-        chatId: String
+        username: String
     },
     components: {
         LiversRedDot
@@ -43,9 +42,32 @@ export default {
         return {
             messages: [],
             newMessage: '',
-            chatId: this.$route.params.id,
+            chatId: null,
             chat: null
         };
+    },
+    async mounted() {
+        // Check if the chat ID is a UUID or a title and get the chat ID
+        let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+        if (this.$route.params.id.match(regexUUID)) {
+            this.chatId = this.$route.params.id;
+        } else {
+            supabase
+                .from('chats')
+                .select('id')
+                .eq('title', this.$route.params.id)
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error('Error fetching chat:', error);
+                    } else {
+                        this.chatId = data[0].id;
+                    }
+                });
+        }
+
+        this.getMessages();
+        this.getChatInfo();
+        this.liversLoop();
     },
     methods: {
         colorWithUsername(username) {
@@ -136,13 +158,7 @@ export default {
                 }
             }, 1000); // Check every second
         }
-    },
-    async mounted() {
-        this.getMessages();
-        this.getChatInfo();
-
-        this.liversLoop();
-    },
+    }
 }
 </script>
 
