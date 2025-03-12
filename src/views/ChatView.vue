@@ -210,7 +210,7 @@ export default {
                     } else {
                         this.chat = data[0];
                         if (this.chat?.livers < 3) {
-                            this.chat.livers = Math.floor(Math.random() * 100) + 4;
+                            this.chat.livers = Math.floor(Math.random() * 30) + 4;
                         }
                     }
                 });

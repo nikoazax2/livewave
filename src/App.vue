@@ -1,6 +1,5 @@
 <template>
     <div>
-        
         <Welcome v-if="firstVisit" :username="username"></Welcome>
         <router-view :username="username"></router-view>
     </div>

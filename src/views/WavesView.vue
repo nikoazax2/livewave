@@ -3,10 +3,17 @@
         <CreateChat @create-chat="createChat" ref="createChat" />
         <v-container class="wave-container">
             <v-card class="wave-card">
-                <v-card-title>Salons Waves</v-card-title>
-                <v-card-text class="wave-messages" ref="waveMessages">
-                    <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
+                <v-card-title>
+                    <div class="d-flex"> 
+                        <div class="mr-6"> 
+                            Salons Waves
+                        </div>
+                        <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
                         label="Chercher un évènement" hide-details="true"></v-text-field>
+                    </div>
+
+                </v-card-title>
+                <v-card-text class="wave-messages" ref="waveMessages">
 
                     <v-list>
                         <div class="wave-messages-list">
