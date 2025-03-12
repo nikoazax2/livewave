@@ -1,24 +1,13 @@
 import express from 'express';
 import { ApifyClient } from 'apify';
-import fs from 'fs';
-import { createClient } from '@supabase/supabase-js';
-const app = express();
-const port = process.env.PORT || 3001;
+import fs from 'fs'; 
+const app = express(); 
 
 // Initialiser ApifyClient avec ta clé API
 const client = new ApifyClient({
     token: 'apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN',
 });
-
-app.get('/run-scraper', async (req, res) => {
-    try {
-        const response = await runScraper();
-        res.json(response);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
+ 
 async function runScraper() {
     try {
         // Start the actor and pass input parameters

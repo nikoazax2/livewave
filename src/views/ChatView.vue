@@ -104,13 +104,11 @@ export default {
             };
 
             // Send the first message within 3 seconds
-            setTimeout(() => {
-                sendMessage();
-                sendMessage();
-                sendMessage();
-                sendMessage();
-                sendMessage();
-                
+            setTimeout(() => { 
+                for (let i = 0; i < 5; i++) {
+                    sendMessage();
+                }
+
                 // Continue sending messages between minTimeS and maxTimeS
                 setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
             }, Math.floor(Math.random() * 3000));
