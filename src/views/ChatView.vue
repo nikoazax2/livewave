@@ -19,7 +19,8 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" label="Écrire un message" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
+                    label="Écrire un message" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -30,6 +31,8 @@ import { supabase } from '../supabase';
 import { useToast } from 'vue-toastification';
 import LiversRedDot from '../components/LiversRedDot.vue';
 import trends from '../../public/trends.json';
+import messagesbots from '../../public/messagesbots.json';
+import username from '../assets/usernames.json';
 
 export default {
     name: 'App',
@@ -46,9 +49,11 @@ export default {
             chatId: null,
             chat: null,
             chats: null,
+            firstMessage: true,
         };
     },
     async mounted() {
+        
         // Check if the chat ID is a UUID or a title and get the chat ID
         let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
         if (this.$route.params.id.match(regexUUID)) {
@@ -77,8 +82,46 @@ export default {
         this.getMessages();
         this.getChatInfo();
         this.liversLoop();
+        this.deleteMessagesLoop();
+        this.sendBotMessage();
     },
     methods: {
+        sendBotMessage() {
+            const minTimeS = 10;
+            const maxTimeS = 30;
+
+            const sendMessage = () => {
+                let usernames = username;
+                let randomIndex = Math.floor(Math.random() * usernames.length);
+                let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
+
+                let botMessage = messagesbots[Math.floor(Math.random() * messagesbots.length)];
+                this.messages.push({
+                    username: usernameS,
+                    content: botMessage,
+                    created_at: new Date().toISOString()
+                });
+            };
+
+            // Send the first message within 3 seconds
+            setTimeout(() => {
+                sendMessage();
+                // Continue sending messages between minTimeS and maxTimeS
+                setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
+            }, Math.floor(Math.random() * 3000));
+
+        },
+        deleteMessagesLoop() {
+            //every 10second deletes messages exist for more than 2 minutes (only in frontend)
+            const deleteMessageAfterS = 15
+            setInterval(() => {
+                let now = new Date();
+                this.messages = this.messages.filter(msg => {
+                    let date = new Date(msg.created_at);
+                    return (now - date) < deleteMessageAfterS * 1000;
+                });
+            }, 1000);
+        },
         async createChat(chatName) {
             const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
             await this.getRooms();
@@ -163,6 +206,9 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
+                        if (this.chat?.livers < 3) {
+                            this.chat.livers = Math.floor(Math.random() * 100) + 4;
+                        }
                     }
                 });
         },

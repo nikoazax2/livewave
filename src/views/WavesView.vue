@@ -5,7 +5,8 @@
             <v-card class="wave-card">
                 <v-card-title>Salons Waves</v-card-title>
                 <v-card-text class="wave-messages" ref="waveMessages">
-                    <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" label="Chercher un évènement" hide-details="true"></v-text-field>
+                    <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
+                        label="Chercher un évènement" hide-details="true"></v-text-field>
 
                     <v-list>
                         <div class="wave-messages-list">
@@ -19,7 +20,8 @@
                         </div>
 
                         <div class="create-chat">
-                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
+                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0"
+                                color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -73,7 +75,13 @@ export default {
                         let c = this.chats.push({ title: trend.trend, livers: 0 });
                     }
                 });
-
+                this.chats.forEach(chat => {
+                    if (chat?.livers < 3) {
+                        // chat.livers = Math.floor(Math.random() * 100) + 4;
+                        if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+                        else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
+                    }
+                });
             }
         },
         async createChat(chatName) {
