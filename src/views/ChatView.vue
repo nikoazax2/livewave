@@ -87,8 +87,8 @@ export default {
     },
     methods: {
         sendBotMessage() {
-            const minTimeS = 10;
-            const maxTimeS = 30;
+            const minTimeS = 5;
+            const maxTimeS = 15;
 
             const sendMessage = () => {
                 let usernames = username;
