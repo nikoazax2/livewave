@@ -132,7 +132,7 @@ export default {
     },
     methods: {
         shareOn(social, url) {
-            let text = `Venez discuter de ${this.chat.title} sur LiveWave !` + '\n\n' + window.location.href;
+            let text = `Venez discuter de ${this.chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${this.chat.title} #LiveWave`;
             let shareUrl = url + encodeURIComponent(text);
             window.open(shareUrl, '_blank');
         },
