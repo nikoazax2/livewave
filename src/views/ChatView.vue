@@ -57,6 +57,11 @@ export default {
         };
     },
     async mounted() {
+        //if id is 6e3eec90-163a-4754-99fa-27b894dd6428 rediect to 4aec1267-0595-4fe5-ab8e-89093906b4d5
+        if (this.$route.params.id == '6e3eec90-163a-4754-99fa-27b894dd6428') {
+            this.$router.push('/chat/4aec1267-0595-4fe5-ab8e-89093906b4d5');
+        }
+
         // Check if the chat ID is a UUID or a title and get the chat ID
         let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
         if (this.$route.params.id.match(regexUUID)) {
