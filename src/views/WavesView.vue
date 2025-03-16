@@ -4,12 +4,14 @@
         <v-container class="wave-container">
             <v-card class="wave-card">
                 <v-card-title>
-                    <div class="d-flex">
-                        <div class="mr-6">
+                    <div class="d-flex justify-space-between align-center"> 
+                        <div class="mr-6"> 
                             Salons Waves
                         </div>
-                        <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact"
-                            v-model="search" label="Chercher un évènement" hide-details="true"></v-text-field>
+                        <div  style="width: 100%; max-width: 300px;">
+                            <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
+                        label="Chercher un évènement" hide-details="true"></v-text-field>
+                        </div>
                     </div>
 
                 </v-card-title>
@@ -32,7 +34,7 @@
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
-                                Create a new chat
+                                Créer un salon
                             </v-btn>
                         </div>
                     </v-list>
@@ -177,7 +179,7 @@ export default {
     background-color: rgba(255, 255, 255, 0);
     font-size: 20px;
     font-weight: bold;
-    height: calc(100% - 80px);
+    height: calc(100% - 50px);
     display: flex;
     justify-content: space-between;
     flex-direction: column;

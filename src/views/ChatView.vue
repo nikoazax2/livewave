@@ -123,6 +123,8 @@ export default {
                 let now = new Date();
                 this.messages = this.messages.filter(msg => {
                     let date = new Date(msg.created_at);
+                    
+                    if(msg.content=='yo') debugger
                     return (now - date) < deleteMessageAfterS * 1000;
                 });
             }, 1000);
@@ -171,7 +173,9 @@ export default {
             if (error) {
                 console.error('Error fetching messages:', error);
             } else {
-                this.messages = data;
+                this.messages = data; 
+                 
+
                 document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list').scrollHeight
             }
 
