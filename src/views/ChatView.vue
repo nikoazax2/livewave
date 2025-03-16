@@ -6,14 +6,11 @@
                     <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
                     <div class="ml-4 title-caption">
                         <div class="title">{{ chat?.title }}</div>
-                        <div class="caption">{{ chat?.description }} lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-                            lorem ipsum </div>
+                        <div class="caption">{{ chat?.description }}</div>
                     </div>
 
-                </div>
-                <div>
-                    <LiversRedDot :livers="chat?.livers" />
-                </div>
+                </div> 
+                    <LiversRedDot :livers="chat?.livers" /> 
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">

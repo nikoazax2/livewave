@@ -3,7 +3,6 @@
         <Welcome v-if="firstVisit" :username="username"></Welcome>
         <SetUser v-if="askUsername" :username="username" @set-username="setUsername"></SetUser>
         <router-view :bots="bots" @setaskUsername="askUsername = $event" :username="username"></router-view>
-
     </div>
 </template>
 
