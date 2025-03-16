@@ -14,9 +14,26 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message">
-                        <strong :style="{ color: colorWithUsername(msg.username) }">{{ msg.username }}</strong> {{
-                            msg.content }}
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
+                        <div class="d-flex" v-if="!msg.shareMessage">
+                            <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
+                                }}</strong>
+                            <div v-html="msg.content"></div>
+                        </div>
+                        <div v-else>
+                            <!-- https://www.facebook.com/sharer/sharer.php?u= -->
+                            <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
+                                }}</strong>
+                            <div v-html="msg.content"></div>
+                            <div class="mt-2 d-flex">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
+                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                    <v-icon class="mr-1">{{ social.icon }}</v-icon>
+                                    {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
+                                </v-btn>
+                            </div>
+                        </div>
                     </v-list-item>
                 </v-list>
             </v-card-text>
@@ -53,7 +70,27 @@ export default {
             chat: null,
             chats: null,
             firstMessage: true,
-            deleteMessages: false
+            deleteMessages: false,
+            socials: [{
+                icon: 'mdi-facebook',
+                name: 'facebook',
+                url: 'https://www.facebook.com/sharer/sharer.php?u='
+            },
+            {
+                icon: 'mdi-twitter',
+                name: 'twitter',
+                url: 'https://twitter.com/intent/tweet?text='
+            },
+            {
+                icon: 'mdi-linkedin',
+                name: 'linkedin',
+                url: 'https://www.linkedin.com/shareArticle?mini=true&url='
+            },
+            {
+                icon: 'mdi-whatsapp',
+                name: 'whatsapp',
+                url: 'https://api.whatsapp.com/send?text='
+            }]
         };
     },
     async mounted() {
@@ -91,8 +128,29 @@ export default {
         this.liversLoop();
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
+        this.adMessage();
     },
     methods: {
+        shareOn(social, url) {
+            let text = `Venez discuter de ${this.chat.title} sur LiveWave !` + '\n\n' + window.location.href;
+            let shareUrl = url + encodeURIComponent(text);
+            window.open(shareUrl, '_blank');
+        },
+        adMessage() {
+            //Every 1 minutes send a message telling "LiveWave à besoin de vous pour continuer à vivre, vous pouvez aider en partageant le lien de la page"
+            setInterval(() => {
+                //send if there is no share message in last 5 messages
+                if (this.messages.slice(-5).findIndex(msg => msg.shareMessage) !== -1) return;
+                this.messages.push({
+                    username: 'LiveWave',
+                    content: `LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :`,
+                    created_at: new Date().toISOString(),
+                    backgroundColor: '#880E4F',
+                    shareMessage: true
+                });
+            }, 60000);
+        },
+
         sendBotMessage() {
             const minTimeS = 5;
             const maxTimeS = 15;

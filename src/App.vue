@@ -59,6 +59,12 @@ body {
     overflow: hidden;
 }
 
+a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
     background-color: rgba(255, 255, 255, 0.1);
