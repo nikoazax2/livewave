@@ -12,14 +12,15 @@
                             <v-text-field rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact"
                                 v-model="search" label="Rechercher un évènement..." hide-details="true"></v-text-field>
                         </div>
+                        <v-icon @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
                     </div>
 
                 </v-card-title>
                 <v-card-text class="wave-messages" ref="waveMessages">
-
                     <v-list>
-                        <div class="wave-messages-list"> 
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index" class="wave-message">
+                        <div class="wave-messages-list">
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index"
+                                class="wave-message">
                                 <div class="wave-message">
                                     <div class="left">
                                         <strong>{{ chat.title }}</strong>
@@ -32,9 +33,9 @@
 
                             </v-list-item>
                             <!-- last line to create a new chat -->
-                            <v-list-item 
-                            v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length"
-                            @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
+                            <v-list-item
+                                v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length"
+                                @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
                                 <div class="left">
                                     <strong>Ce salon n'existe pas encore</strong>
                                     <div class="caption">
@@ -82,7 +83,7 @@ export default {
         };
     },
     computed: {
-        roomsBySearch() { 
+        roomsBySearch() {
             return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
         }
     },
@@ -201,7 +202,7 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
- 
+
 }
 
 

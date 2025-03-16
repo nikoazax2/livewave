@@ -1,18 +1,22 @@
 <template>
     <div>
         <Welcome v-if="firstVisit" :username="username"></Welcome>
-        <router-view :bots="bots" :username="username"></router-view>
+        <SetUser v-if="askUsername" :username="username" @set-username="setUsername"></SetUser>
+        <router-view :bots="bots" @setaskUsername="askUsername = $event" :username="username"></router-view>
+
     </div>
 </template>
 
 <script>
 import username from './assets/usernames.json';
 import Welcome from './components/Welcome.vue';
+import SetUser from './components/SetUser.vue';
 
 export default {
     name: 'App',
     components: {
-        Welcome
+        Welcome,
+        SetUser
     },
     data() {
         return {

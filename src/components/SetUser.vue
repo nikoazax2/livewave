@@ -5,7 +5,7 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field v-model="userName" label="User Name" required
+                            <v-text-field v-model="userName" label="Nom liver" required
                                 hide-details="true"></v-text-field>
                         </v-col>
                     </v-row>
@@ -21,11 +21,17 @@
 
 <script>
 export default {
+    props: {
+        username: String
+    },
     data() {
         return {
             dialog: true,
             userName: ''
         };
+    },
+    created() {
+        this.userName = this.username || '';
     },
     methods: {
         closeDialog() {

@@ -2,9 +2,14 @@
     <v-container class="chat-container">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
-                <div>
+                <div class="d-flex align-center left">
                     <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
-                    {{ chat?.title }}
+                    <div class="ml-4 title-caption">
+                        <div class="title">{{ chat?.title }}</div>
+                        <div class="caption">{{ chat?.description }} lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+                            lorem ipsum </div>
+                    </div>
+
                 </div>
                 <div>
                     <LiversRedDot :livers="chat?.livers" />
@@ -116,15 +121,15 @@ export default {
 
         },
         deleteMessagesLoop() {
-            if(!this.deleteMessages) return;
+            if (!this.deleteMessages) return;
             //every 10second deletes messages exist for more than 2 minutes (only in frontend)
             const deleteMessageAfterS = 40
             setInterval(() => {
                 let now = new Date();
                 this.messages = this.messages.filter(msg => {
                     let date = new Date(msg.created_at);
-                    
-                    if(msg.content=='yo') debugger
+
+                    if (msg.content == 'yo') debugger
                     return (now - date) < deleteMessageAfterS * 1000;
                 });
             }, 1000);
@@ -173,8 +178,8 @@ export default {
             if (error) {
                 console.error('Error fetching messages:', error);
             } else {
-                this.messages = data; 
-                 
+                this.messages = data;
+
 
                 document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list').scrollHeight
             }
@@ -217,7 +222,7 @@ export default {
                         this.chat = data[0];
                         if (this.chat?.livers < 3 && this.bots) {
                             this.chat.livers = Math.floor(Math.random() * 30) + 4;
-                        } else if(this.chat?.livers == 0) this.chat.livers = 1; 
+                        } else if (this.chat?.livers == 0) this.chat.livers = 1;
                     }
                 });
         },
@@ -284,6 +289,28 @@ body {
 
     div {
         color: rgb(255, 255, 255) !important;
+    }
+
+    .left {
+        max-width: calc(100% - 100px);
+        overflow: hidden;
+        
+        .title-caption {
+            width: 100%;
+            .title {
+                font-size: 20px;
+                font-weight: 500;
+            }
+            
+            .caption {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.7);
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
     }
 }
 
