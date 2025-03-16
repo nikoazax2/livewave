@@ -1,16 +1,16 @@
 <template>
     <div>
-        <CreateChat @create-chat="createChat" ref="createChat" />
+        <CreateChat @create-chat="createChat" ref="createChat" :title="search"></CreateChat>
         <v-container class="wave-container">
             <v-card class="wave-card">
                 <v-card-title>
-                    <div class="d-flex justify-space-between align-center"> 
-                        <div class="mr-6"> 
+                    <div class="d-flex justify-space-between align-center">
+                        <div class="mr-6">
                             Salons Waves
                         </div>
-                        <div  style="width: 100%; max-width: 300px;">
-                            <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
-                        label="Chercher un évènement" hide-details="true"></v-text-field>
+                        <div style="width: 100%; max-width: 300px;">
+                            <v-text-field rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact"
+                                v-model="search" label="Rechercher un évènement..." hide-details="true"></v-text-field>
                         </div>
                     </div>
 
@@ -18,12 +18,28 @@
                 <v-card-text class="wave-messages" ref="waveMessages">
 
                     <v-list>
-                        <div class="wave-messages-list">
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))
-                                ?.sort((a, b) => b.livers - a.livers)" :key="index" class="wave-message">
+                        <div class="wave-messages-list"> 
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index" class="wave-message">
                                 <div class="wave-message">
-                                    <strong class="left">{{ chat.title }}</strong>
+                                    <div class="left">
+                                        <strong>{{ chat.title }}</strong>
+                                        <div class="caption">
+                                            {{ chat.description }}
+                                        </div>
+                                    </div>
                                     <livers :livers="chat?.livers"></livers>
+                                </div>
+
+                            </v-list-item>
+                            <!-- last line to create a new chat -->
+                            <v-list-item 
+                            v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length"
+                            @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
+                                <div class="left">
+                                    <strong>Ce salon n'existe pas encore</strong>
+                                    <div class="caption">
+                                        Crée le maintenant pour en discuter avec le monde entier !
+                                    </div>
                                 </div>
                             </v-list-item>
                         </div>
@@ -61,9 +77,14 @@ export default {
     },
     data() {
         return {
-            chats: null,
+            chats: [],
             search: ''
         };
+    },
+    computed: {
+        roomsBySearch() { 
+            return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
+        }
     },
     methods: {
         async clickRoom(chat) {
@@ -95,8 +116,8 @@ export default {
                 });
             }
         },
-        async createChat(chatName) {
-            const { data, error } = await supabase.from('chats').insert([{ title: chatName }]);
+        async createChat(chatName, chatDescription) {
+            const { data, error } = await supabase.from('chats').insert([{ title: chatName, description: chatDescription }]);
             this.$refs.createChat.dialog = false;
 
             await this.getRooms();
@@ -164,13 +185,23 @@ export default {
     width: 100%;
     padding: 0 10px;
 
+    .caption {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        opacity: 0.7;
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .left {
         max-width: 80%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-
+ 
 }
 
 
