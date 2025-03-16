@@ -9,8 +9,8 @@
                         <div class="caption">{{ chat?.description }}</div>
                     </div>
 
-                </div> 
-                    <LiversRedDot :livers="chat?.livers" /> 
+                </div>
+                <LiversRedDot :livers="chat?.livers" />
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
@@ -57,9 +57,8 @@ export default {
         };
     },
     async mounted() {
-        //if id is 6e3eec90-163a-4754-99fa-27b894dd6428 rediect to 4aec1267-0595-4fe5-ab8e-89093906b4d5
-        if (this.$route.params.id == '6e3eec90-163a-4754-99fa-27b894dd6428') {
-            this.$router.push('/chat/4aec1267-0595-4fe5-ab8e-89093906b4d5');
+        if (this.$route.params.id == '4aec1267-0595-4fe5-ab8e-89093906b4d5') {
+            this.$route.params.id = '6e3eec90-163a-4754-99fa-27b894dd6428';
         }
 
         // Check if the chat ID is a UUID or a title and get the chat ID
@@ -296,14 +295,15 @@ body {
     .left {
         max-width: calc(100% - 100px);
         overflow: hidden;
-        
+
         .title-caption {
             width: 100%;
+
             .title {
                 font-size: 20px;
                 font-weight: 500;
             }
-            
+
             .caption {
                 font-size: 14px;
                 color: rgba(255, 255, 255, 0.7);
