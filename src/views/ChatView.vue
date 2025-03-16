@@ -37,7 +37,8 @@ import username from '../assets/usernames.json';
 export default {
     name: 'App',
     props: {
-        username: String
+        username: String,
+        bots: Boolean
     },
     components: {
         LiversRedDot
@@ -50,10 +51,10 @@ export default {
             chat: null,
             chats: null,
             firstMessage: true,
+            deleteMessages: false
         };
     },
     async mounted() {
-        
         // Check if the chat ID is a UUID or a title and get the chat ID
         let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
         if (this.$route.params.id.match(regexUUID)) {
@@ -83,7 +84,7 @@ export default {
         this.getChatInfo();
         this.liversLoop();
         this.deleteMessagesLoop();
-        this.sendBotMessage();
+        if (this.bots) this.sendBotMessage();
     },
     methods: {
         sendBotMessage() {
@@ -104,7 +105,7 @@ export default {
             };
 
             // Send the first message within 3 seconds
-            setTimeout(() => { 
+            setTimeout(() => {
                 for (let i = 0; i < 5; i++) {
                     sendMessage();
                 }
@@ -115,6 +116,7 @@ export default {
 
         },
         deleteMessagesLoop() {
+            if(!this.deleteMessages) return;
             //every 10second deletes messages exist for more than 2 minutes (only in frontend)
             const deleteMessageAfterS = 40
             setInterval(() => {
@@ -209,9 +211,9 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
-                        if (this.chat?.livers < 3) {
+                        if (this.chat?.livers < 3 && this.bots) {
                             this.chat.livers = Math.floor(Math.random() * 30) + 4;
-                        }
+                        } else if(this.chat?.livers == 0) this.chat.livers = 1; 
                     }
                 });
         },

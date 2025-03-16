@@ -1,7 +1,7 @@
 <template>
     <div>
         <Welcome v-if="firstVisit" :username="username"></Welcome>
-        <router-view :username="username"></router-view>
+        <router-view :bots="bots" :username="username"></router-view>
     </div>
 </template>
 
@@ -19,7 +19,8 @@ export default {
             username: null,
             askUsername: false,
             config: null,
-            firstVisit: false
+            firstVisit: false,
+            bots: false
         };
     },
     created() {

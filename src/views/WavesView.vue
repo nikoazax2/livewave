@@ -4,12 +4,12 @@
         <v-container class="wave-container">
             <v-card class="wave-card">
                 <v-card-title>
-                    <div class="d-flex"> 
-                        <div class="mr-6"> 
+                    <div class="d-flex">
+                        <div class="mr-6">
                             Salons Waves
                         </div>
-                        <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search"
-                        label="Chercher un évènement" hide-details="true"></v-text-field>
+                        <v-text-field prepend-inner-icon="mdi-magnify" variant="outlined" density="compact"
+                            v-model="search" label="Chercher un évènement" hide-details="true"></v-text-field>
                     </div>
 
                 </v-card-title>
@@ -54,6 +54,9 @@ export default {
         CreateChat,
         Livers
     },
+    props: {
+        bots: Boolean
+    },
     data() {
         return {
             chats: null,
@@ -83,8 +86,7 @@ export default {
                     }
                 });
                 this.chats.forEach(chat => {
-                    if (chat?.livers < 3) {
-                        // chat.livers = Math.floor(Math.random() * 100) + 4;
+                    if (chat?.livers < 3 && this.bots) {
                         if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
                         else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
                     }
