@@ -146,7 +146,7 @@ export default {
                     content: `LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :`,
                     created_at: new Date().toISOString(),
                     backgroundColor: '#880E4F',
-                    shareMessage: true
+                    shareMessage: true //to add share buttons
                 });
             }, 60000);
         },
