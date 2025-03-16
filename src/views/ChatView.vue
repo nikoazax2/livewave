@@ -285,7 +285,7 @@ body {
     height: 100%;
     border-radius: 10px;
     background-color: rgba(46, 49, 50, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.363);
+    // border: 1px solid rgba(255, 255, 255, 0.363);
     padding: 10px 10px 0 10px;
 
     div {
