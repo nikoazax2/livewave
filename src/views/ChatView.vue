@@ -294,7 +294,8 @@ export default {
         async sendMessage() {
             const toast = useToast();
             if (this.newMessage.length > 200) {
-                toast.error('Message trop long');
+                // toast.error('Message trop long');
+                window.alert('Message trop long');
                 return;
             }
             if (this.newMessage) {
