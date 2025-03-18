@@ -17,13 +17,13 @@
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -48,7 +48,7 @@ import { useToast } from 'vue-toastification';
 import LiversRedDot from '../components/LiversRedDot.vue';
 import trends from '../../public/trends.json';
 import messagesbots from '../../public/messagesbots.json';
-import username from '../assets/usernames.json';
+import usernames from '../assets/usernames.json';
 
 export default {
     name: 'App',
@@ -129,8 +129,8 @@ export default {
         }
 
         this.getRooms();
+        await this.getChatInfo();
         this.getMessages();
-        this.getChatInfo();
         this.liversLoop();
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
@@ -245,6 +245,32 @@ export default {
                 console.error('Error fetching messages:', error);
             } else {
                 this.messages = data;
+                let chatMessages = []
+
+                try {
+                    chatMessages = await import(`../../public/${this.chat.title.toLowerCase()}.json`);
+                    chatMessages = chatMessages.default;
+
+                    for (let i = 0; i < chatMessages.length; i++) {
+                        let date5DaysAgo = new Date();
+                        date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
+                         
+                        let randomIndex = Math.floor(Math.random() * usernames.length)
+                        let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
+
+                        this.messages.push({
+                            content: chatMessages[i],
+                            username: username,
+                            created_at: date5DaysAgo.toISOString(),
+                            backgroundColor: null
+                        })
+                        this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    }
+                    debugger
+
+                } catch (e) {
+                    console.error('Error loading chat messages:', e);
+                }
 
 
                 document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list').scrollHeight
@@ -276,8 +302,8 @@ export default {
                 this.newMessage = '';
             }
         },
-        getChatInfo() {
-            supabase
+        async getChatInfo() {
+            let l = await supabase
                 .from('chats')
                 .select('*')
                 .eq('id', this.chatId)
@@ -291,6 +317,7 @@ export default {
                         } else if (this.chat?.livers < 10) this.chat.livers = Math.floor(Math.random() * 30) + 10;
                     }
                 });
+            return
         },
         addLiver() {
             supabase

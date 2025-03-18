@@ -108,8 +108,8 @@ export default {
         };
     },
     computed: {
-        roomsBySearch() {
-            return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
+        roomsBySearch() { 
+            return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description?.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
         }
     },
     methods: {
