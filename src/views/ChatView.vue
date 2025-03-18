@@ -17,13 +17,13 @@
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -147,9 +147,10 @@ export default {
             setInterval(() => {
                 //send if there is no share message in last 5 messages
                 if (this.messages.slice(-5).findIndex(msg => msg.shareMessage) !== -1) return;
+                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
                 this.messages.push({
                     username: 'LiveWave',
-                    content: `LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :`,
+                    content: msg,
                     created_at: new Date().toISOString(),
                     backgroundColor: '#880E4F',
                     shareMessage: true //to add share buttons
