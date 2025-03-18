@@ -160,10 +160,10 @@ export default {
                     username: 'LiveWave',
                     content: msg,
                     created_at: new Date().toISOString(),
-                    backgroundColor: '#880E4F',
+                    backgroundColor: '#6200EA',
                     shareMessage: true //to add share buttons
                 });
-            }, 60000);
+            }, 1);
         },
 
         sendBotMessage() {
@@ -374,7 +374,7 @@ body {
     max-width: none !important;
     background: url('../assets/backgroundchat.png') center center fixed;
     background-size: 100px 100px;
-    padding: 16px 16px 30px 16px !important;
+    padding: 16px 16px 30px 16px ;
 }
 
 .chat-card { 
