@@ -135,6 +135,10 @@ export default {
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
         this.adMessage();
+ 
+        setInterval(function () {
+            document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list')?.scrollHeight
+        }, 50); 
     },
     methods: {
         shareOn(social, url) {
@@ -195,7 +199,6 @@ export default {
                 this.messages = this.messages.filter(msg => {
                     let date = new Date(msg.created_at);
 
-                    if (msg.content == 'yo') debugger
                     return (now - date) < deleteMessageAfterS * 1000;
                 });
             }, 1000);
@@ -254,7 +257,7 @@ export default {
                     for (let i = 0; i < chatMessages.length; i++) {
                         let date5DaysAgo = new Date();
                         date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
-                         
+
                         let randomIndex = Math.floor(Math.random() * usernames.length)
                         let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
 
@@ -266,7 +269,6 @@ export default {
                         })
                         this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                     }
-                    debugger
 
                 } catch (e) {
                     console.error('Error loading chat messages:', e);
