@@ -14,21 +14,19 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
-                        :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
-                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -38,8 +36,7 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
-                    label="Écrire un message" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -57,7 +54,8 @@ export default {
     name: 'App',
     props: {
         username: String,
-        bots: Boolean
+        bots: Boolean,
+        language: String
     },
     components: {
         LiversRedDot
@@ -90,7 +88,15 @@ export default {
                 icon: 'mdi-whatsapp',
                 name: 'whatsapp',
                 url: 'https://api.whatsapp.com/send?text='
-            }]
+            }],
+            texts: {
+                en: {
+                    writeMessage: 'Write a message',
+                },
+                fr: {
+                    writeMessage: 'Écrire un message',
+                }
+            }
         };
     },
     async mounted() {

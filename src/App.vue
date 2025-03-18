@@ -1,8 +1,8 @@
 <template>
     <div>
-        <Welcome v-if="firstVisit" :username="username"></Welcome>
-        <SetUser v-if="askUsername" :username="username" @set-username="setUsername"></SetUser>
-        <router-view :bots="bots" @setaskUsername="askUsername = $event" :username="username"></router-view>
+        <Welcome :language="language" v-if="firstVisit" :username="username" />
+        <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername" />
+        <router-view @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
     </div>
 </template>
 
@@ -23,7 +23,9 @@ export default {
             askUsername: false,
             config: null,
             firstVisit: false,
-            bots: false
+            bots: false,
+            settings: false,
+            language: 'en'
         };
     },
     created() {
@@ -40,12 +42,25 @@ export default {
                 localStorage.setItem('livewave-params', JSON.stringify({ username: this.username }))
             }
         }
-    },
+        this.language = this.getLanguage()
+    }, 
     methods: {
+        getLanguage() {
+            const lang = navigator.language || navigator.userLanguage;
+
+            if (lang.startsWith('fr')) return 'fr';
+            if (lang.startsWith('en')) return 'en';
+
+            return 'en'; // default fallback 
+        },
+        setLanguage(language) {
+            this.language = language
+        },
         setUsername(username) {
             this.username = username
             this.askUsername = false
             localStorage.setItem('livewave-params', JSON.stringify({ username }))
+            this.settings = false
         }
     }
 };              

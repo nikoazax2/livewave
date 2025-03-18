@@ -1,26 +1,27 @@
 <template>
     <div>
-        <CreateChat @create-chat="createChat" ref="createChat" :title="search"></CreateChat>
+        <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
         <v-container class="wave-container">
             <v-card class="wave-card">
                 <v-card-title>
                     <div class="d-flex justify-space-between align-center">
                         <div class="mr-6">
-                            Salons Waves
+                            {{ texts[language]?.room }}
                         </div>
-                        <div style="width: 100%; max-width: 300px;">
-                            <v-text-field rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact"
-                                v-model="search" label="Rechercher un évènement..." hide-details="true"></v-text-field>
+                        <div style="width: 100%; max-width: 300px;" class="d-flex justify-space-between align-center">
+                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="texts[language]?.search" hide-details="true"></v-text-field>
+                            <v-icon size="24" @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
+                            <div class="ml-2 align-center d-flex" style="cursor: pointer;">
+                                <img v-if="language === 'en'" src="../assets/flags/en.png" width="24" height="24" @click="$emit('setLanguage', 'fr')" />
+                                <img v-else src="../assets/flags/fr.png" width="24" height="24" @click="$emit('setLanguage', 'en')" />
+                            </div>
                         </div>
-                        <v-icon @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
                     </div>
-
                 </v-card-title>
                 <v-card-text class="wave-messages" ref="waveMessages">
                     <v-list>
                         <div class="wave-messages-list">
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index"
-                                class="wave-message">
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index" class="wave-message">
                                 <div class="wave-message">
                                     <div class="left">
                                         <strong>{{ chat.title }}</strong>
@@ -33,25 +34,24 @@
 
                             </v-list-item>
                             <!-- last line to create a new chat -->
-                            <v-list-item
-                                v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length"
-                                @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
+                            <v-list-item v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length" @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
                                 <div class="left">
-                                    <strong>Ce salon n'existe pas encore</strong>
+                                    <strong>
+                                        {{ texts[language]?.dontExist.title }}
+                                    </strong>
                                     <div class="caption">
-                                        Crée le maintenant pour en discuter avec le monde entier !
+                                        {{ texts[language]?.dontExist.description }}
                                     </div>
                                 </div>
                             </v-list-item>
                         </div>
 
                         <div class="create-chat">
-                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0"
-                                color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
+                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
-                                Créer un salon
+                                {{ texts[language]?.createRoom }}
                             </v-btn>
                         </div>
                     </v-list>
@@ -74,12 +74,37 @@ export default {
         Livers
     },
     props: {
-        bots: Boolean
+        bots: Boolean,
+        language: String
     },
     data() {
         return {
             chats: [],
-            search: ''
+            search: '',
+            texts: {
+                en: {
+                    welcomeMessage: 'Welcome to LiveWave',
+                    room: 'Waves Rooms',
+                    description: 'LiveWave is a real-time conversation app around the events you love!',
+                    search: 'Search an event...',
+                    dontExist: {
+                        title: 'This room does not exist yet',
+                        description: 'Create it now to discuss it with the whole world!'
+                    },
+                    createRoom: 'Create a room'
+                },
+                fr: {
+                    welcomeMessage: 'Bienvenue sur LiveWave',
+                    room: 'Salons Waves',
+                    description: 'LiveWave est une application de conversation en temps réel autour des événements qui vous passionnent !',
+                    search: 'Chercher un évènement...',
+                    dontExist: {
+                        title: 'Ce salon n\'existe pas encore',
+                        description: 'Crée le maintenant pour en discuter avec le monde entier !'
+                    },
+                    createRoom: 'Créer un salon'
+                }
+            }
         };
     },
     computed: {
