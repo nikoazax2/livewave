@@ -285,6 +285,7 @@ export default {
             supabase
                 .channel('public:messages')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                    if (payload.new.chat_id !== this.chatId) return;
                     this.messages.push(payload.new);
                     let chat = document.getElementById('chat-messages-list');
                     chat.scrollTop = chat.scrollHeight + 20;
