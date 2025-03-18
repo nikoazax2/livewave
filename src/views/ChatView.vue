@@ -136,9 +136,13 @@ export default {
         if (this.bots) this.sendBotMessage();
         this.adMessage();
  
-        setInterval(function () {
-            document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list')?.scrollHeight
-        }, 50); 
+        const chatMessagesList = document.getElementById('chat-messages-list');
+    const observer = new MutationObserver(() => {
+        chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+    });
+
+    observer.observe(chatMessagesList, { childList: true });
+
     },
     methods: {
         shareOn(social, url) {
@@ -371,14 +375,14 @@ body {
     padding: 16px 16px 30px 16px !important;
 }
 
-.chat-card {
+.chat-card { 
     width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
     height: 100%;
     border-radius: 10px;
-    background-color: rgba(46, 49, 50, 0.7);
+    background-color: rgba(46, 49, 50, 0.5);
     // border: 1px solid rgba(255, 255, 255, 0.363);
     padding: 10px 10px 0 10px;
 
