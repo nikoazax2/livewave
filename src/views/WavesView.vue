@@ -108,7 +108,7 @@ export default {
         };
     },
     computed: {
-        roomsBySearch() { 
+        roomsBySearch() {
             return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description?.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
         }
     },
@@ -138,7 +138,10 @@ export default {
                     if (chat?.livers < 3 && this.bots) {
                         if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
                         else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
-                    } else if (chat?.livers < 10) chat.livers = Math.floor(Math.random() * 30) + 10
+                    } else if (chat?.livers < 10) {
+                        if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+                        else chat.livers = Math.floor(Math.random() * 4);
+                    }
 
                 });
             }
