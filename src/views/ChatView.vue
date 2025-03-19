@@ -163,7 +163,7 @@ export default {
                     backgroundColor: '#6200EA',
                     shareMessage: true //to add share buttons
                 });
-            }, 1);
+            }, 60000); //every 1 minute
         },
 
         sendBotMessage() {
