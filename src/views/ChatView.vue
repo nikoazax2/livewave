@@ -254,9 +254,14 @@ export default {
                 this.messages = data;
                 let chatMessages = []
 
-                try {
-                    chatMessages = await import(`../../public/${this.chat.title.toLowerCase()}.json`);
-                    chatMessages = chatMessages.default;
+                try { 
+                    const { data, error } = await supabase
+                        .from('events')
+                        .select('messagesbots')
+                        .eq('hashtag', this.chat.title)
+                        .single();
+
+                    chatMessages = data.messagesbots;
 
                     for (let i = 0; i < chatMessages.length; i++) {
                         let date5DaysAgo = new Date();
