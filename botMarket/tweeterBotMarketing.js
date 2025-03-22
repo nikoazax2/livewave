@@ -1,5 +1,6 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 // src/supabase.js
 import { createClient } from '@supabase/supabase-js'
@@ -7,8 +8,6 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://qtziksdhzjvzxongwmsi.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0emlrc2Roemp2enhvbmd3bXNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1MTUzNjksImV4cCI6MjA1NzA5MTM2OX0.bIYO0Uw1P6iTXmjgEG49fRQ7OVE39AiEdUAxmKMLKOU'
 export const supabase = createClient(supabaseUrl, supabaseKey)
-
-
 
 dotenv.config();
 
@@ -20,25 +19,9 @@ const twitterClient = new TwitterApi({
     accessSecret: process.env.TWITTER_ACCESS_SECRET,
 });
 
-// List of events with multiple dates/times (Paris time)
-const events = [
-    // { hashtag: "#KohLanta", dates: ["2025-03-21T18:35", "2025-03-28T20:50"], image: 'kohlanta.png' },
-    // { hashtag: "#IDLT", dates: ["2025-03-21T21:10", "2025-03-28T21:10"], image: 'idlt.png' } 
-    { hashtag: "#RWANGA", dates: ["2025-03-21T18:42"], image: 'rwanga.png' },
-];
 
-const messages = [
-    "C'est le grand départ pour EVENT_NAME ! Rejoins-nous sur le tchat en direct : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Ça commence maintenant ! Venez discuter en direct de EVENT_NAME : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Prêt pour l'aventure ? EVENT_NAME débute maintenant ! Suivez-nous en direct : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "C'est parti pour EVENT_NAME ! Le tchat est ouvert : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Le moment tant attendu est arrivé ! Rejoins-nous pour EVENT_NAME sur le tchat en direct : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Ne manquez pas l'événement ! EVENT_NAME commence maintenant, viens discuter avec nous en direct : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "C'est maintenant ou jamais pour EVENT_NAME ! Rends-toi sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Tous à vos claviers ! Le tchat pour EVENT_NAME est ouvert : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "Un nouvel événement commence ! Rejoins-nous pour EVENT_NAME en direct : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS",
-    "L'événement EVENT_NAME est lancé ! Venez discuter en live : https://www.livewave.fr/chat/EVENT_NAME_URL EVENT_HASHTAGS"
-];
+const messages = JSON.parse(fs.readFileSync('./botMarket/messages.json', 'utf8'));
+
 
 async function fetchEvents() {
     const { data, error } = await supabase
