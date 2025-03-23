@@ -257,11 +257,11 @@ export default {
                 try { 
                     const { data, error } = await supabase
                         .from('events')
-                        .select('messagesbots')
-                        .eq('hashtag', this.chat.title)
+                        .select('messages')
+                        .eq('name', this.chat.title)
                         .single();
 
-                    chatMessages = data.messagesbots;
+                    chatMessages = data.messages;
 
                     for (let i = 0; i < chatMessages.length; i++) {
                         let date5DaysAgo = new Date();

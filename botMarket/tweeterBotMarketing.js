@@ -1,12 +1,11 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
-import fs from 'fs';
-
+import fs from 'fs'; 
 // src/supabase.js
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://qtziksdhzjvzxongwmsi.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0emlrc2Roemp2enhvbmd3bXNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1MTUzNjksImV4cCI6MjA1NzA5MTM2OX0.bIYO0Uw1P6iTXmjgEG49fRQ7OVE39AiEdUAxmKMLKOU'
+const supabaseUrl =  process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_KEY
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 dotenv.config();
@@ -50,11 +49,11 @@ async function uploadImage(imagePath) {
 // Function to send a tweet with media
 async function tweet(message, mediaId) {
     try {
-        // Use the correct media_id format and remove the status parameter from v2 tweet
-        await twitterClient.v2.tweet({
-            text: message,
-            media: { media_ids: [mediaId] }  // Attach media to tweet
-        });
+        const tweetParams = { text: message };
+        if (mediaId) {
+            tweetParams.media = { media_ids: [mediaId] };
+        }
+        await twitterClient.v2.tweet(tweetParams);
         console.log("Tweet sent:", message);
     } catch (error) {
         console.error("Tweet error:", error.response?.data || error.message);
@@ -73,7 +72,7 @@ async function checkAndTweet() {
             const eventDate = new Date(date);
             const eventEndDate = new Date(eventDate.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
 
-            console.log("Checking event:", event.hashtag, "from", eventDate, "to", eventEndDate);
+            console.log("Checking event:", event.name, "from", eventDate, "to", eventEndDate);
 
             // Check if the current time is within the event time window
             if (now >= eventDate && now <= eventEndDate) {
@@ -88,12 +87,15 @@ async function checkAndTweet() {
                     // Pick a random message for variety
                     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
                     const tweetMessage = randomMessage
-                        .replace('EVENT_NAME', `#${event.hashtag}`)
-                        .replace('EVENT_NAME_URL', event.hashtag)
+                        .replace('EVENT_NAME', `#${event.name}`)
+                        .replace('EVENT_NAME_URL', event.name.replace(/ /g, ''))
                         .replace('EVENT_HASHTAGS', event.hashtags);
 
+                    let mediaId = null;
                     // Upload image
-                    const mediaId = await uploadImage(event.image);
+                    if (event.image) {
+                        mediaId = await uploadImage(event.image);
+                    }
 
                     // Tweet with image
                     if (mediaId) {
@@ -104,14 +106,16 @@ async function checkAndTweet() {
         }
     }
 }
-
-
+ 
 
 async function main() {
     // Run check every minute (or adjust interval as needed)
-    console.log("Tweet bot running...");
-    checkAndTweet(); // Run immediately
-    setInterval(checkAndTweet, 60000); // 60,000 ms = 1 minute
+    // console.log("Tweet bot running...");
+    // checkAndTweet(); // Run immediately
+    // setInterval(checkAndTweet, 60000); // 60,000 ms = 1 minute
+
+    let events = await getEventsChatGPT();
+    debugger
 }
 
 
