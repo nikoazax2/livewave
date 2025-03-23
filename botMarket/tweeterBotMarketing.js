@@ -1,12 +1,12 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
-import fs from 'fs'; 
+import fs from 'fs';
 // src/supabase.js
 import { createClient } from '@supabase/supabase-js'
 
 dotenv.config();
 
-const supabaseUrl =  process.env.SUPABASE_URL
+const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -107,16 +107,13 @@ async function checkAndTweet() {
         }
     }
 }
- 
+
 
 async function main() {
     // Run check every minute (or adjust interval as needed)
-    // console.log("Tweet bot running...");
-    // checkAndTweet(); // Run immediately
-    // setInterval(checkAndTweet, 60000); // 60,000 ms = 1 minute
-
-    let events = await getEventsChatGPT();
-    debugger
+    console.log("Tweet bot running...");
+    checkAndTweet(); // Run immediately
+    setInterval(checkAndTweet, 60000); // 60,000 ms = 1 minute
 }
 
 
