@@ -4,11 +4,12 @@ import fs from 'fs';
 // src/supabase.js
 import { createClient } from '@supabase/supabase-js'
 
+dotenv.config();
+
 const supabaseUrl =  process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-dotenv.config();
 
 // Create a Twitter client with OAuth 1.0a User Context
 const twitterClient = new TwitterApi({
