@@ -49,7 +49,7 @@ export default {
     methods: {
         getLanguage() {
             const lang = navigator.language || navigator.userLanguage;
-
+ 
             if (lang.startsWith('fr')) return 'fr';
             if (lang.startsWith('en')) return 'en';
 
