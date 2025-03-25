@@ -327,7 +327,7 @@ export default {
                         this.chat = data[0];
                         if (this.chat?.livers < 3 && this.bots) {
                             this.chat.livers = Math.floor(Math.random() * 30) + 4;
-                        } else if (this.chat?.livers < 10) this.chat.livers = Math.floor(Math.random() * 30) + 10;
+                        } else if (this.chat?.livers < 10) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
                     }
                 });
             return
