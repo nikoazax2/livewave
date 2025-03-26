@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.49.1",
+    "@vueuse/head": "^2.0.0",
     "apify": "^3.3.2",
     "apify-client": "^2.12.0",
     "axios": "^1.8.4",
