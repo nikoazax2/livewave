@@ -1,6 +1,6 @@
-[ 
-    "there's a live chat for EVENT_NAME \n come chat with us: https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "ITS ON LIVE: EVENT_NAME \n join us on the chat: https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "come chat live about EVENT_NAME with us \n Join the chat: https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "i've discovered a live chat for EVENT_NAME \n come chat with us: https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS"
+[
+      "y'a un chat en direct pour EVENT_NAME ! \n Viens discuter avec nous : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
+    "EN DIRECT : EVENT_NAME \n Rejoins-nous sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
+    "venez discuter en direct de EVENT_NAME ! \n Rendez-vous sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
+    "venez avec nous sur le tchat de EVENT_NAME : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS"
 ]

@@ -82,6 +82,7 @@ async function checkAndTweet() {
     // Loop through events
     for (const event of events) {
         // Loop through dates for each event
+        if (!event.dates) { continue; }
         for (const date of event.dates) {
             const eventDate = new Date(date);
             const eventEndDate = new Date(eventDate.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
