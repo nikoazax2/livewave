@@ -5,6 +5,12 @@ dotenv.config();
 
 // Create a Twitter client with OAuth 1.0a User Context
 const twitterClient = new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY,
+    appSecret: process.env.TWITTER_API_SECRET,
+    accessToken: process.env.TWITTER_ACCESS_TOKEN,
+    accessSecret: process.env.TWITTER_ACCESS_SECRET,
+});
+const twitterClient2 = new TwitterApi({
     appKey: process.env.TWITTER_API_KEY_2,
     appSecret: process.env.TWITTER_API_SECRET_2,
     accessToken: process.env.TWITTER_ACCESS_TOKEN_2,
@@ -12,18 +18,15 @@ const twitterClient = new TwitterApi({
 });
 
 
+
 const messages = [
-    "Envie de réagir en direct à ce qui se passe sur BFM ? Rejoins la discussion sur LiveWave ! 📢💬 https://www.livewave.fr/chat/BFM",
-    "BFM en direct, ça te fait réagir ? Viens en discuter avec nous sur LiveWave ! 🗣️🔥 https://www.livewave.fr/chat/BFM",
-    "Débats, analyses, breaking news… Commente BFM en direct sur LiveWave ! 📰⚡ https://www.livewave.fr/chat/BFM",
-    "Marre de juste regarder BFM ? Participe aux discussions en direct sur LiveWave ! 📺💬 https://www.livewave.fr/chat/BFM",
-    "Les infos tournent en boucle sur BFM ? Apporte ton avis en direct sur LiveWave ! 🗞️🔴 https://www.livewave.fr/chat/BFM",
-    "Un débat qui t’énerve ou t’inspire sur BFM ? Réagis en live avec nous sur LiveWave ! 😡🤯 https://www.livewave.fr/chat/BFM",
-    "BFM en direct, ça bouge ! Viens commenter l’actu avec nous sur LiveWave 📢📰 https://www.livewave.fr/chat/BFM",
-    "Les breaking news de BFM, ça se vit et ça se commente en direct sur LiveWave ! 🚨💬 https://www.livewave.fr/chat/BFM",
-    "Échange sur l’actu en temps réel avec d’autres spectateurs de BFM sur LiveWave ! 🗣️📺 https://www.livewave.fr/chat/BFM",
-    "BFM dit quelque chose d’incroyable ? Réagis tout de suite sur LiveWave ! ⚡🔥 https://www.livewave.fr/chat/BFM"
+     "Un plat qui te donne faim ou une catastrophe culinaire ? Partage tes réactions en direct ! https://www.livewave.fr/chat/TOPCHEF #TopChef",
+    "Et toi, t’aurais validé cette assiette ? Dis-nous tout en live ! 🍽️ https://www.livewave.fr/chat/TOPCHEF #TopChef",
+    "💬 Débrief des assiettes en direct ! Qui va briller ce soir ? Viens réagir sur https://www.livewave.fr/chat/TOPCHEF #TopChef",
+    "🔥 Clutch ou flop ? Réagis en direct aux épreuves sur LiveWave : https://www.livewave.fr/chat/TOPCHEF #TopChef",
+    "Coup de cœur ou incompréhension ? Viens donner ton avis sur les plats de ce soir sur LiveWave 🍽️ https://www.livewave.fr/chat/TOPCHEF #TopChef"
 ]
+
 
 
 
@@ -32,7 +35,8 @@ async function uploadImage(imagePath) {
     try {
         // Use mimeType instead of type for image
         const mediaId = await twitterClient.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-        return { mediaId };
+        const mediaId_2 = await twitterClient2.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
+        return { mediaId, mediaId_2 };
     } catch (error) {
         console.error("Image upload error:", error.response?.data || error.message);
     }
@@ -46,6 +50,13 @@ async function tweet(message, mediaId) {
             tweetParams.media = { media_ids: [mediaId.mediaId] };
         }
         await twitterClient.v2.tweet(tweetParams);
+
+        const tweetParams_2 = { text: message };
+        if (mediaId.mediaId_2) {
+            tweetParams_2.media = { media_ids: [mediaId.mediaId_2] };
+        }
+        await twitterClient2.v2.tweet(tweetParams_2);
+
         console.log("Tweet sent:", message);
     } catch (error) {
         console.error("Tweet error:", error.response?.data || error.message);
@@ -60,8 +71,8 @@ async function checkAndTweet() {
     for (const message of messages) {
         // Tweet the message
         await tweet(message, mediaId);
-        //timeout 5MIN  
-        await new Promise(resolve => setTimeout(resolve, 300000));
+        //timeout 7 minutes
+        await new Promise(resolve => setTimeout(resolve, 420000));
     }
 }
 
