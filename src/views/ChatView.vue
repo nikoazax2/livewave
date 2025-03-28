@@ -176,9 +176,8 @@ export default {
                 let randomIndex = Math.floor(Math.random() * usernames.length);
                 let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-                // set messages random in messagesbots but only 2/3 of them
-                let botMessage = this.messages[Math.floor(Math.random() * (this.messages.length / Math.floor(this.messages.length / 3)))];
-                
+                let botMessage = this.messages[Math.floor(Math.random() * (Math.floor(messagesbots.length / 1.5)))];
+
                 this.messages.push({
                     username: usernameS,
                     content: botMessage?.content,
