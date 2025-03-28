@@ -17,13 +17,13 @@
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -331,7 +331,7 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
-                        if (this.chat?.livers < 10) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
+                        this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
                     }
                 });
             return
