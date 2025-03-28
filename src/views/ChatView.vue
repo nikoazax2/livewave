@@ -176,7 +176,7 @@ export default {
                 let randomIndex = Math.floor(Math.random() * usernames.length);
                 let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-                let botMessage = this.messages[Math.floor(Math.random() * (Math.floor(messagesbots.length / 1.5)))];
+                let botMessage = this.messages[Math.floor(Math.random() * (Math.floor(this.messages.length / 1.5)))];
 
                 this.messages.push({
                     username: usernameS,
