@@ -130,18 +130,18 @@ export default {
 
         this.getRooms();
         await this.getChatInfo();
-        this.getMessages();
+        await this.getMessages();
         this.liversLoop();
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
         this.adMessage();
- 
-        const chatMessagesList = document.getElementById('chat-messages-list');
-    const observer = new MutationObserver(() => {
-        chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
-    });
 
-    observer.observe(chatMessagesList, { childList: true });
+        const chatMessagesList = document.getElementById('chat-messages-list');
+        const observer = new MutationObserver(() => {
+            chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+        });
+
+        observer.observe(chatMessagesList, { childList: true });
 
     },
     methods: {
@@ -167,19 +167,22 @@ export default {
         },
 
         sendBotMessage() {
-            const minTimeS = 5;
-            const maxTimeS = 15;
+            const minTimeS = 3;
+            const maxTimeS = 8;
 
             const sendMessage = () => {
-                let usernames = username;
+                //only if there is message with bot true 
+                if (this.messages.length == 0 || this.messages?.find(msg => msg.bot).length == 0) return;
                 let randomIndex = Math.floor(Math.random() * usernames.length);
                 let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-                let botMessage = messagesbots[Math.floor(Math.random() * messagesbots.length)];
+                let botMessage = this.messages[Math.floor(Math.random() * (this.messages.length / 2))];
+
                 this.messages.push({
                     username: usernameS,
-                    content: botMessage,
-                    created_at: new Date().toISOString()
+                    content: botMessage?.content,
+                    created_at: new Date().toISOString(),
+                    bot: true
                 });
             };
 
@@ -254,7 +257,7 @@ export default {
                 this.messages = data;
                 let chatMessages = []
 
-                try { 
+                try {
                     const { data, error } = await supabase
                         .from('events')
                         .select('messages')
@@ -274,7 +277,8 @@ export default {
                             content: chatMessages[i],
                             username: username,
                             created_at: date5DaysAgo.toISOString(),
-                            backgroundColor: null
+                            backgroundColor: null,
+                            bot: true,
                         })
                         this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                     }
@@ -296,6 +300,8 @@ export default {
                     chat.scrollTop = chat.scrollHeight + 20;
                 })
                 .subscribe();
+
+            return
         },
         async sendMessage() {
             const toast = useToast();
@@ -382,7 +388,7 @@ body {
     padding: 16px 16px 30px 16px !important;
 }
 
-.chat-card { 
+.chat-card {
     width: 100%;
     max-width: 600px;
     display: flex;

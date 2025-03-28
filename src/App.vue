@@ -23,7 +23,7 @@ export default {
             askUsername: false,
             config: null,
             firstVisit: false,
-            bots: false,
+            bots: true,
             settings: false,
             language: 'en',
             mobile: false
