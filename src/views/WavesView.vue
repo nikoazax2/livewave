@@ -6,7 +6,8 @@
                 <v-card-title>
                     <div class="d-flex justify-space-between align-center">
                         <div class="mr-6">
-                            {{ texts[language]?.room }}
+                            <!-- {{ texts[language]?.room }} -->
+                              <img src="../../public/logobigwhite.png"  height="40" alt="logo" class="ml-1" style="transform: translateY(7px);" />
                         </div>
                         <div style="width: 100%; max-width: 300px;" class="d-flex justify-space-between align-center">
                             <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="texts[language]?.search" hide-details="true"></v-text-field>
