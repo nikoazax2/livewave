@@ -1,0 +1,15 @@
+{
+    "background_color": "white",
+    "description": "Livewave",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "./logo512.png",
+        "sizes": "512x512"
+      }
+    ],
+    "name": "Livewave",
+    "short_name": "Livewave",
+    "id": "/",
+    "start_url": "/"
+}

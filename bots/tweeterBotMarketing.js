@@ -26,7 +26,7 @@ const twitterClient_2 = new TwitterApi({
 });
 
 
-const messages = JSON.parse(fs.readFileSync('./botMarket/messages.json', 'utf8'));
+const messages = JSON.parse(fs.readFileSync('./bots/messages.json', 'utf8'));
 
 
 async function fetchEvents() {
@@ -58,7 +58,7 @@ async function uploadImage(imagePath) {
 async function tweet(message, mediaId) {
     try {
         const tweetParams = { text: message };
-        if (mediaId.mediaId) {
+        if (mediaId?.mediaId) {
             tweetParams.media = { media_ids: [mediaId.mediaId] };
         }
         await twitterClient.v2.tweet(tweetParams);
@@ -112,10 +112,8 @@ async function checkAndTweet() {
                         medias = await uploadImage(event.image);
                     }
 
-                    // Tweet with image
-                    if (medias) {
-                        await tweet(tweetMessage, medias);
-                    }
+                    // Tweet with image 
+                    await tweet(tweetMessage, medias);
                 }
             }
         }
