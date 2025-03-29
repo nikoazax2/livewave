@@ -47,8 +47,8 @@ async function uploadImage(imagePath) {
     try {
         // Use mimeType instead of type for image
         const mediaId = await twitterClient.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-        const mediaId_2 = await twitterClient_2.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-        return { mediaId, mediaId_2 };
+        // const mediaId_2 = await twitterClient_2.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
+        return { mediaId };
     } catch (error) {
         console.error("Image upload error:", error.response?.data || error.message);
     }
@@ -62,12 +62,12 @@ async function tweet(message, mediaId) {
             tweetParams.media = { media_ids: [mediaId.mediaId] };
         }
         await twitterClient.v2.tweet(tweetParams);
-        setTimeout(async () => {
-            if (mediaId.mediaId_2) {
-                tweetParams.media = { media_ids: [mediaId.mediaId_2] };
-            }
-            await twitterClient_2.v2.tweet(tweetParams);
-        }, 2000);
+        // setTimeout(async () => {
+        //     if (mediaId.mediaId_2) {
+        //         tweetParams.media = { media_ids: [mediaId.mediaId_2] };
+        //     }
+        //     await twitterClient_2.v2.tweet(tweetParams);
+        // }, 2000);
         console.log("Tweet sent:", message);
     } catch (error) {
         console.error("Tweet error:", error.response?.data || error.message);

@@ -32,14 +32,14 @@ async function main() {
     // if (new Date().getHours() === 6) {
     let output = await runScraper();
 
-    //write the output to a file at ./public/trends.json
-    fs.writeFile('./public/trends.json', JSON.stringify(output), (err) => {
-        if (err) throw err;
-        console.log('Data written to file');
+    //write the output to a file at ../public/trends.json 
+    fs.writeFileSync('./trends.json', JSON.stringify(output, null, 2), 'utf-8', (err) => {
+        if (err) {
+            console.error('Error writing file:', err);
+        } else {
+            console.log('File written successfully');
+        }
     });
-    // }
-
-    // setTimeout(main, 1800000);
 }
 
 main();
