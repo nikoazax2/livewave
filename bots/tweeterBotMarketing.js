@@ -18,12 +18,6 @@ const twitterClient = new TwitterApi({
     accessToken: process.env.TWITTER_ACCESS_TOKEN,
     accessSecret: process.env.TWITTER_ACCESS_SECRET,
 });
-const twitterClient_2 = new TwitterApi({
-    appKey: process.env.TWITTER_API_KEY_2,
-    appSecret: process.env.TWITTER_API_SECRET_2,
-    accessToken: process.env.TWITTER_ACCESS_TOKEN_2,
-    accessSecret: process.env.TWITTER_ACCESS_SECRET_2,
-});
 
 
 const messages = JSON.parse(fs.readFileSync('./bots/messages.json', 'utf8'));
@@ -47,8 +41,7 @@ async function uploadImage(imagePath) {
     try {
         // Use mimeType instead of type for image
         const mediaId = await twitterClient.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-        // const mediaId_2 = await twitterClient_2.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-        return { mediaId };
+          return { mediaId };
     } catch (error) {
         console.error("Image upload error:", error.response?.data || error.message);
     }
@@ -62,12 +55,6 @@ async function tweet(message, mediaId) {
             tweetParams.media = { media_ids: [mediaId.mediaId] };
         }
         await twitterClient.v2.tweet(tweetParams);
-        // setTimeout(async () => {
-        //     if (mediaId.mediaId_2) {
-        //         tweetParams.media = { media_ids: [mediaId.mediaId_2] };
-        //     }
-        //     await twitterClient_2.v2.tweet(tweetParams);
-        // }, 2000);
         console.log("Tweet sent:", message);
     } catch (error) {
         console.error("Tweet error:", error.response?.data || error.message);
@@ -82,39 +69,35 @@ async function checkAndTweet() {
     // Loop through events
     for (const event of events) {
         // Loop through dates for each event
-        if (!event.dates) { continue; }
-        for (const date of event.dates) {
-            const eventDate = new Date(date);
-            const eventEndDate = new Date(eventDate.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
+        if (!event.datestart) { continue; }
+        const eventDate = new Date(event.datestart);
 
-            console.log("Checking event:", event.name);
+        const eventEndDate = new Date(event.dateend || eventDate.getTime() + 2 * 60 * 60 * 1000)
 
-            // Check if the current time is within the event time window
-            if (now >= eventDate && now <= eventEndDate) {
-                // Calculate the interval for 8 tweets within 2 hours
-                const interval = (2 * 60 * 60 * 1000) / 8; // 2 hours divided by 8
+        console.log("Checking event:", event.name);
 
-                // Calculate the number of tweets already sent
-                const tweetsSent = Math.floor((now - eventDate) / interval);
+        // Check if the current time is within the event time window
+        if (now >= eventDate && now <= eventEndDate) {
+            // Calculate the interval for 8 tweets within 2 hours
+            const interval = (2 * 60 * 60 * 1000) / 8; // 2 hours divided by 8 (8 tweets per event)
 
-                // If it's time for the next tweet
-                if ((now - eventDate) % interval < 60000) { // 1 minute tolerance
-                    // Pick a random message for variety
-                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                    const tweetMessage = randomMessage
-                        .replace('EVENT_NAME', `#${event.name}`)
-                        .replace('EVENT_NAME_URL', event.name.replace(/ /g, ''))
-                        .replace('EVENT_HASHTAGS', event.hashtags);
+            // If it's time for the next tweet
+            if ((now - eventDate) % interval < 60000) { // 1 minute tolerance
+                // Pick a random message for variety
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                const tweetMessage = randomMessage
+                    .replace('EVENT_NAME', `#${event.name}`)
+                    .replace('EVENT_NAME_URL', event.name.replace(/ /g, ''))
+                    .replace('EVENT_HASHTAGS', event.hashtags);
 
-                    let medias = null;
-                    // Upload image
-                    if (event.image) {
-                        medias = await uploadImage(event.image);
-                    }
-
-                    // Tweet with image 
-                    await tweet(tweetMessage, medias);
+                let medias = null;
+                // Upload image
+                if (event.image) {
+                    medias = await uploadImage(event.image);
                 }
+
+                // Tweet with image 
+                await tweet(tweetMessage, medias);
             }
         }
     }

@@ -14,7 +14,8 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
                             }}</strong>
@@ -26,7 +27,8 @@
                             }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
+                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -36,7 +38,9 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
+                    :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                    @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -62,6 +66,7 @@ export default {
     },
     data() {
         return {
+            enventNow: false,
             messages: [],
             newMessage: '',
             chatId: null,
@@ -130,7 +135,8 @@ export default {
 
         this.getRooms();
         await this.getChatInfo();
-        await this.getMessages();
+        let messagesbots = await this.getEvent();
+        await this.getMessages(messagesbots);
         this.liversLoop();
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
@@ -145,6 +151,20 @@ export default {
 
     },
     methods: {
+        async getEvent() {
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .eq('name', this.chat.title)
+                .single();
+
+            let chatMessages = data.messages;
+            let dateNow = new Date();
+            if (dateNow > new Date(data.datestart) && dateNow < new Date(data.dateend)) {
+                this.enventNow = true;
+            }
+            return chatMessages;
+        },
         shareOn(social, url) {
             let text = `Venez discuter de ${this.chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${this.chat.title} #LiveWave`;
             let shareUrl = url + encodeURIComponent(text);
@@ -171,6 +191,7 @@ export default {
             const maxTimeS = 8;
 
             const sendMessage = () => {
+                if (!this.enventNow) return;
                 //only if there is message with bot true 
                 if (this.messages.length == 0 || this.messages?.find(msg => msg.bot).length == 0) return;
                 let randomIndex = Math.floor(Math.random() * usernames.length);
@@ -245,7 +266,7 @@ export default {
             }
             return color;
         },
-        async getMessages() {
+        async getMessages(messagesbots) {
             const { data, error } = await supabase
                 .from('messages')
                 .select('*')
@@ -258,14 +279,7 @@ export default {
                 let chatMessages = []
 
                 try {
-                    const { data, error } = await supabase
-                        .from('events')
-                        .select('messages')
-                        .eq('name', this.chat.title)
-                        .single();
-
-                    chatMessages = data.messages;
-
+                    chatMessages = messagesbots
                     for (let i = 0; i < chatMessages.length; i++) {
                         let date5DaysAgo = new Date();
                         date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
@@ -331,7 +345,7 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
-                        this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
+                        if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
                     }
                 });
             return
