@@ -1,6 +1,8 @@
 [
-    "🔴 Chat en direct pour EVENT_NAME ! \n Viens discuter avec nous : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "🔴 EN DIRECT : EVENT_NAME \n https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "🔴 Venez discuter en direct de EVENT_NAME ! \n Rendez-vous sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS",
-    "🔴 Venez avec nous sur le tchat de EVENT_NAME : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS"
+    "J’ai trouvé un chat en direct pendant le EVENT_TEXT pour échanger en temps réel avec d’autres téléspectateurs. C'est sans inscription ! Venez voir :  https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS EVENT_NAME",
+    "Venez discuter du EVENT_TEXT en direct sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS EVENT_NAME",
+    "🔴 LIVE : EVENT_TEXT : https://www.livewave.fr/chat/EVENT_NAME_URL \n \n EVENT_HASHTAGS EVENT_NAME",
+    "Envie d’échanger en direct sur le EVENT_TEXT ? Le tchat est ouvert ! https://www.livewave.fr/chat/EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
+    "Vous regardez le EVENT_TEXT ? Venez discuter en temps réel sur LiveWave : https://www.livewave.fr/chat/EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
+    "Ne commentez pas seul le EVENT_TEXT ! Rejoignez nous sur le tchat : https://www.livewave.fr/chat/EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME"
 ]

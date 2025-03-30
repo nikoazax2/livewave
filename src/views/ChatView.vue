@@ -137,6 +137,7 @@ export default {
         await this.getChatInfo();
         let messagesbots = await this.getEvent();
         await this.getMessages(messagesbots);
+        this.setLivers();
         this.liversLoop();
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
@@ -151,6 +152,9 @@ export default {
 
     },
     methods: {
+        setLivers() {
+            if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
+        },
         async getEvent() {
             const { data, error } = await supabase
                 .from('events')
@@ -185,19 +189,32 @@ export default {
                 });
             }, 60000); //every 1 minute
         },
-
         sendBotMessage() {
             const minTimeS = 3;
             const maxTimeS = 8;
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
-                //only if there is message with bot true 
-                if (this.messages.length == 0 || this.messages?.find(msg => msg.bot).length == 0) return;
+                // Only if there is a message with bot true
+                if (this.messages.length == 0 || this.messages?.filter(msg => msg.bot).length == 0) return;
+
                 let randomIndex = Math.floor(Math.random() * usernames.length);
                 let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-                let botMessage = this.messages[Math.floor(Math.random() * (Math.floor(this.messages.length / 1.5)))];
+                let botMessage;
+                let attempts = 0;
+                const maxAttempts = 10;
+
+                // Ensure the message is not in the last 10 messages
+                do {
+                    botMessage = this.messages[Math.floor(Math.random() * (Math.floor(this.messages.length / 1.5)))];
+                    attempts++;
+                } while (
+                    attempts < maxAttempts &&
+                    this.messages.slice(-10).some(msg => msg.content === botMessage?.content)
+                );
+
+                if (!botMessage) return;
 
                 this.messages.push({
                     username: usernameS,
@@ -216,7 +233,6 @@ export default {
                 // Continue sending messages between minTimeS and maxTimeS
                 setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
             }, Math.floor(Math.random() * 3000));
-
         },
         deleteMessagesLoop() {
             if (!this.deleteMessages) return;
@@ -345,7 +361,7 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
-                        if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
+
                     }
                 });
             return

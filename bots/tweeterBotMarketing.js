@@ -1,7 +1,6 @@
 import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
 import fs from 'fs';
-// src/supabase.js
 import { createClient } from '@supabase/supabase-js'
 
 dotenv.config();
@@ -9,7 +8,6 @@ dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 export const supabase = createClient(supabaseUrl, supabaseKey)
-
 
 // Create a Twitter client with OAuth 1.0a User Context
 const twitterClient = new TwitterApi({
@@ -41,7 +39,7 @@ async function uploadImage(imagePath) {
     try {
         // Use mimeType instead of type for image
         const mediaId = await twitterClient.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
-          return { mediaId };
+        return { mediaId };
     } catch (error) {
         console.error("Image upload error:", error.response?.data || error.message);
     }
@@ -74,7 +72,9 @@ async function checkAndTweet() {
 
         const eventEndDate = new Date(event.dateend || eventDate.getTime() + 2 * 60 * 60 * 1000)
 
-        console.log("Checking event:", event.name);
+        //get time before event starts 
+        let nextTweetTimeInMinutes = Math.floor((eventDate - now) / (1000 * 60));
+        console.log(`Checking event: ${event.name} - Next tweet in ${nextTweetTimeInMinutes} minutes`);
 
         // Check if the current time is within the event time window
         if (now >= eventDate && now <= eventEndDate) {
@@ -86,15 +86,14 @@ async function checkAndTweet() {
                 // Pick a random message for variety
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
                 const tweetMessage = randomMessage
-                    .replace('EVENT_NAME', `#${event.name}`)
                     .replace('EVENT_NAME_URL', event.name.replace(/ /g, ''))
-                    .replace('EVENT_HASHTAGS', event.hashtags);
+                    .replace('EVENT_NAME', `#${event.name}`)
+                    .replace('EVENT_HASHTAGS', event.hashtags || '')
+                    .replace('EVENT_TEXT', event.nameformat)
 
                 let medias = null;
-                // Upload image
-                if (event.image) {
-                    medias = await uploadImage(event.image);
-                }
+                // Upload image 
+                medias = await uploadImage(event.image ? `bots/images/${event.image}.png` : `bots/images/${event.name}.png`);
 
                 // Tweet with image 
                 await tweet(tweetMessage, medias);
