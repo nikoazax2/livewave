@@ -216,12 +216,12 @@ export default {
 
                 if (!botMessage) return;
 
-                this.messages.push({
-                    username: usernameS,
-                    content: botMessage?.content,
-                    created_at: new Date().toISOString(),
-                    bot: true
-                });
+                // this.messages.push({
+                //     username: usernameS,
+                //     content: botMessage?.content,
+                //     created_at: new Date().toISOString(),
+                //     bot: true
+                // });
             };
 
             // Send the first message within 3 seconds
