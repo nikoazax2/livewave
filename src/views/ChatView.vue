@@ -168,7 +168,7 @@ export default {
 
         sendBotMessage() {
             const minTimeS = 3;
-            const maxTimeS = 8;
+            const maxTimeS = 25;
 
             const sendMessage = () => {
                 //only if there is message with bot true 
