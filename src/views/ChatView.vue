@@ -178,7 +178,7 @@ export default {
             //Every 1 minutes send a message telling "LiveWave à besoin de vous pour continuer à vivre, vous pouvez aider en partageant le lien de la page"
             setInterval(() => {
                 //send if there is no share message in last 5 messages
-                if (this.messages.slice(-5).findIndex(msg => msg.shareMessage) !== -1) return;
+                if (this.messages.slice(-15).findIndex(msg => msg.shareMessage) !== -1) return;
                 let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
                 this.messages.push({
                     username: 'LiveWave',
