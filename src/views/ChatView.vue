@@ -154,7 +154,7 @@ export default {
             let chat = document.getElementById('chat-messages-list');
             let height = chat.scrollHeight 
             while (height >= chat.scrollTop) {
-                chat.scrollTop += 5;
+                chat.scrollTop += 8;
                 await new Promise(resolve => setTimeout(resolve, 1));
             }
         },200);
