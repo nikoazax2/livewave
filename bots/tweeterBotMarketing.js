@@ -2,6 +2,7 @@ import { TwitterApi } from 'twitter-api-v2';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { createClient } from '@supabase/supabase-js'
+import path from 'path';
 
 dotenv.config();
 
@@ -35,10 +36,19 @@ async function fetchEvents() {
 }
 
 // Function to upload an image
-async function uploadImage(imagePath) {
+async function uploadImage(base64Image, imageName) {
     try {
-        // Use mimeType instead of type for image
-        const mediaId = await twitterClient.v1.uploadMedia(imagePath, { mimeType: 'image/jpeg' });
+        // Decode the Base64 string and save it as a temporary file
+        const imageBuffer = Buffer.from(base64Image, 'base64');
+        const tempImagePath = path.join('./bots/temp', `${imageName}.png`);
+        fs.writeFileSync(tempImagePath, imageBuffer);
+
+        // Upload the image to Twitter
+        const mediaId = await twitterClient.v1.uploadMedia(tempImagePath, { mimeType: 'image/png' });
+
+        // Clean up the temporary file
+        fs.unlinkSync(tempImagePath);
+
         return { mediaId };
     } catch (error) {
         console.error("Image upload error:", error.response?.data || error.message);
@@ -93,7 +103,7 @@ async function checkAndTweet() {
 
                 let medias = null;
                 // Upload image 
-                medias = await uploadImage(event.image ? `bots/images/${event.image}.png` : `bots/images/${event.name}.png`);
+                medias = await uploadImage(event.image);
 
                 // Tweet with image 
                 await tweet(tweetMessage, medias);
