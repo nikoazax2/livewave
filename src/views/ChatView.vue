@@ -147,8 +147,17 @@ export default {
         const observer = new MutationObserver(() => {
             chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
         });
-
         observer.observe(chatMessagesList, { childList: true });
+
+        //after  2s scroll to bottom (transition of 1s)
+        setTimeout(async () => {
+            let chat = document.getElementById('chat-messages-list');
+            let height = chat.scrollHeight 
+            while (height >= chat.scrollTop) {
+                chat.scrollTop += 5;
+                await new Promise(resolve => setTimeout(resolve, 1));
+            }
+        },200);
 
     },
     methods: {
