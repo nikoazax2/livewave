@@ -14,8 +14,7 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
-                        :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
                             }}</strong>
@@ -27,8 +26,7 @@
                             }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
-                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -38,9 +36,7 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
-                    :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
-                    @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -152,12 +148,12 @@ export default {
         //after  2s scroll to bottom (transition of 1s)
         setTimeout(async () => {
             let chat = document.getElementById('chat-messages-list');
-            let height = chat.scrollHeight 
+            let height = chat.scrollHeight
             while (height >= chat.scrollTop) {
                 chat.scrollTop += 8;
                 await new Promise(resolve => setTimeout(resolve, 1));
             }
-        },200);
+        }, 200);
 
     },
     methods: {
@@ -171,12 +167,14 @@ export default {
                 .eq('name', this.chat.title)
                 .single();
 
-            let chatMessages = data.messages;
-            let dateNow = new Date();
-            if (dateNow > new Date(data.datestart) && dateNow < new Date(data.dateend)) {
-                this.enventNow = true;
-            }
-            return chatMessages;
+            if (data?.messages) {
+                let chatMessages = data?.messages
+                let dateNow = new Date();
+                if (dateNow > new Date(data.datestart) && dateNow < new Date(data.dateend)) {
+                    this.enventNow = true;
+                }
+                return chatMessages;
+            } else return []
         },
         shareOn(social, url) {
             let text = `Venez discuter de ${this.chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${this.chat.title} #LiveWave`;
