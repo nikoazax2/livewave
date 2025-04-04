@@ -117,7 +117,7 @@ export default {
             await supabase
                 .from('chats')
                 .select('*')
-                .eq('title', this.$route.params.id)
+                .ilike('title', this.$route.params.id)
                 .then(async ({ data, error }) => {
                     if (error) {
                         console.error('Error fetching chat:', error);
