@@ -10,17 +10,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Lance le navigateur avec chrome-aws-lambda
+    // Lancer Chromium avec chrome-aws-lambda
     const browser = await puppeteer.launch({
       args: chromium.args,
       executablePath: await chromium.executablePath,
       headless: true,
     });
+    
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle0' });
     const screenshot = await page.screenshot({ type: 'png' });
+    
     await browser.close();
-
     res.setHeader('Content-Type', 'image/png');
     res.status(200).send(screenshot);
   } catch (error) {
