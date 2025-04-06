@@ -149,7 +149,10 @@ export default {
         setTimeout(async () => {
             let chat = document.getElementById('chat-messages-list');
             let height = chat.scrollHeight
-            while (height >= chat.scrollTop) {
+            let documentHeight = document.documentElement.scrollHeight
+            height = chat.scrollHeight - documentHeight + chat.scrollTop + 205;
+
+            while (height >= chat.scrollTop) { 
                 chat.scrollTop += 8;
                 await new Promise(resolve => setTimeout(resolve, 1));
             }
