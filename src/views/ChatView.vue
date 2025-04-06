@@ -14,7 +14,8 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
                             }}</strong>
@@ -26,7 +27,8 @@
                             }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
+                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -36,7 +38,9 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
+                    :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                    @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -139,6 +143,9 @@ export default {
         if (this.bots) this.sendBotMessage();
         this.adMessage();
 
+        this.storeUserInfos();
+
+
         const chatMessagesList = document.getElementById('chat-messages-list');
         const observer = new MutationObserver(() => {
             chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
@@ -152,7 +159,7 @@ export default {
             let documentHeight = document.documentElement.scrollHeight
             height = chat.scrollHeight - documentHeight + chat.scrollTop + 205;
 
-            while (height >= chat.scrollTop) { 
+            while (height >= chat.scrollTop) {
                 chat.scrollTop += 8;
                 await new Promise(resolve => setTimeout(resolve, 1));
             }
@@ -160,6 +167,34 @@ export default {
 
     },
     methods: {
+        storeUserInfos() {
+            let id = localStorage.getItem('anonymous_id');
+            if (!id) {
+                id = crypto.randomUUID(); // ou use uuidv4()
+                localStorage.setItem('anonymous_id', id);
+            }
+            let body = {
+                generated_id: id,
+                infos: {
+                    userAgentData: navigator.userAgentData,
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.platform
+                },
+                chat: this.chatId,
+                username: this.username 
+            }
+            supabase
+                .from('visitors')
+                .insert([body])
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error('Error storing user info:', error);
+                    } else {
+                        console.log('User info stored:', data);
+                    }
+                });
+        },
         setLivers() {
             if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
         },
