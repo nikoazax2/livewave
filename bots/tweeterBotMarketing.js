@@ -102,8 +102,9 @@ async function checkAndTweet() {
                     .replace('EVENT_TEXT', event.nameformat)
 
                 let medias = null;
+
                 // Upload image 
-                medias = await uploadImage(event.image);
+                if (event.image) medias = await uploadImage(event.image);
 
                 // Tweet with image 
                 await tweet(tweetMessage, medias);
