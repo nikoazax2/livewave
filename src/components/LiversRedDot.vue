@@ -31,7 +31,7 @@ export default {
 }
 
 .cligne {
-    animation: fadeBlink 1.5s infinite;
+    animation: fadeBlink 2s infinite;
 }
 
 .red-circle {
