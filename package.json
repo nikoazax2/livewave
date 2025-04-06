@@ -15,17 +15,18 @@
     "apify": "^3.3.2",
     "apify-client": "^2.12.0",
     "axios": "^1.8.4",
+    "chrome-aws-lambda": "^10.1.0",
     "cron": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "html2canvas": "^1.4.1",
     "openai": "^4.89.0",
+    "puppeteer-core": "^24.6.0",
     "twitter-api-v2": "^1.21.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vue-toastification": "^2.0.0-rc.5",
-    "vuetify": "^3.7.15",
-    "puppeteer": "^22.0.0"
+    "vuetify": "^3.7.15"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
