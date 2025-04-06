@@ -159,22 +159,23 @@ export default {
 
     },
     methods: {
+        /* Function to capture a screenshot of the chat container 
+        *  and add it as an image element at the top of the page.
+        *  The image is set to be transparent and positioned absolutely.
+        */
         async captureScreenshot() {
-            // Référence à l'élément à capturer (la page entière)
-            let page = document.body; // ou document.documentElement pour capturer l'ensemble de la page
+            let page = document.body;
 
             try {
                 const canvas = await html2canvas(page);
-                // const image = canvas.toDataURL('image/png');
                 const imageElm = document.createElement('img');
                 imageElm.src = canvas.toDataURL('image/png');
-                //appends at start of the page (position absolute, opacity 0)
                 imageElm.style.position = 'absolute';
                 imageElm.style.top = '0';
                 imageElm.style.left = '0';
                 imageElm.style.opacity = '0';
                 document.body.prepend(imageElm);
-                
+
             } catch (error) {
                 console.error('Error capturing screenshot:', error);
             }
