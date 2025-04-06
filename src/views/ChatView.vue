@@ -17,13 +17,13 @@
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -49,6 +49,7 @@ import LiversRedDot from '../components/LiversRedDot.vue';
 import trends from '../../public/trends.json';
 import messagesbots from '../../public/messagesbots.json';
 import usernames from '../assets/usernames.json';
+import html2canvas from 'html2canvas';
 
 export default {
     name: 'App',
@@ -138,6 +139,7 @@ export default {
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
         this.adMessage();
+        this.captureScreenshot();
 
         const chatMessagesList = document.getElementById('chat-messages-list');
         const observer = new MutationObserver(() => {
@@ -157,6 +159,26 @@ export default {
 
     },
     methods: {
+        async captureScreenshot() {
+            // Référence à l'élément à capturer (la page entière)
+            let page = document.body; // ou document.documentElement pour capturer l'ensemble de la page
+
+            try {
+                const canvas = await html2canvas(page);
+                // const image = canvas.toDataURL('image/png');
+                const imageElm = document.createElement('img');
+                imageElm.src = canvas.toDataURL('image/png');
+                //appends at start of the page (position absolute, opacity 0)
+                imageElm.style.position = 'absolute';
+                imageElm.style.top = '0';
+                imageElm.style.left = '0';
+                imageElm.style.opacity = '0';
+                document.body.prepend(imageElm);
+                
+            } catch (error) {
+                console.error('Error capturing screenshot:', error);
+            }
+        },
         setLivers() {
             if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
         },
