@@ -18,6 +18,6 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'image/png');
     res.status(200).send(screenshot);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to take screenshot' });
+    res.status(500).json({ error: error });
   }
 }
