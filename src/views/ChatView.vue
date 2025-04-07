@@ -132,6 +132,7 @@ export default {
         if (this.$route.params.id.match(regexUUID)) {
             this.chatId = this.$route.params.id;
         } else {
+            this.setOGImage(this.$route.params.id);
             await supabase
                 .from('chats')
                 .select('*')
@@ -410,15 +411,15 @@ export default {
                 this.newMessage = '';
             }
         },
-        setOGImage() {
+        setOGImage(title) {
             let ogImage = document.querySelector('meta[property="og:image"]');
             if (ogImage) {
-                ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
+                ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
             }
             //same for twitter:image
             let twitterImage = document.querySelector('meta[name="twitter:image"]');
             if (twitterImage) {
-                twitterImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
+                twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
             }
         },
         async getChatInfo() {
@@ -430,8 +431,7 @@ export default {
                     if (error) {
                         console.error('Error fetching chat:', error);
                     } else {
-                        this.chat = data[0];
-                        this.setOGImage();
+                        this.chat = data[0]; 
                     }
                 });
             return
