@@ -422,6 +422,7 @@ export default {
             if (!ogImage) {
                 ogImage = document.createElement('meta');
                 ogImage.setAttribute('property', 'og:image');
+                ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
                 document.head.appendChild(ogImage);
             }
             ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
@@ -430,9 +431,10 @@ export default {
             if (!twitterImage) {
                 twitterImage = document.createElement('meta');
                 twitterImage.setAttribute('name', 'twitter:image');
+                twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
                 document.head.appendChild(twitterImage);
             }
-            twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
+            
         },
         async getChatInfo() {
             let l = await supabase
