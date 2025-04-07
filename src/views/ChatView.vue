@@ -23,13 +23,13 @@
                         :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
@@ -53,8 +53,8 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded
-                    v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                <v-text-field hide-details :class="mobile ? 'mb-8' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
+                    rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
                     @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
@@ -76,6 +76,7 @@ export default {
         bots: Boolean,
         language: String,
         themeDark: Boolean,
+        mobile: Boolean,
     },
     components: {
         LiversRedDot
@@ -174,7 +175,7 @@ export default {
             let chat = document.getElementById('chat-messages-list');
             let height = chat.scrollHeight
             let documentHeight = document.documentElement.scrollHeight
-            height = chat.scrollHeight - documentHeight + chat.scrollTop ;
+            height = chat.scrollHeight - documentHeight + chat.scrollTop;
 
             while (height >= chat.scrollTop) {
                 chat.scrollTop += 10;

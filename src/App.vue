@@ -92,7 +92,7 @@ body {
     }
 }
 .wave-container,.chat-container {
-    padding: 16px 16px 35px 16px;
+    padding: 16px;
 }
 
 a {
