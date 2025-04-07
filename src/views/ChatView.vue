@@ -163,6 +163,12 @@ export default {
 
         this.storeUserInfos();
 
+        //set og image with chat title (/chatId)
+        let ogImage = document.querySelector('meta[property="og:image"]');
+        if (ogImage) {
+            ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}`);
+        }
+
 
         const chatMessagesList = document.getElementById('chat-messages-list');
         const observer = new MutationObserver(() => {
