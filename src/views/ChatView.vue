@@ -174,7 +174,7 @@ export default {
             let chat = document.getElementById('chat-messages-list');
             let height = chat.scrollHeight
             let documentHeight = document.documentElement.scrollHeight
-            height = chat.scrollHeight - documentHeight + chat.scrollTop + 210;
+            height = chat.scrollHeight - documentHeight + chat.scrollTop ;
 
             while (height >= chat.scrollTop) {
                 chat.scrollTop += 10;
