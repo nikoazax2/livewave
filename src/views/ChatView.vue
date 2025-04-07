@@ -122,6 +122,13 @@ export default {
             }
         };
     },
+    created() {
+        let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+
+        if (!this.$route.params.id.match(regexUUID)) {
+            this.setOGImage(this.$route.params.id);
+        }
+    },
     async mounted() {
         if (this.$route.params.id == '4aec1267-0595-4fe5-ab8e-89093906b4d5') {
             this.$route.params.id = '6e3eec90-163a-4754-99fa-27b894dd6428';
@@ -132,7 +139,6 @@ export default {
         if (this.$route.params.id.match(regexUUID)) {
             this.chatId = this.$route.params.id;
         } else {
-            this.setOGImage(this.$route.params.id);
             await supabase
                 .from('chats')
                 .select('*')
