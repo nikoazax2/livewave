@@ -53,9 +53,9 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
-                    rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
-                    @click:append-inner="sendMessage" />
+                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined"
+                    append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
+                    @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -153,7 +153,10 @@ export default {
 
         this.getRooms();
         await this.getChatInfo();
+
         let messagesbots = await this.getEvent();
+        //set og image with chat title (/chatId)
+
         await this.getMessages(messagesbots);
         this.setLivers();
         this.liversLoop();
@@ -163,16 +166,6 @@ export default {
 
         this.storeUserInfos();
 
-        //set og image with chat title (/chatId)
-        let ogImage = document.querySelector('meta[property="og:image"]');
-        if (ogImage) {
-            ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
-        }
-        //same for twitter:image
-        let twitterImage = document.querySelector('meta[name="twitter:image"]');
-        if (twitterImage) {
-            twitterImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
-        }
 
 
         const chatMessagesList = document.getElementById('chat-messages-list');
@@ -417,6 +410,17 @@ export default {
                 this.newMessage = '';
             }
         },
+        setOGImage() {
+            let ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage) {
+                ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
+            }
+            //same for twitter:image
+            let twitterImage = document.querySelector('meta[name="twitter:image"]');
+            if (twitterImage) {
+                twitterImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
+            }
+        },
         async getChatInfo() {
             let l = await supabase
                 .from('chats')
@@ -427,7 +431,7 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
-
+                        this.setOGImage();
                     }
                 });
             return
