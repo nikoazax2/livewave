@@ -1,6 +1,6 @@
 <template>
     <v-container class="chat-container"
-        :style="`background: url('/src/assets/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
+        :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">

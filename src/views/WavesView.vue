@@ -2,7 +2,7 @@
     <div>
         <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
         <v-container class="wave-container"
-            :style="`background: url('/src/assets/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
+            :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
             <v-card class="wave-card">
                 <v-card-title>
                     <div class="d-flex justify-space-between align-center">
