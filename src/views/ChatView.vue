@@ -166,7 +166,7 @@ export default {
         //set og image with chat title (/chatId)
         let ogImage = document.querySelector('meta[property="og:image"]');
         if (ogImage) {
-            ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}`);
+            ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
         }
 
 
