@@ -1,20 +1,26 @@
 <template>
     <div>
         <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
-        <v-container class="wave-container">
+        <v-container class="wave-container"
+            :style="`background: url('/src/assets/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
             <v-card class="wave-card">
                 <v-card-title>
                     <div class="d-flex justify-space-between align-center">
                         <div class="mr-6">
                             <!-- {{ texts[language]?.room }} -->
-                              <img src="../../public/logobigwhite.png"  height="40" alt="logo" class="ml-1" style="transform: translateY(7px);" />
+                            <img src="../../public/logobigwhite.png" height="40" alt="logo" class="ml-1"
+                                style="transform: translateY(7px);" />
                         </div>
                         <div style="width: 100%; max-width: 300px;" class="d-flex justify-space-between align-center">
-                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="texts[language]?.search" hide-details="true"></v-text-field>
+                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined"
+                                density="compact" v-model="search" :label="texts[language]?.search"
+                                hide-details="true"></v-text-field>
                             <v-icon size="24" @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
                             <div class="ml-2 align-center d-flex" style="cursor: pointer;">
-                                <img v-if="language === 'en'" src="../assets/flags/en.png" width="24" height="24" @click="$emit('setLanguage', 'fr')" />
-                                <img v-else src="../assets/flags/fr.png" width="24" height="24" @click="$emit('setLanguage', 'en')" />
+                                <img v-if="language === 'en'" src="../assets/flags/en.png" width="24" height="24"
+                                    @click="$emit('setLanguage', 'fr')" />
+                                <img v-else src="../assets/flags/fr.png" width="24" height="24"
+                                    @click="$emit('setLanguage', 'en')" />
                             </div>
                         </div>
                     </div>
@@ -22,7 +28,8 @@
                 <v-card-text class="wave-messages" ref="waveMessages">
                     <v-list>
                         <div class="wave-messages-list">
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index" class="wave-message">
+                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index"
+                                class="wave-message">
                                 <div class="wave-message">
                                     <div class="left">
                                         <strong>{{ chat.title }}</strong>
@@ -35,7 +42,9 @@
 
                             </v-list-item>
                             <!-- last line to create a new chat -->
-                            <v-list-item v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length" @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
+                            <v-list-item
+                                v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length"
+                                @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
                                 <div class="left">
                                     <strong>
                                         {{ texts[language]?.dontExist.title }}
@@ -48,7 +57,8 @@
                         </div>
 
                         <div class="create-chat">
-                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
+                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0"
+                                color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
@@ -76,7 +86,8 @@ export default {
     },
     props: {
         bots: Boolean,
-        language: String
+        language: String,
+        themeDark: Boolean,
     },
     data() {
         return {
@@ -180,8 +191,8 @@ export default {
     margin: 0 !important;
     max-width: none !important;
     background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 100px 100px;
-    padding: 16px 16px 30px 16px !important;
+    background-size: 700px 70% !important;
+    
 }
 
 .wave-card {

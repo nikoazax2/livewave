@@ -57,6 +57,10 @@ async function uploadImage(base64Image, imageName) {
 
 // Function to send a tweet with media
 async function tweet(message, mediaId) {
+    //wait beween 1s and 120 seconds before sending the tweet (don't be suspected as a bot)
+    const waitTime = Math.floor(Math.random() * (120 - 1 + 1) + 1) * 1000;
+    console.log("Waiting for", waitTime / 1000, "seconds before sending the tweet...");
+    await new Promise(resolve => setTimeout(resolve, waitTime));
     try {
         const tweetParams = { text: message };
         if (mediaId?.mediaId) {

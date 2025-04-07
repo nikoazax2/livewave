@@ -2,7 +2,7 @@
     <div :class="{ 'mobile': mobile }" class="app">
         <Welcome :language="language" v-if="firstVisit" :username="username" />
         <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername" />
-        <router-view @setthemeDark="themeDark = $event" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
+        <router-view @setthemeDark="setthemeDark" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
     </div>
 </template>
 
@@ -45,9 +45,14 @@ export default {
             }
         }
         this.language = this.getLanguage()
+        this.themeDark = localStorage.getItem('livewave-theme')?.themeDark || false 
         this.mobile = window.innerWidth < 600
     },
     methods: {
+        setthemeDark(theme) {
+            this.themeDark = theme
+            localStorage.setItem('livewave-theme', JSON.stringify({ themeDark: this.themeDark }))
+        },
         getLanguage() {
             const lang = navigator.language || navigator.userLanguage;
 
@@ -78,13 +83,16 @@ body {
 }
 
 .mobile {
-
     .chat-container,
     .wave-container,
     .wave-card,
     .chat-card {
         padding: 0 !important;
+        border-radius: 0 !important;
     }
+}
+.wave-container,.chat-container {
+    padding: 16px;
 }
 
 a {

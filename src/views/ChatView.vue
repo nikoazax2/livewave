@@ -1,5 +1,6 @@
 <template>
-    <v-container class="chat-container" style="background: url(`/src/assets/backgroundchat.png`) center center fixed; background-size: 100px 100px;">
+    <v-container class="chat-container"
+        :style="`background: url('/src/assets/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
@@ -10,11 +11,16 @@
                     </div>
 
                 </div>
-                <LiversRedDot :livers="chat?.livers" />
+                <div class="d-flex align-center">
+                    <v-icon @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'"
+                        class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <LiversRedDot :livers="chat?.livers" />
+                </div>
             </v-card-title>
             <v-card-text class="chat-messages">
-                <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
+                <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
                                 }}</strong>
@@ -26,7 +32,8 @@
                                 }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
+                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -34,9 +41,21 @@
                         </div>
                     </v-list-item>
                 </v-list>
+                <div v-else-if="loading" class="d-flex justify-center">
+                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
+                        :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+                </div>
+                <div v-else class="d-flex justify-center">
+                    <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
+                        {{ language === 'fr' ? 'Aucun message pour le moment, soyez le premier à écrire !' : `No
+                        messages yet, be the first to write!` }}
+                    </h4>
+                </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded
+                    v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                    @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -70,6 +89,7 @@ export default {
             chat: null,
             chats: null,
             firstMessage: true,
+            loading: true,
             deleteMessages: false,
             socials: [{
                 icon: 'mdi-facebook',
@@ -336,31 +356,24 @@ export default {
                 this.messages = data;
                 let chatMessages = []
 
-                try {
-                    chatMessages = messagesbots
-                    for (let i = 0; i < chatMessages.length; i++) {
-                        let date5DaysAgo = new Date();
-                        date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
+                chatMessages = messagesbots
+                for (let i = 0; i < chatMessages.length; i++) {
+                    let date5DaysAgo = new Date();
+                    date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
 
-                        let randomIndex = Math.floor(Math.random() * usernames.length)
-                        let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
+                    let randomIndex = Math.floor(Math.random() * usernames.length)
+                    let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
 
-                        this.messages.push({
-                            content: chatMessages[i],
-                            username: username,
-                            created_at: date5DaysAgo.toISOString(),
-                            backgroundColor: null,
-                            bot: true,
-                        })
-                        this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-                    }
-
-                } catch (e) {
-                    console.error('Error loading chat messages:', e);
+                    this.messages.push({
+                        content: chatMessages[i],
+                        username: username,
+                        created_at: date5DaysAgo.toISOString(),
+                        backgroundColor: null,
+                        bot: true,
+                    })
+                    this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                 }
-
-
-                document.getElementById('chat-messages-list').scrollTop = document.getElementById('chat-messages-list').scrollHeight
+                this.loading = false;
             }
 
             supabase
@@ -372,7 +385,6 @@ export default {
                     chat.scrollTop = chat.scrollHeight + 20;
                 })
                 .subscribe();
-
             return
         },
         async sendMessage() {
@@ -453,9 +465,8 @@ body {
     overflow: hidden !important;
     margin: 0 !important;
     max-width: none !important;
-    background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 100px 100px;
-    padding: 16px 16px 30px 16px !important;
+    // background: url('../assets/backgroundchat.png') center center fixed;
+    background-size: 700px 70% !important;
 }
 
 .chat-card {
