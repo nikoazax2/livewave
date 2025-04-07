@@ -419,15 +419,20 @@ export default {
         },
         setOGImage(title) {
             let ogImage = document.querySelector('meta[property="og:image"]');
-            if (ogImage) {
-                ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
+            if (!ogImage) {
+                ogImage = document.createElement('meta');
+                ogImage.setAttribute('property', 'og:image');
+                document.head.appendChild(ogImage);
             }
-            // <meta name="twitter:image" content="https://www.livewave.fr/og.png" />
+            ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
+
             let twitterImage = document.querySelector('meta[name="twitter:image"]');
-            if (twitterImage) {
-                twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
+            if (!twitterImage) {
+                twitterImage = document.createElement('meta');
+                twitterImage.setAttribute('name', 'twitter:image');
+                document.head.appendChild(twitterImage);
             }
-            
+            twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
         },
         async getChatInfo() {
             let l = await supabase
