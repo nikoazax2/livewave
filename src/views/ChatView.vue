@@ -23,13 +23,13 @@
                         :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
@@ -53,9 +53,9 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined"
-                    append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
-                    @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
+                    rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                    @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -122,13 +122,6 @@ export default {
             }
         };
     },
-    created() {
-        let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
-
-        if (!this.$route.params.id.match(regexUUID)) {
-            this.setOGImage(this.$route.params.id);
-        }
-    },
     async mounted() {
         if (this.$route.params.id == '4aec1267-0595-4fe5-ab8e-89093906b4d5') {
             this.$route.params.id = '6e3eec90-163a-4754-99fa-27b894dd6428';
@@ -160,10 +153,7 @@ export default {
 
         this.getRooms();
         await this.getChatInfo();
-
         let messagesbots = await this.getEvent();
-        //set og image with chat title (/chatId)
-
         await this.getMessages(messagesbots);
         this.setLivers();
         this.liversLoop();
@@ -172,7 +162,6 @@ export default {
         this.adMessage();
 
         this.storeUserInfos();
-
 
 
         const chatMessagesList = document.getElementById('chat-messages-list');
@@ -417,25 +406,6 @@ export default {
                 this.newMessage = '';
             }
         },
-        setOGImage(title) {
-            let ogImage = document.querySelector('meta[property="og:image"]');
-            if (!ogImage) {
-                ogImage = document.createElement('meta');
-                ogImage.setAttribute('property', 'og:image');
-                ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
-                document.head.appendChild(ogImage);
-            }
-            ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
-
-            let twitterImage = document.querySelector('meta[name="twitter:image"]');
-            if (!twitterImage) {
-                twitterImage = document.createElement('meta');
-                twitterImage.setAttribute('name', 'twitter:image');
-                twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
-                document.head.appendChild(twitterImage);
-            }
-            
-        },
         async getChatInfo() {
             let l = await supabase
                 .from('chats')
@@ -446,6 +416,7 @@ export default {
                         console.error('Error fetching chat:', error);
                     } else {
                         this.chat = data[0];
+
                     }
                 });
             return
