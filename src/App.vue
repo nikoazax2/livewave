@@ -2,7 +2,7 @@
     <div :class="{ 'mobile': mobile }" class="app">
         <Welcome :language="language" v-if="firstVisit" :username="username" />
         <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername" />
-        <router-view :mobile="mobile" @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
+        <router-view @setthemeDark="themeDark = $event" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
     </div>
 </template>
 
@@ -26,7 +26,8 @@ export default {
             bots: true,
             settings: false,
             language: 'en',
-            mobile: false
+            mobile: false,
+            themeDark: false,
         };
     },
     created() {
@@ -49,7 +50,7 @@ export default {
     methods: {
         getLanguage() {
             const lang = navigator.language || navigator.userLanguage;
- 
+
             if (lang.startsWith('fr')) return 'fr';
             if (lang.startsWith('en')) return 'en';
 
@@ -77,6 +78,7 @@ body {
 }
 
 .mobile {
+
     .chat-container,
     .wave-container,
     .wave-card,

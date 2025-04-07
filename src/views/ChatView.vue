@@ -1,5 +1,5 @@
 <template>
-    <v-container class="chat-container">
+    <v-container class="chat-container" style="background: url(`/src/assets/backgroundchat.png`) center center fixed; background-size: 100px 100px;">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
@@ -14,21 +14,19 @@
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
-                        :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
-                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -38,9 +36,7 @@
                 </v-list>
             </v-card-text>
             <v-card-actions>
-                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage"
-                    :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
-                    @click:append-inner="sendMessage" />
+                <v-text-field variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -59,7 +55,8 @@ export default {
     props: {
         username: String,
         bots: Boolean,
-        language: String
+        language: String,
+        themeDark: Boolean,
     },
     components: {
         LiversRedDot
@@ -159,7 +156,7 @@ export default {
             let documentHeight = document.documentElement.scrollHeight
             height = chat.scrollHeight - documentHeight + chat.scrollTop + 210;
 
-            while (height >= chat.scrollTop) { 
+            while (height >= chat.scrollTop) {
                 chat.scrollTop += 10;
                 await new Promise(resolve => setTimeout(resolve, 1));
             }
@@ -182,7 +179,7 @@ export default {
                     platform: navigator.platform
                 },
                 chat: this.chatId,
-                username: this.username 
+                username: this.username
             }
             supabase
                 .from('visitors')
