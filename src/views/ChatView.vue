@@ -53,7 +53,7 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-8' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
+                <v-text-field hide-details :class="mobile ? 'mb-10' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
                     rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
                     @click:append-inner="sendMessage" />
             </v-card-actions>
