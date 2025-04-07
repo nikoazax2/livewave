@@ -23,13 +23,13 @@
                         :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
@@ -422,11 +422,12 @@ export default {
             if (ogImage) {
                 ogImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
             }
-            //same for twitter:image
+            // <meta name="twitter:image" content="https://www.livewave.fr/og.png" />
             let twitterImage = document.querySelector('meta[name="twitter:image"]');
             if (twitterImage) {
                 twitterImage.setAttribute('content', `https://livewave.fr/OG${title}.png`);
             }
+            
         },
         async getChatInfo() {
             let l = await supabase
@@ -437,7 +438,7 @@ export default {
                     if (error) {
                         console.error('Error fetching chat:', error);
                     } else {
-                        this.chat = data[0]; 
+                        this.chat = data[0];
                     }
                 });
             return
