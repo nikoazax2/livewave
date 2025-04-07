@@ -168,6 +168,11 @@ export default {
         if (ogImage) {
             ogImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
         }
+        //same for twitter:image
+        let twitterImage = document.querySelector('meta[name="twitter:image"]');
+        if (twitterImage) {
+            twitterImage.setAttribute('content', `https://livewave.fr/OG${this.chat.title}.png`);
+        }
 
 
         const chatMessagesList = document.getElementById('chat-messages-list');
