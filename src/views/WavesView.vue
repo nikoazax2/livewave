@@ -191,7 +191,7 @@ export default {
     margin: 0 !important;
     max-width: none !important;
     background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 700px 70% !important;
+    background-size: 700px 700px !important;
     
 }
 
