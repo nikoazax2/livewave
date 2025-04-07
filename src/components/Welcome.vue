@@ -4,7 +4,7 @@
             <v-card-text>
                 <v-container>
                     <h2 class="mb-4">
-                        {{ languageTexts.welcomeMessage }} {{ username }}!
+                        {{ languageTexts.welcomeMessage }} !
                     </h2>
                     <p class="mb-0">
                         {{ languageTexts.description }}
@@ -38,7 +38,7 @@ export default {
                 },
                 fr: {
                     welcomeMessage: 'Bienvenue sur LiveWave',
-                    description: 'LiveWave est une application de conversation en temps réel autour des événements qui vous passionnent !',
+                    description: 'LiveWave vous permet de discuter en temps réel autour des événements que vous aimez, bonne discussion !',
                     confirmText: 'Valider'
                 }
             }

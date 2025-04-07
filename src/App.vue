@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'mobile': mobile }" class="app">
-        <Welcome :language="language" v-if="firstVisit" :username="username" />
+        <!-- <Welcome :language="language" v-if="firstVisit" :username="username" /> -->
         <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername" />
         <router-view @setthemeDark="setthemeDark" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :language="language" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
     </div>
