@@ -1,6 +1,5 @@
 <template>
-    <v-container class="chat-container"
-        :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
+    <v-container class="chat-container" :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
@@ -12,15 +11,13 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'"
-                        class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
-                        :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
                             }}</strong>
@@ -32,8 +29,7 @@
                             }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
-                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -42,8 +38,7 @@
                     </v-list-item>
                 </v-list>
                 <div v-else-if="loading" class="d-flex justify-center">
-                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
-                        :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
                 </div>
                 <div v-else class="d-flex justify-center">
                     <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
@@ -53,9 +48,7 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send"
-                    rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
-                    @click:append-inner="sendMessage" />
+                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -253,8 +246,8 @@ export default {
             }, 60000); //every 1 minute
         },
         sendBotMessage() {
-            const minTimeS = 3;
-            const maxTimeS = 25;
+            const minTimeS = 5;
+            const maxTimeS = 15;
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
@@ -264,34 +257,21 @@ export default {
                 let randomIndex = Math.floor(Math.random() * usernames.length);
                 let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-                let botMessage;
-                let attempts = 0;
-                const maxAttempts = 10;
+                let recentMessages = this.messages.slice(-20).map(msg => msg.content);
+                let botMessages = this.messages?.filter(msg => msg.bot && !recentMessages.includes(msg.content));
+                let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
 
-                // Ensure the message is not in the last 10 messages
-                do {
-                    botMessage = this.messages[Math.floor(Math.random() * (Math.floor(this.messages.length / 1.5)))];
-                    attempts++;
-                } while (
-                    attempts < maxAttempts &&
-                    this.messages.slice(-10).some(msg => msg.content === botMessage?.content)
-                );
-
-                if (!botMessage) return;
-
-                // this.messages.push({
-                //     username: usernameS,
-                //     content: botMessage?.content,
-                //     created_at: new Date().toISOString(),
-                //     bot: true
-                // });
+                this.messages.push({
+                    username: usernameS,
+                    content: botMessage?.content,
+                    created_at: new Date().toISOString(),
+                    bot: true
+                });
             };
 
             // Send the first message within 3 seconds
             setTimeout(() => {
-                for (let i = 0; i < 5; i++) {
-                    sendMessage();
-                }
+                sendMessage();
 
                 // Continue sending messages between minTimeS and maxTimeS
                 setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
