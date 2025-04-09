@@ -247,7 +247,7 @@ export default {
         },
         sendBotMessage() {
             const minTimeS = 5;
-            const maxTimeS = 15;
+            const maxTimeS = 120;
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
