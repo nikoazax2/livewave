@@ -246,8 +246,8 @@ export default {
             }, 60000); //every 1 minute
         },
         sendBotMessage() {
-            const minTimeS = 5;
-            const maxTimeS = 15;
+            const minTimeS = 120;
+            const maxTimeS = 500;
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
