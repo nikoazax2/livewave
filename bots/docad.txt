@@ -1,0 +1,5 @@
+regarder quel event a lieu (soir)
+UpdateOrInsrt dans la table event
+--> messages https://chatgpt.com/c/67eafb85-0c08-8003-87c5-f7c9d8cc0c42
+change og image with a new url in index.html
+run program before event
