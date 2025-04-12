@@ -1,5 +1,6 @@
 <template>
-    <v-container class="chat-container" :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
+    <v-container class="chat-container"
+        :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
         <v-card class="chat-card">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
@@ -11,25 +12,28 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'"
+                        class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
+                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded
+                                    class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
                                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                                 </v-btn>
@@ -38,7 +42,8 @@
                     </v-list-item>
                 </v-list>
                 <div v-else-if="loading" class="d-flex justify-center">
-                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
+                        :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
                 </div>
                 <div v-else class="d-flex justify-center">
                     <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
@@ -48,7 +53,9 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined"
+                    append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
+                    @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
             </v-card-actions>
         </v-card>
     </v-container>
@@ -246,8 +253,8 @@ export default {
             }, 60000); //every 1 minute
         },
         sendBotMessage() {
-            const minTimeS = 60;
-            const maxTimeS = 120;
+            const minTimeS = 60 * 3 // 3 minutes
+            const maxTimeS = 60 * 10 // 10 minutes
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
