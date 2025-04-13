@@ -93,7 +93,8 @@ async function checkAndTweet() {
         // Check if the current time is within the event time window
         if (now >= eventDate && now <= eventEndDate) {
                         
-            const interval = (2 * 60 * 60 * 1000) / 10; // 2 hours divided by 10 tweets
+            // const interval = (2 * 60 * 60 * 1000) / 10; // 2 hours divided by 10 tweets
+            const interval = (5 * 60 * 60 * 1000) / 17;
 
             // If it's time for the next tweet
             if ((now - eventDate) % interval < 60000) { // 1 minute tolerance
