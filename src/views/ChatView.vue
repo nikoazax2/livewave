@@ -1,6 +1,6 @@
 <template>
-    <v-container class="chat-container" :style="`background: url('/backgroundchat${themeDark ? '' : 'white'}.png') center center fixed;`">
-        <v-card class="chat-card">
+    <v-container class="chat-container" :style="getBackgroundImage()">
+        <v-card class="chat-card" :style="getStyleChatCard()">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
                     <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
@@ -76,6 +76,7 @@ export default {
     },
     data() {
         return {
+            backgroundImage: null,
             enventNow: false,
             messages: [],
             newMessage: '',
@@ -178,6 +179,18 @@ export default {
 
     },
     methods: {
+        getStyleChatCard() {
+            return this.backgroundImage ? `background: rgba(46, 49, 50, 0.7);` : `background: rgba(46, 49, 50, 0.5);`;
+        },
+        getBackgroundImage() { 
+            let background = ''
+            if (this.backgroundImage) {
+                background = `background: url(${this.backgroundImage}) center center fixed; background-size: cover!important;`;
+            } else {
+                background = `background: url('/backgroundchat${this.themeDark ? '' : 'white'}.png') center center fixed;  `;
+            }
+            return background;
+        },
         storeUserInfos() {
             let id = localStorage.getItem('anonymous_id');
             if (!id) {
@@ -216,6 +229,7 @@ export default {
                 .eq('name', this.chat.title)
                 .single();
 
+            if (data.image) this.backgroundImage = data.image
             if (data?.messages) {
                 let chatMessages = data?.messages
                 let dateNow = new Date();
