@@ -267,7 +267,7 @@ export default {
         },
         sendBotMessage() {
             const minTimeS = 60 * 0.1 // 6 seconds
-            const maxTimeS = 60 * 1 // 1 minute
+            const maxTimeS = 60 * 0.5 // 1 minute
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
