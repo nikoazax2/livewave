@@ -19,7 +19,6 @@ const twitterClient = new TwitterApi({
 });
 
 
-const messages = JSON.parse(fs.readFileSync('./bots/messages.json', 'utf8'));
 
 
 async function fetchEvents() {
@@ -80,6 +79,9 @@ async function checkAndTweet() {
 
     // Loop through events
     for (const event of events) {
+        // const messages = JSON.parse(fs.readFileSync('./bots/messages.json', 'utf8'));
+        let messages = event.lang == 'fr' ? JSON.parse(fs.readFileSync('./bots/messages.json', 'utf8')) : JSON.parse(fs.readFileSync('./bots/messagesen.json', 'utf8'));
+
         // Loop through dates for each event
         if (!event.datestart) { continue; }
         const eventDate = new Date(event.datestart);
@@ -88,13 +90,13 @@ async function checkAndTweet() {
 
         //get time before next tweet in minutes
         const nextTweetTimeInMinutes = Math.floor((eventDate.getTime() - now.getTime()) / (1000 * 60));
-        if(nextTweetTimeInMinutes>0) console.log(`Checking event: ${event.name} - Next tweet in ${nextTweetTimeInMinutes} minutes`);
+        if (nextTweetTimeInMinutes > 0) console.log(`Checking event: ${event.name} - Next tweet in ${nextTweetTimeInMinutes} minutes`);
 
         // Check if the current time is within the event time window
         if (now >= eventDate && now <= eventEndDate) {
-                        
-            // const interval = (2 * 60 * 60 * 1000) / 10; // 2 hours divided by 10 tweets
-            const interval = (5 * 60 * 60 * 1000) / 17;
+
+            const interval = (2 * 60 * 60 * 1000) / 10; // 2 hours divided by 10 tweets
+            // const interval = (5 * 60 * 60 * 1000) / 17;
 
             // If it's time for the next tweet
             if ((now - eventDate) % interval < 60000) { // 1 minute tolerance
