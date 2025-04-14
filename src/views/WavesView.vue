@@ -151,8 +151,8 @@ export default {
                         if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
                         else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
                     } else if (chat?.livers < 10) {
-                        if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
-                        else chat.livers = Math.floor(Math.random() * 4);
+                        // if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+                        // else chat.livers = Math.floor(Math.random() * 4);
                     }
 
                 });
