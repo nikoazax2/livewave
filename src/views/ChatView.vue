@@ -20,15 +20,14 @@
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
-                        <div class="d-flex" v-if="!msg.shareMessage">
+                        <div v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
-                            <div v-html="msg.content"></div>
+                            }}</strong> {{ msg.content }}
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                                }}</strong>
+                            }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -184,10 +183,10 @@ export default {
             let documentHeight = document.documentElement.scrollHeight
             height = chat.scrollHeight - documentHeight + chat.scrollTop + 200;
 
-            while (height >= chat.scrollTop) { 
+            while (height >= chat.scrollTop) {
                 chat.scrollTop += 20;
                 await new Promise(resolve => setTimeout(resolve, 1));
-            } 
+            }
         }, 200);
 
     },
@@ -263,7 +262,7 @@ export default {
             setInterval(() => {
                 //send if there is no share message in last 5 messages
                 if (this.messages.slice(-15).findIndex(msg => msg.shareMessage) !== -1) return;
-                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :'; 
+                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
 
                 let backgroundsColor = ['#AD1457', '#6A1B9A', '#4527A0', '#283593', '#1565C0', '#0277BD', '#00838F', '#00695C', '#2E7D32', '#558B2F', '#9E9D24', '#F57F17'];
 
@@ -364,6 +363,23 @@ export default {
                 color += ('00' + value.toString(16)).substr(-2);
             }
             return color;
+        },
+        EmojiMDIWithUserName(username) {
+            const emojis = [
+                '📦', '📚', '🎁', '📅', '🧭', '🕹️', '🧲', '🖼️', '🎨', '🎯',
+                '🧪', '📐', '🧰', '🪛', '🔧', '🔨', '⚙️', '💡', '🔋', '🔌',
+                '💾', '🖥️', '📱', '📡', '📞', '🗂️', '📂', '🧾', '✉️', '📬',
+                '📎', '📏', '📌', '📍', '🗑️', '🧹', '🪣', '🔒', '🔑', '🚪',
+                '🛎️', '🧳', '🖇️', '🧼', '🪜', '🪟', '🧯', '🛠️', '⚖️', '🔭'
+            ];
+
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+
+            const index = Math.abs(hash) % emojis.length;
+            return emojis[index];
         },
         async getMessages(messagesbots) {
             const { data, error } = await supabase
