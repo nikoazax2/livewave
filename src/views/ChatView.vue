@@ -22,13 +22,13 @@
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div class="d-flex" v-if="!msg.shareMessage">
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                         </div>
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -63,6 +63,10 @@ import LiversRedDot from '../components/LiversRedDot.vue';
 import trends from '../../public/trends.json';
 import messagesbots from '../../public/messagesbots.json';
 import usernames from '../assets/usernames.json';
+import leoProfanity from 'leo-profanity';
+import bannedWords from '../assets/bannedwords.json'
+leoProfanity.loadDictionary('fr');
+leoProfanity.add(bannedWords);
 
 export default {
     name: 'App',
@@ -239,7 +243,7 @@ export default {
                 .single();
 
             this.forcebot = data?.forcebot || 0;
-            if (data.image) this.backgroundImage = data.image
+            if (data?.image) this.backgroundImage = data.image
             if (data?.messages) {
                 let chatMessages = data?.messages
                 let dateNow = new Date();
@@ -408,7 +412,9 @@ export default {
                 window.alert('Message trop long');
                 return;
             }
-            if (this.newMessage) {
+            if (this.newMessage) { 
+                this.newMessage = leoProfanity.clean(this.newMessage); 
+
                 let mess = await supabase
                     .from('messages')
                     .insert([{
