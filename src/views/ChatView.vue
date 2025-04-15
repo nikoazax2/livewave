@@ -182,12 +182,12 @@ export default {
             let chat = document.getElementById('chat-messages-list');
             let height = chat.scrollHeight
             let documentHeight = document.documentElement.scrollHeight
-            height = chat.scrollHeight - documentHeight + chat.scrollTop;
+            height = chat.scrollHeight - documentHeight + chat.scrollTop + 200;
 
-            while (height >= chat.scrollTop) {
-                chat.scrollTop += 10;
+            while (height >= chat.scrollTop) { 
+                chat.scrollTop += 20;
                 await new Promise(resolve => setTimeout(resolve, 1));
-            }
+            } 
         }, 200);
 
     },
@@ -264,7 +264,7 @@ export default {
                 //send if there is no share message in last 5 messages
                 if (this.messages.slice(-15).findIndex(msg => msg.shareMessage) !== -1) return;
                 let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :'; 
-                
+
                 let backgroundsColor = ['#AD1457', '#6A1B9A', '#4527A0', '#283593', '#1565C0', '#0277BD', '#00838F', '#00695C', '#2E7D32', '#558B2F', '#9E9D24', '#F57F17'];
 
                 this.messages.push({
