@@ -263,12 +263,15 @@ export default {
             setInterval(() => {
                 //send if there is no share message in last 5 messages
                 if (this.messages.slice(-15).findIndex(msg => msg.shareMessage) !== -1) return;
-                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
+                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :'; 
+                
+                let backgroundsColor = ['#AD1457', '#6A1B9A', '#4527A0', '#283593', '#1565C0', '#0277BD', '#00838F', '#00695C', '#2E7D32', '#558B2F', '#9E9D24', '#F57F17'];
+
                 this.messages.push({
                     username: 'LiveWave',
                     content: msg,
                     created_at: new Date().toISOString(),
-                    backgroundColor: '#6200EA',
+                    backgroundColor: backgroundsColor[Math.floor(Math.random() * backgroundsColor.length)],
                     shareMessage: true //to add share buttons
                 });
             }, 60000); //every 1 minute
@@ -412,8 +415,8 @@ export default {
                 window.alert('Message trop long');
                 return;
             }
-            if (this.newMessage) { 
-                this.newMessage = leoProfanity.clean(this.newMessage); 
+            if (this.newMessage) {
+                this.newMessage = leoProfanity.clean(this.newMessage);
 
                 let mess = await supabase
                     .from('messages')
@@ -540,7 +543,7 @@ body {
         .v-list-item {
             margin: 0px;
             padding: 10px 10px !important;
-            border-radius: 10px;
+            border-radius: 10px !important;
             min-height: unset;
         }
     }
