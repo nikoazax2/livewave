@@ -3,8 +3,10 @@
         <v-card class="chat-card" :style="getStyleChatCard()">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
-                    <v-icon @click="$router.push({ name: 'waves' })">mdi-arrow-left</v-icon>
-                    <div class="ml-4 title-caption">
+                    <v-icon v-if="!implemented" @click="$router.push({ name: 'waves' })" class="mr-4">
+                        mdi-arrow-left
+                    </v-icon>
+                    <div class="title-caption">
                         <div class="title">{{ chat?.title }}</div>
                         <div class="caption">{{ chat?.description }}</div>
                     </div>
@@ -76,6 +78,7 @@ export default {
     },
     data() {
         return {
+            implemented: false,
             forcebot: 0,
             backgroundImage: null,
             enventNow: false,
@@ -121,6 +124,8 @@ export default {
         if (this.$route.params.id == '4aec1267-0595-4fe5-ab8e-89093906b4d5') {
             this.$route.params.id = '6e3eec90-163a-4754-99fa-27b894dd6428';
         }
+        if (this.$route.query.implemented == "1") this.implemented = true;
+
 
         // Check if the chat ID is a UUID or a title and get the chat ID
         let regexUUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
@@ -157,6 +162,9 @@ export default {
         this.adMessage();
 
         this.storeUserInfos();
+
+        //set title of the page with the chat name
+        document.title = `LiveWave - ${this.chat?.title}`;
 
 
         const chatMessagesList = document.getElementById('chat-messages-list');
