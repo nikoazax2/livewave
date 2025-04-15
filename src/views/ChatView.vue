@@ -267,7 +267,7 @@ export default {
                 });
             }, 60000); //every 1 minute
         },
-        sendBotMessage() {
+        sendBotMessage() { 
             if (!this.enventNow || !this.forcebot) return;
             let paramsForce = [
                 { min: 60 * 8, max: 60 * 10 },
