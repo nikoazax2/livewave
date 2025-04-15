@@ -82,6 +82,7 @@ export default {
     },
     data() {
         return {
+            forcebot:0,
             backgroundImage: null,
             enventNow: false,
             messages: [],
@@ -235,6 +236,7 @@ export default {
                 .eq('name', this.chat.title)
                 .single();
 
+            this.forcebot = data?.forcebot || 0;
             if (data.image) this.backgroundImage = data.image
             if (data?.messages) {
                 let chatMessages = data?.messages
@@ -266,8 +268,17 @@ export default {
             }, 60000); //every 1 minute
         },
         sendBotMessage() {
-            const minTimeS = 60 * 0.05 // 3 seconds
-            const maxTimeS = 60 * 0.1 // 10 seconds
+            if (!this.enventNow || !this.forcebot) return;
+            let paramsForce = [
+                { min: 60 * 8, max: 60 * 10 },
+                { min: 60 * 3, max: 60 * 5 },
+                { min: 60 * 1, max: 60 * 3 },
+                { min: 30, max: 60 },
+                { min: 10, max: 30 },
+                { min: 1, max: 10 }
+            ]
+            let minTimeS = paramsForce[this.forcebot - 1].min
+            let maxTimeS = paramsForce[this.forcebot - 1].max
 
             const sendMessage = () => {
                 if (!this.enventNow) return;
