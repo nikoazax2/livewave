@@ -60,6 +60,7 @@ async function tweet(message, mediaId) {
     const waitTime = Math.floor(Math.random() * (120 - 1 + 1) + 1) * 1000;
     console.log("Waiting for", waitTime / 1000, "seconds before sending the tweet...");
     await new Promise(resolve => setTimeout(resolve, waitTime));
+    
     try {
         const tweetParams = { text: message };
         if (mediaId?.mediaId) {
@@ -110,7 +111,7 @@ async function checkAndTweet() {
                 let medias = null;
 
                 // Upload image 
-                if (event.image) medias = await uploadImage(event.image);
+                // if (event.image) medias = await uploadImage(event.image);
 
                 // Tweet with image 
                 await tweet(tweetMessage, medias);
