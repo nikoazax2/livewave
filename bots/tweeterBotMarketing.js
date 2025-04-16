@@ -71,6 +71,7 @@ async function tweet(message, mediaId) {
     } catch (error) {
         console.error("Tweet error:", error.response?.data || error.message);
     }
+    return
 }
 
 // Function to check the time and tweet when an event starts

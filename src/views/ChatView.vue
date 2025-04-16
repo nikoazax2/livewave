@@ -450,7 +450,7 @@ export default {
                         chat_id: this.chatId,
                         username: this.username,
                         content: this.newMessage,
-                        reply: this.answer.id
+                        reply: this.answer?.id || null,
                     }]);
                 this.newMessage = '';
                 this.answer = null;
