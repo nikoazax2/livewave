@@ -20,14 +20,30 @@
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
                     <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
-                        <div v-if="!msg.shareMessage">
-                            <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong> {{ msg.content }}
+                        <div class="icons-actions-message">
+                            <v-icon>
+                                mdi-reply
+                            </v-icon>
+                            <v-icon>
+                                mdi-heart
+                            </v-icon>
                         </div>
+                        <!-- Message  -->
+                        <div v-if="!msg.shareMessage" class="message-like">
+                            <div>
+                                <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">
+                                    {{ msg.username }}
+                                </strong> {{ msg.content }}
+                            </div>
+                            <div v-if="msg.likes > 0" class="like">
+                                <v-icon class="mr-1" color="pink">mdi-heart</v-icon> {{ msg.likes }}
+                            </div>
+                        </div>
+                        <!-- Message PUB -->
                         <div v-else>
                             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
                             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
+                                }}</strong>
                             <div v-html="msg.content"></div>
                             <div class="mt-2 d-flex">
                                 <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
@@ -401,12 +417,14 @@ export default {
                     let randomIndex = Math.floor(Math.random() * usernames.length)
                     let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
 
+                    let randomLike = Math.floor(Math.random() * 10) + 1 == 1 ? 1 : 0;
                     this.messages.push({
                         content: chatMessages[i],
                         username: username,
                         created_at: date5DaysAgo.toISOString(),
                         backgroundColor: null,
                         bot: true,
+                        likes: randomLike,
                     })
                     this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                 }
@@ -567,5 +585,51 @@ body {
 
 .chat-message {
     margin-bottom: 10px;
+
+    &:hover {
+        transition: all 0.2s ease-in-out;
+        background-color: rgba(0, 0, 0, 0.2);
+
+        .icons-actions-message {
+            transition: all 0.2s ease-in-out;
+            opacity: 1;
+        }
+    }
+
+    .icons-actions-message {
+        position: absolute;
+        top: -11px;
+        right: 20px;
+        opacity: 0;
+        background-color: rgb(71, 71, 71);
+        padding: 5px;
+        border-radius: 5px;
+        z-index: 1;
+
+        i {
+            transform: translateY(-1px);
+            margin: 0 3px;
+            cursor: pointer;
+
+            &:hover {
+                transition: all 0.2s ease-in-out;
+                color: #E91E63;
+            }
+        }
+    }
+
+    .message-like {
+        .like {
+            font-weight: 500;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+
+            i {
+                transform: translate(0, -2px);
+            }
+        }
+    }
+
 }
 </style>
