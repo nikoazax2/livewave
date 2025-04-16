@@ -90,7 +90,13 @@ async function checkAndTweet() {
         
         //get time before next tweet in minutes
         const nextTweetTimeInMinutes = Math.floor((eventDate.getTime() - now.getTime()) / (1000 * 60));
-        if (nextTweetTimeInMinutes > 0) console.log(`Checking event: ${event.name} - Next tweet in ${nextTweetTimeInMinutes} minutes`);
+        if (nextTweetTimeInMinutes > 0) {
+            //log date huor now
+            let now = new Date();
+            console.log(`Current time: ${now.toLocaleString()}`);
+            console.log(`Checking event: ${event.name} - Next tweet in ${nextTweetTimeInMinutes} minutes`);
+        }
+
         
         // Check if the current time is within the event time window
         if (now >= eventDate && now <= eventEndDate) {
