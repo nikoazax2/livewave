@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@atproto/api": "^0.15.0",
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.49.1",
     "@vueuse/head": "^2.0.0",
