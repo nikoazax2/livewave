@@ -37,7 +37,9 @@
                                             {{ chat.description }}
                                         </div>
                                     </div>
-                                    <livers :livers="chat?.livers"></livers>
+                                    <livers 
+                                    v-if="chat?.livers > 0"
+                                    :livers="chat?.livers"></livers>
                                 </div>
 
                             </v-list-item>
@@ -148,8 +150,8 @@ export default {
                 });
                 this.chats.forEach(chat => {
                     if (chat?.livers < 3 && this.bots) {
-                        if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
-                        else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
+                        // if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+                        // else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
                     } else if (chat?.livers < 10) {
                         // if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
                         // else chat.livers = Math.floor(Math.random() * 4);
