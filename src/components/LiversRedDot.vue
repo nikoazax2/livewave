@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex align-center">
         <!-- <div class="red-circle mr-3" /> -->
-        <v-icon size="20" color="red" class="mr-2 cligne"> mdi-account </v-icon>
+        <v-icon size="20" color="#F44336" class="mr-2 cligne"> mdi-account </v-icon>
         {{ livers }}
     </div>
 </template>

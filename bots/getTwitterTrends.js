@@ -5,18 +5,18 @@ const app = express();
 
 // Initialiser ApifyClient avec ta clé API
 const client = new ApifyClient({
-    token: 'apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN',
+    token: 'apify_api_VPthRSzRgjWLXGElmeJZGxXr696Jqs4wectf',
 });
  
 async function runScraper() {
     try {
         // Start the actor and pass input parameters
-        const run = await client.actor('karamelo/twitter-trends-scraper').start({ foo: 'bar' });
+        const run = await client.actor('karamelo/twitter-trends-scraper').start();
 
         // Wait for the actor's run to finish and retrieve the result
         await client.run(run.id).waitForFinish();
 
-        let output = await fetch(`https://api.apify.com/v2/datasets/${run.defaultDatasetId}/items?token=apify_api_YL2GnPuq5WStug1PZ4VJGlfaKN4Ia24b4saN`)
+        let output = await fetch(`https://api.apify.com/v2/datasets/${run.defaultDatasetId}/items?token=apify_api_VPthRSzRgjWLXGElmeJZGxXr696Jqs4wectf`)
         output = await output.json();
 
         return output

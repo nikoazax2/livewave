@@ -13,33 +13,25 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)"
+                        :style="'font-size: 25px; cursor: pointer;'" class="mr-2"
+                        :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
-                        <div v-if="!msg.shareMessage">
-                            <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong> {{ msg.content }}
-                        </div>
-                        <div v-else>
-                            <!-- https://www.facebook.com/sharer/sharer.php?u= -->
-                            <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                            }}</strong>
-                            <div v-html="msg.content"></div>
-                            <div class="mt-2 d-flex">
-                                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(social.name, social.url)">
-                                    <v-icon class="mr-1">{{ social.icon }}</v-icon>
-                                    {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
-                                </v-btn>
-                            </div>
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+                        :style="{ backgroundColor: msg.backgroundColor }">
+                        <div>
+                            <Message :messages="messages" @addLike="addLike" @setanswer="answer = $event" :msg="msg"
+                                :likedMessages="likedMessages" :socials="socials" />
                         </div>
                     </v-list-item>
                 </v-list>
                 <div v-else-if="loading" class="d-flex justify-center">
-                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
+                        :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
                 </div>
                 <div v-else class="d-flex justify-center">
                     <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
@@ -49,7 +41,20 @@
                 </div>
             </v-card-text>
             <v-card-actions>
-                <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                <div class="d-flex flex-column w-100">
+                    <div class="mb-4 d-flex justify-space-between" v-if="answer">
+                        <div class="d-flex align-center">
+                            <v-icon class="mr-2">
+                                mdi-reply
+                            </v-icon>
+                            <Message v-if="answer" :msg="answer" :reply="true" />
+                        </div>
+                        <v-icon @click="answer = null" class="mr-12" >mdi-close</v-icon>
+                    </div>
+                    <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined"
+                        append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
+                        @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                </div>
             </v-card-actions>
         </v-card>
     </v-container>
@@ -64,6 +69,7 @@ import messagesbots from '../../public/messagesbots.json';
 import usernames from '../assets/usernames.json';
 import leoProfanity from 'leo-profanity';
 import bannedWords from '../assets/bannedwords.json'
+import Message from '../components/Message.vue';
 leoProfanity.loadDictionary('fr');
 leoProfanity.add(bannedWords);
 
@@ -77,7 +83,8 @@ export default {
         mobile: Boolean,
     },
     components: {
-        LiversRedDot
+        LiversRedDot,
+        Message
     },
     data() {
         return {
@@ -93,6 +100,8 @@ export default {
             firstMessage: true,
             loading: true,
             deleteMessages: false,
+            likedMessages: [],
+            answer: null,
             socials: [{
                 icon: 'mdi-facebook',
                 name: 'facebook',
@@ -191,6 +200,34 @@ export default {
 
     },
     methods: {
+        addLike(id) {
+            let message = this.messages.find(msg => msg.id === id);
+            if (!message) return;
+
+            if (this.likedMessages.includes(id)) {
+                // Decrement likes and ensure reactivity
+                message.likes = (message.likes || 0) - 1;
+                this.likedMessages = this.likedMessages.filter(msg => msg !== id);
+            } else {
+                if (message.bot) {
+                    message.likes = (message.likes || 0) + 1;
+                } else {
+                    message.likes = (message.likes || 0) + 1;
+                    supabase
+                        .from('messages')
+                        .update({ likes: message.likes })
+                        .eq('id', id)
+                        .then(({ data, error }) => {
+                            if (error) {
+                                console.error('Error adding like:', error);
+                            } else {
+                                console.log('Like added:', data);
+                            }
+                        });
+                }
+                this.likedMessages.push(id);
+            }
+        },
         getStyleChatCard() {
             return this.backgroundImage ? `background: rgba(46, 49, 50, 0.7);` : `background: rgba(46, 49, 50, 0.5);`;
         },
@@ -252,19 +289,15 @@ export default {
                 return chatMessages;
             } else return []
         },
-        shareOn(social, url) {
-            let text = `Venez discuter de ${this.chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${this.chat.title} #LiveWave`;
-            let shareUrl = url + encodeURIComponent(text);
-            window.open(shareUrl, '_blank');
-        },
+
         adMessage() {
             //Every 1 minutes send a message telling "LiveWave à besoin de vous pour continuer à vivre, vous pouvez aider en partageant le lien de la page"
             setInterval(() => {
                 //send if there is no share message in last 5 messages
                 if (this.messages.slice(-15).findIndex(msg => msg.shareMessage) !== -1) return;
-                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister, <br> vous pouvez aider en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
+                let msg = this.language === 'fr' ? 'LiveWave à besoin de vous pour continuer à exister. <br> Aidez-nous en partageant l\'événement :' : 'LiveWave needs you to continue to exist, <br> you can help by sharing the event :';
 
-                let backgroundsColor = ['#AD1457', '#6A1B9A', '#4527A0', '#283593', '#1565C0', '#0277BD', '#00838F', '#00695C', '#2E7D32', '#558B2F', '#9E9D24', '#F57F17'];
+                let backgroundsColor = ['#4527A0', '#283593', '#1565C0', '#0277BD', '#00838F', '#00695C', '#2E7D32', '#558B2F'];
 
                 this.messages.push({
                     username: 'LiveWave',
@@ -299,12 +332,14 @@ export default {
                 let recentMessages = this.messages.slice(-20).map(msg => msg.content);
                 let botMessages = this.messages?.filter(msg => msg.bot && !recentMessages.includes(msg.content));
                 let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
+                let uuid = crypto.randomUUID();
 
                 this.messages.push({
                     username: usernameS,
                     content: botMessage?.content,
                     created_at: new Date().toISOString(),
-                    bot: true
+                    bot: true,
+                    id: uuid,
                 });
             };
 
@@ -350,37 +385,6 @@ export default {
                 }
             });
         },
-        colorWithUsername(username) {
-            // Simple hash function to generate a number from the username
-            let hash = 0;
-            for (let i = 0; i < username.length; i++) {
-                hash = username.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            // Convert the hash to a hex color code
-            let color = '#';
-            for (let i = 0; i < 3; i++) {
-                const value = (hash >> (i * 8)) & 0xFF;
-                color += ('00' + value.toString(16)).substr(-2);
-            }
-            return color;
-        },
-        EmojiMDIWithUserName(username) {
-            const emojis = [
-                '📦', '📚', '🎁', '📅', '🧭', '🕹️', '🧲', '🖼️', '🎨', '🎯',
-                '🧪', '📐', '🧰', '🪛', '🔧', '🔨', '⚙️', '💡', '🔋', '🔌',
-                '💾', '🖥️', '📱', '📡', '📞', '🗂️', '📂', '🧾', '✉️', '📬',
-                '📎', '📏', '📌', '📍', '🗑️', '🧹', '🪣', '🔒', '🔑', '🚪',
-                '🛎️', '🧳', '🖇️', '🧼', '🪜', '🪟', '🧯', '🛠️', '⚖️', '🔭'
-            ];
-
-            let hash = 0;
-            for (let i = 0; i < username.length; i++) {
-                hash = username.charCodeAt(i) + ((hash << 5) - hash);
-            }
-
-            const index = Math.abs(hash) % emojis.length;
-            return emojis[index];
-        },
         async getMessages(messagesbots) {
             const { data, error } = await supabase
                 .from('messages')
@@ -401,12 +405,18 @@ export default {
                     let randomIndex = Math.floor(Math.random() * usernames.length)
                     let username = usernames[randomIndex] + Math.floor(Math.random() * 100)
 
+                    let randomLike = Math.floor(Math.random() * 10) + 1 == 1 ? 1 : 0;
+
+                    let uuid = crypto.randomUUID();
+
                     this.messages.push({
                         content: chatMessages[i],
                         username: username,
                         created_at: date5DaysAgo.toISOString(),
                         backgroundColor: null,
                         bot: true,
+                        likes: randomLike,
+                        id: uuid,
                     })
                     this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                 }
@@ -439,9 +449,11 @@ export default {
                     .insert([{
                         chat_id: this.chatId,
                         username: this.username,
-                        content: this.newMessage
+                        content: this.newMessage,
+                        reply: this.answer.id
                     }]);
                 this.newMessage = '';
+                this.answer = null;
             }
         },
         async getChatInfo() {
@@ -567,5 +579,20 @@ body {
 
 .chat-message {
     margin-bottom: 10px;
+
+    &:hover {
+        transition: all 0.2s ease-in-out;
+        background-color: rgba(0, 0, 0, 0.2);
+
+        :deep(.icons-actions-message) {
+            transition: all 0.2s ease-in-out;
+            opacity: 1;
+        }
+    }
+
+
+
+
+
 }
 </style>
