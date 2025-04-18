@@ -129,9 +129,12 @@ export default {
     .like {
         font-weight: 500;
         position: absolute;
-        top: 10px;
+        bottom: -10px;
         right: 20px;
-
+        background-color: rgba(71, 71, 71, 0.5);
+        border-radius: 5px;
+        padding: 3px 3px 1px 3px;
+        transform: scale(0.9);
         i {
             transform: translate(0, -2px);
         }
