@@ -51,7 +51,7 @@
                         </div>
                         <v-icon @click="answer = null" class="mr-12" >mdi-close</v-icon>
                     </div>
-                    <v-text-field hide-details :class="mobile ? 'mb-12' : 'mb-2'" variant="outlined"
+                    <v-text-field hide-details class="mb-2" variant="outlined"
                         append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
                         @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
                 </div>
@@ -508,7 +508,7 @@ body {
 
 <style scoped lang="scss">
 .chat-container {
-    height: 100vh !important;
+    height: 100% !important;
     width: 100vw !important;
     display: flex;
     justify-content: center;

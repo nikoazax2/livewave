@@ -80,6 +80,10 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    height: 100% !important;
+}
+#app,.app {
+    height: 100% !important;
 }
 
 .mobile {
@@ -87,6 +91,7 @@ body {
     .wave-container,
     .wave-card,
     .chat-card {
+        height: 100% !important;
         padding: 0 !important;
         border-radius: 0 !important;
     }
