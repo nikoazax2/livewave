@@ -58,7 +58,7 @@
                             </v-list-item>
                         </div>
 
-                        <!-- <div class="create-chat">
+                        <div class="create-chat">
                             <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0"
                                 color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
                                 <v-icon>
@@ -66,7 +66,7 @@
                                 </v-icon>
                                 {{ texts[language]?.createRoom }}
                             </v-btn>
-                        </div> -->
+                        </div> 
                     </v-list>
                 </v-card-text>
             </v-card>
