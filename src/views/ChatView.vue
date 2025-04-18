@@ -13,25 +13,20 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)"
-                        :style="'font-size: 25px; cursor: pointer;'" class="mr-2"
-                        :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <v-card-text class="chat-messages">
                 <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
-                        :style="{ backgroundColor: msg.backgroundColor }">
+                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
                         <div>
-                            <Message :messages="messages" @addLike="addLike" @setanswer="answer = $event" :msg="msg"
-                                :likedMessages="likedMessages" :socials="socials" />
+                            <Message :messages="messages" @addLike="addLike" @setanswer="answer = $event" :msg="msg" :likedMessages="likedMessages" :socials="socials" />
                         </div>
                     </v-list-item>
                 </v-list>
                 <div v-else-if="loading" class="d-flex justify-center">
-                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
-                        :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
                 </div>
                 <div v-else class="d-flex justify-center">
                     <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
@@ -49,11 +44,9 @@
                             </v-icon>
                             <Message v-if="answer" :msg="answer" :reply="true" />
                         </div>
-                        <v-icon @click="answer = null" class="mr-12" >mdi-close</v-icon>
+                        <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
                     </div>
-                    <v-text-field hide-details class="mb-2" variant="outlined"
-                        append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage"
-                        @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
                 </div>
             </v-card-actions>
         </v-card>
@@ -442,7 +435,8 @@ export default {
                 return;
             }
             if (this.newMessage) {
-                this.newMessage = leoProfanity.clean(this.newMessage);
+                // this.newMessage = leoProfanity.clean(this.newMessage);
+                this.newMessage = this.cleanMessage(this.newMessage);
 
                 let mess = await supabase
                     .from('messages')
@@ -455,6 +449,16 @@ export default {
                 this.newMessage = '';
                 this.answer = null;
             }
+        },
+        cleanMessage(msg) {
+            msg = leoProfanity.clean(msg);
+            //remove urls, emails, and phone numbers, and code
+            msg = msg.replace(/(https?:\/\/[^\s]+)/g, '***')
+                .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '***')
+                .replace(/(\+?\d[\d -]{8,12}\d)/g, '***')
+                .replace(/`([^`]+)`/g, '***');
+
+            return msg;
         },
         async getChatInfo() {
             let l = await supabase
