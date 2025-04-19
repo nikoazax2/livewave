@@ -529,7 +529,7 @@ body {
     }
 
     .card-container-messages{
-        height: calc(100% - 130px) !important;
+        height: calc(100% - 150px) !important;
     }
 
     .left {
