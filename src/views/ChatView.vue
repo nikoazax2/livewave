@@ -17,22 +17,9 @@
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
-            <v-card-text class="chat-messages">
-                <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-                    <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
-                        <div>
-                            <Message :messages="messages" @addLike="addLike" @setanswer="answer = $event" :msg="msg" :likedMessages="likedMessages" :socials="socials" />
-                        </div>
-                    </v-list-item>
-                </v-list>
-                <div v-else-if="loading" class="d-flex justify-center">
-                    <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
-                </div>
-                <div v-else class="d-flex justify-center">
-                    <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
-                        {{ language === 'fr' ? 'Aucun message pour le moment, soyez le premier à écrire !' : `No
-                        messages yet, be the first to write!` }}
-                    </h4>
+            <v-card-text class="h-100 card-container-messages">
+                <div class="chat-messages w-100 h-100">
+                   <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -63,6 +50,7 @@ import usernames from '../assets/usernames.json';
 import leoProfanity from 'leo-profanity';
 import bannedWords from '../assets/bannedwords.json'
 import Message from '../components/Message.vue';
+import Messages from '../components/Messages.vue';
 leoProfanity.loadDictionary('fr');
 leoProfanity.add(bannedWords);
 
@@ -77,6 +65,7 @@ export default {
     },
     components: {
         LiversRedDot,
+        Messages,
         Message
     },
     data() {
@@ -539,6 +528,10 @@ body {
         color: rgb(255, 255, 255) !important;
     }
 
+    .card-container-messages{
+        height: calc(100% - 130px) !important;
+    }
+
     .left {
         max-width: calc(100% - 100px);
         overflow: hidden;
@@ -568,35 +561,7 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column-reverse;
-
-    .v-list {
-        background-color: rgba(255, 255, 255, 0);
-
-        .v-list-item {
-            margin: 0px;
-            padding: 10px 10px !important;
-            border-radius: 10px !important;
-            min-height: unset;
-        }
-    }
 }
 
-.chat-message {
-    margin-bottom: 10px;
 
-    &:hover {
-        transition: all 0.2s ease-in-out;
-        background-color: rgba(0, 0, 0, 0.2);
-
-        :deep(.icons-actions-message) {
-            transition: all 0.2s ease-in-out;
-            opacity: 1;
-        }
-    }
-
-
-
-
-
-}
 </style>

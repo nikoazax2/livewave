@@ -75,6 +75,16 @@ export default {
 </script>
 
 <style lang="scss">
+ .card-container{
+    max-width: 600px;
+    width: 100%;
+    height: 100%;
+    display: flex; 
+    border-radius: 10px;
+    background-color: rgba(46, 49, 50, 0.5); 
+    padding: 10px 10px 0 10px;
+}
+
 html,
 body {
     margin: 0;
