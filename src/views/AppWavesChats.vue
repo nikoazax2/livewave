@@ -6,7 +6,7 @@
 
         <ChatView v-if="$route.path.includes('/chat')" :backgroundImage="backgroundImage" @backgroundImage="backgroundImage = $event" :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" />
 
-        <TopsMessages :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" />
+        <!-- <TopsMessages :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" /> -->
     </div>
 </template>
 
@@ -98,13 +98,16 @@ export default {
 .mobile{
     .card-container{
         padding: 0;
-        width: 100%;
+        min-width: 0!important;
+        width: 100%!important;
     }
     .appwaveschats{
         width: 100%;
     }
 }
+
 .card-container {
+    min-width: 600px;
     height: 100% !important;
     width: fit-content !important;
     display: flex;
