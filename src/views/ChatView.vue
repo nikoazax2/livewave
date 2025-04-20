@@ -18,6 +18,7 @@
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
+            <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" />
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
                     <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
@@ -52,6 +53,7 @@ import leoProfanity from 'leo-profanity';
 import bannedWords from '../assets/bannedwords.json'
 import Message from '../components/Message.vue';
 import Messages from '../components/Messages.vue';
+import Teams from '../components/Teams.vue';
 leoProfanity.loadDictionary('fr');
 leoProfanity.add(bannedWords);
 
@@ -68,7 +70,8 @@ export default {
     components: {
         LiversRedDot,
         Messages,
-        Message
+        Message,
+        Teams
     },
     data() {
         return {
@@ -85,6 +88,7 @@ export default {
             deleteMessages: false,
             likedMessages: [],
             answer: null,
+            event: null,
             socials: [{
                 icon: 'mdi-facebook',
                 name: 'facebook',
@@ -183,6 +187,14 @@ export default {
 
     },
     methods: {
+        async teamClick(team, add = true) {
+            let count = add ? team.count + 1 : team.count - 1;
+            let res = await supabase
+                .from('teams')
+                .update({ count: count })
+                .eq('id', team.id)
+            team.count++
+        },
         addLike(id) {
             let message = this.messages.find(msg => msg.id === id);
             if (!message) return;
@@ -260,8 +272,22 @@ export default {
                 .select('*')
                 .eq('name', this.chat.title)
                 .single();
+            if (data.teams) {
+                data.teams = await supabase
+                    .from('teams')
+                    .select('*')
+                    .in('id', data.teams)
+                    .then(({ data, error }) => {
+                        if (error) {
+                            console.error('Error fetching teams:', error);
+                        } else {
+                            return data;
+                        }
+                    });
+            }
 
             this.forcebot = data?.forcebot || 0;
+            this.event = data;
             if (data?.image) this.$emit('backgroundImage', data?.image || null)
             if (data?.messages) {
                 let chatMessages = data?.messages
@@ -271,6 +297,7 @@ export default {
                 }
                 return chatMessages;
             } else return []
+
         },
 
         adMessage() {
@@ -512,7 +539,7 @@ body {
     }
 
     .card-container-messages {
-        height: calc(100% - 150px) !important;
+        height: calc(100% - 500px) !important;
     }
 
     .left {
