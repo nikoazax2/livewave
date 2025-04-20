@@ -175,14 +175,17 @@ export default {
         //after  2s scroll to bottom (transition of 1s)
         setTimeout(async () => {
             let chat = document.getElementById('chat-messages-list');
-            let height = chat.scrollHeight
-            let documentHeight = document.documentElement.scrollHeight
-            height = chat.scrollHeight - documentHeight + chat.scrollTop + 200;
+            //set scrollTop to the bottom of the chat
+            chat.scrollTop = chat.scrollHeight + 20;
 
-            while (height >= chat.scrollTop) {
-                chat.scrollTop += 20;
-                await new Promise(resolve => setTimeout(resolve, 1));
-            }
+            // let height = chat.scrollHeight
+            // let documentHeight = document.documentElement.scrollHeight
+            // height = chat.scrollHeight - documentHeight + chat.scrollTop + 200;
+
+            // while (height >= chat.scrollTop) {
+            //     chat.scrollTop += 20;
+            //     await new Promise(resolve => setTimeout(resolve, 1));
+            // }
         }, 200);
 
     },
