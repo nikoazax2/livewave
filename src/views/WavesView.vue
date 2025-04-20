@@ -1,5 +1,5 @@
 <template>
-    <div class="h-100 w-100">
+    <div class="h-100 w-100 d-flex justify-center">
         <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
         <v-container class="card-container">
             <v-card class="wave-card card-in">
