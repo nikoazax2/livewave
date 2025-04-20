@@ -3,10 +3,11 @@ import WavesView from './views/WavesView.vue';
 import ChatView from './views/ChatView.vue';
 import Blog from './views/Blog.vue';
 import Blogs from './views/Blogs.vue';
+import AppWavesChats from './views/AppWavesChats.vue';
 
 const routes = [
-    { path: '/', component: WavesView, name: 'waves' },
-    { path: '/chat/:id', component: ChatView },
+    { path: '/', component: AppWavesChats, name: 'waves' },
+    { path: '/chat/:id', component: AppWavesChats },
     { path: '/blog/:id', component: Blog, name: 'Blog' },
     { path: '/blogs', component: Blogs, name: 'Blogs' },
 ];

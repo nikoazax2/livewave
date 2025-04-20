@@ -1,9 +1,10 @@
 <template>
-    <v-container class="chat-container" :style="getBackgroundImage()">
-        <v-card class="chat-card" :style="getStyleChatCard()">
+    <v-container class="card-container">
+        <v-card class="chat-card card-in" :style="getStyleChatCard()">
             <v-card-title class="d-flex justify-space-between">
                 <div class="d-flex align-center left">
-                    <v-icon v-if="!implemented" @click="$router.push({ name: 'waves' })" class="mr-4">
+                    <v-icon v-if="!implemented" @click="$router.push({ name: 'waves' }),
+                        $emit('backgroundImage', null)" class="mr-4">
                         mdi-arrow-left
                     </v-icon>
                     <div class="title-caption">
@@ -19,7 +20,7 @@
             </v-card-title>
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
-                   <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
+                    <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -62,6 +63,7 @@ export default {
         language: String,
         themeDark: Boolean,
         mobile: Boolean,
+        backgroundImage: String,
     },
     components: {
         LiversRedDot,
@@ -72,7 +74,6 @@ export default {
         return {
             implemented: false,
             forcebot: 0,
-            backgroundImage: null,
             enventNow: false,
             messages: [],
             newMessage: '',
@@ -261,7 +262,7 @@ export default {
                 .single();
 
             this.forcebot = data?.forcebot || 0;
-            if (data?.image) this.backgroundImage = data.image
+            if (data?.image) this.$emit('backgroundImage', data?.image || null)
             if (data?.messages) {
                 let chatMessages = data?.messages
                 let dateNow = new Date();
@@ -500,35 +501,17 @@ body {
 </style>
 
 <style scoped lang="scss">
-.chat-container {
-    height: 100% !important;
-    width: 100vw !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden !important;
-    margin: 0 !important;
-    max-width: none !important;
-    // background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 700px 700px !important;
-}
+.chat-container {}
 
 .chat-card {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
     flex-direction: column;
-    height: 100%;
-    border-radius: 10px;
-    background-color: rgba(46, 49, 50, 0.5);
-    // border: 1px solid rgba(255, 255, 255, 0.363);
     padding: 10px 10px 0 10px;
 
     div {
         color: rgb(255, 255, 255) !important;
     }
 
-    .card-container-messages{
+    .card-container-messages {
         height: calc(100% - 150px) !important;
     }
 
@@ -562,6 +545,4 @@ body {
     display: flex;
     flex-direction: column-reverse;
 }
-
-
 </style>
