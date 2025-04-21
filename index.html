@@ -1,56 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <!-- Balises Meta SEO -->
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="LiveWave est une application de conversation en temps réel qui vous permet de discuter des événements en direct que vous aimez ! Rejoignez la discussion maintenant." />
-        <meta name="keywords" content="chat en direct, conversation en temps réel, discussion événement, événements en direct, application de chat" />
-        <meta name="author" content="LiveWave" />
-         
-         <meta property="og:title" content="LiveWave - Conversations en temps réel" />
-        <meta property="og:description" content="Rejoignez LiveWave et discutez de vos événements en direct préférés en temps réel !" />
-        <meta property="og:url" content="https://www.livewave.fr" />
-        <meta property="og:image" content="https://i.imgur.com/W5UqD3c.png" />
-        <meta property="og:type" content="website" />
-        
-        <!-- Balises Twitter Card -->
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Discutez des événements en direct en temps réel avec LiveWave !" /> 
-            <meta name="twitter:description" content="Rejoignez LiveWave et discutez de vos événements en direct préférés en temps réel !" />
-        <meta name="twitter:image" content="https://i.imgur.com/W5UqD3c.png" />
-        
-        <!-- Favicon -->
-        <link rel="icon" href="https://www.livewave.fr/favicon.ico" type="image/x-icon" />
-        
-        <title>LiveWave - Discutez en temps réel des événements en direct</title>
-        
-        <!-- Feuilles de style -->
-        <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
-        
-        <!-- Pixel de suivi Twitter -->
-        <script>
-            !(function (e, t, n, s, u, a) {
-                e.twq ||
-                    ((s = e.twq =
-                        function () {
-                            s.exe
-                                ? s.exe.apply(s, arguments)
-                                : s.queue.push(arguments)
-                        }),
-                    (s.version = "1.1"),
-                    (s.queue = []),
-                    (u = t.createElement(n)),
-                    (u.async = !0),
-                    (u.src = "https://static.ads-twitter.com/uwt.js"),
-                    (a = t.getElementsByTagName(n)[0]),
-                    a.parentNode.insertBefore(u, a))
-            })(window, document, "script");
-            twq("config", "pdo5t");
-        </script>
-    </head>
-    <body>
-        <div id="app"></div>
-        <script type="module" src="/src/main.js"></script>
-    </body>
+  <head>
+    <!-- Balises Meta SEO -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="LiveWave est une application de conversation en temps réel qui vous permet de discuter des événements en direct que vous aimez ! Rejoignez la discussion maintenant."
+    />
+    <meta
+      name="keywords"
+      content="chat en direct, conversation en temps réel, discussion événement, événements en direct, application de chat"
+    />
+    <meta name="author" content="LiveWave" />
+
+    <meta property="og:title" content="LiveWave - Conversations en temps réel" />
+    <meta
+      property="og:description"
+      content="Rejoignez LiveWave et discutez de vos événements en direct préférés en temps réel !"
+    />
+    <meta property="og:url" content="https://www.livewave.fr" />
+    <meta property="og:image" content="https://i.imgur.com/W5UqD3c.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Balises Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Discutez des événements en direct en temps réel avec LiveWave !" />
+    <meta
+      name="twitter:description"
+      content="Rejoignez LiveWave et discutez de vos événements en direct préférés en temps réel !"
+    />
+    <meta name="twitter:image" content="https://i.imgur.com/W5UqD3c.png" />
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-NFXRZMV5");
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://www.livewave.fr/favicon.ico" type="image/x-icon" />
+
+    <title>LiveWave - Discutez en temps réel des événements en direct</title>
+
+    <!-- Feuilles de style -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+
+    <!-- Pixel de suivi Twitter -->
+    <script>
+      !(function (e, t, n, s, u, a) {
+        e.twq ||
+          ((s = e.twq =
+            function () {
+              s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
+            }),
+          (s.version = "1.1"),
+          (s.queue = []),
+          (u = t.createElement(n)),
+          (u.async = !0),
+          (u.src = "https://static.ads-twitter.com/uwt.js"),
+          (a = t.getElementsByTagName(n)[0]),
+          a.parentNode.insertBefore(u, a));
+      })(window, document, "script");
+      twq("config", "pdo5t");
+    </script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-NFXRZMV5"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
