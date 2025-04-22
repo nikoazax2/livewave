@@ -18,7 +18,7 @@
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
-            <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" />
+            <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" :vote="vote" @vote="vote = $event" />
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
                     <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
@@ -75,6 +75,7 @@ export default {
     },
     data() {
         return {
+            vote: null,
             implemented: false,
             forcebot: 0,
             enventNow: false,
@@ -159,7 +160,7 @@ export default {
         this.deleteMessagesLoop();
         if (this.bots) this.sendBotMessage();
         this.adMessage();
-
+        this.setTeam()
         this.storeUserInfos();
 
         //set title of the page with the chat name
@@ -190,13 +191,42 @@ export default {
 
     },
     methods: {
+        setTeam() {
+            let params = JSON.parse(localStorage.getItem('livewave-params') || '{}');
+            params.teams = params.teams || [];
+
+            const currentTeam = params.teams.find(t => t.event_id === this.event.id);
+            if (currentTeam) {
+                this.vote = this.event.teams.find(t => t.id === currentTeam.team_id);
+            } else {
+                this.vote = null;
+            }
+        },
         async teamClick(team, add = true) {
-            let count = add ? team.count + 1 : team.count - 1;
-            let res = await supabase
-                .from('teams')
-                .update({ count: count })
-                .eq('id', team.id)
-            team.count++
+            let params = JSON.parse(localStorage.getItem('livewave-params') || '{}');
+            params.teams = params.teams || [];
+
+            const currentTeam = params.teams.find(t => t.event_id === this.event.id);
+            const isSameTeam = currentTeam?.team_id === team.id;
+
+            if (currentTeam && !isSameTeam) {
+                await supabase
+                    .from('teams')
+                    .update({ count: team.count - 1 })
+                    .eq('id', currentTeam.team_id);
+
+                params.teams = params.teams.filter(t => t.event_id !== this.event.id);
+            }
+
+            if (!isSameTeam) {
+                params.teams.push({ event_id: this.event.id, team_id: team.id });
+                localStorage.setItem('livewave-params', JSON.stringify(params));
+
+                await supabase
+                    .from('teams')
+                    .update({ count: team.count + 1 })
+                    .eq('id', team.id);
+            }
         },
         addLike(id) {
             let message = this.messages.find(msg => msg.id === id);

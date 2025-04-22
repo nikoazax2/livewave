@@ -21,13 +21,13 @@ export default {
             type: Array,
             required: false,
             default: () => []
+        },
+        vote: {
+            type: Object,
+            required: false,
+            default: null
         }
-    },
-    data() {
-        return {
-            vote: null
-        };
-    },
+    }, 
     computed: {
         totalCount() {
             return this.teams.reduce((sum, team) => sum + team.count, 0) || 1;
@@ -40,10 +40,11 @@ export default {
         clickteam(team) {
             if (this.vote == null) {
                 this.$emit('teamClick', team)
-                this.vote = team
+                // this.vote = team
+                this.$emit('vote', team)
             } else if (this.vote.id != team.id) {
                 this.$emit('teamClick', team)
-                this.vote = team 
+                this.$emit('vote', team)
             } else { 
             }
         }
