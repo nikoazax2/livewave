@@ -1,13 +1,17 @@
 <template>
     <v-list id="chat-messages-list" ref="chatMessages" v-if="messages.length > 0">
-        <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message" :style="{ backgroundColor: msg.backgroundColor }">
+        <v-list-item v-for="(msg, index) in messages" :key="index" class="chat-message"
+            :style="{ backgroundColor: msg.backgroundColor }">
             <div>
-                <Message :messages="messages" @addLike="$emit('addLike',$event)" @setanswer="$emit('setanswer',$event)" :msg="msg" :likedMessages="likedMessages" :socials="socials" />
+                <Message :chat="chat" :messages="messages" @addLike="$emit('addLike',$event)"
+                    @setanswer="$emit('setanswer',$event)" :msg="msg" :likedMessages="likedMessages"
+                    :socials="socials" />
             </div>
         </v-list-item>
     </v-list>
     <div v-else-if="loading" class="d-flex justify-center">
-        <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100" :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
+        <v-skeleton-loader class="w-100" type="text" :loading="true" :height="50" :width="100"
+            :style="{ backgroundColor: 'rgba(255, 255, 255, 0)' }"></v-skeleton-loader>
     </div>
     <div v-else class="d-flex justify-center">
         <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
@@ -40,6 +44,10 @@ export default {
         likedMessages: {
             type: Array,
             default: () => []
+        },
+        chatMessages: {
+            type: Object,
+            default: () => ({})
         }
     }
 }

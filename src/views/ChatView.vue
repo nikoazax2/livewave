@@ -14,14 +14,17 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)"
+                        :style="'font-size: 25px; cursor: pointer;'" class="mr-2"
+                        :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" :vote="vote" @vote="vote = $event" />
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
-                    <Messages :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
+                    <Messages :chat="chat" :messages="messages" :loading="loading" :socials="socials"
+                        :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -31,11 +34,13 @@
                             <v-icon class="mr-2">
                                 mdi-reply
                             </v-icon>
-                            <Message v-if="answer" :msg="answer" :reply="true" />
+                            <Message :chat="chat" v-if="answer" :msg="answer" :reply="true" />
                         </div>
                         <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
                     </div>
-                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded
+                        v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
+                        @click:append-inner="sendMessage" />
                 </div>
             </v-card-actions>
         </v-card>

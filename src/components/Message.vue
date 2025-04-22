@@ -68,6 +68,10 @@ export default {
             type: Array,
             required: false
         },
+        chat: {
+            type: Object,
+            required: false
+        },
     },
     computed: {
         messagesReply() {  
