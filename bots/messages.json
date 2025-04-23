@@ -1,9 +1,5 @@
 [
-    "📍 NOUVEAUTÉ : Discutez de EVENT_TEXT en direct sur le tchat EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
-    "🚨 Utilisez le nouveau chat en direct pendant EVENT_TEXT pour échanger en temps réel avec d’autres téléspectateurs. EVENT_NAME_URL \n \n EVENT_HASHTAGS EVENT_NAME",
-    "💬 Discutez de EVENT_TEXT en direct sur le tchat  EVENT_NAME_URL \n \n EVENT_HASHTAGS EVENT_NAME",
-    "📺 Echangez en direct sur EVENT_TEXT EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
-    "📬 Vous regardez EVENT_TEXT ? Venez en discuter en temps réel EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
-    "📺 Ne commentez pas seul EVENT_TEXT ! Rejoignez le tchat EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME",
-    "🔥 Rejoins le tchat en direct sur LiveWave ! 🔥\n\n🎤⚽🎮🏆 C'est gratuit, instantané et sans inscription\n➡️ EVENT_NAME_URL \n\n EVENT_HASHTAGS EVENT_NAME"
+    "J'ai découvert un truc pendant EVENT_TEXT \nUn chat en direct pour discuter avec les autres téléspectateurs en temps réel, super pratique et sans inscription ! Rejoignez nous sur EVENT_NAME_URL !\nEVENT_HASHTAGS EVENT_NAME",
+    "Je suis en train de regarder EVENT_TEXT et je viens de découvrir un chat en direct pour discuter avec les autres téléspectateurs ! Rejoignez nous sur EVENT_NAME_URL !\nEVENT_HASHTAGS EVENT_NAME",
+    "Pour ceux qui regardent EVENT_TEXT, j'ai trouvé un chat en direct pour discuter avec les autres téléspectateurs ! Rejoignez nous sur EVENT_NAME_URL !\nEVENT_HASHTAGS EVENT_NAME"
 ]
