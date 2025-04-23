@@ -305,7 +305,7 @@ export default {
                 .select('*')
                 .eq('name', this.chat.title)
                 .single();
-            if (data.teams) {
+            if (data?.teams) {
                 data.teams = await supabase
                     .from('teams')
                     .select('*')
