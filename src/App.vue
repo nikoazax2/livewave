@@ -14,6 +14,31 @@ export default {
     },
     created() {
         this.mobile = window.innerWidth < 600
+
+        let deferredPrompt = null
+
+        const installApp = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt()
+                const result = await deferredPrompt.userChoice
+                if (result.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt')
+                } else {
+                    console.log('User dismissed the A2HS prompt')
+                }
+                showInstallPrompt.value = false
+                deferredPrompt = null
+            }
+        }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault()
+            deferredPrompt = e
+
+            // Délai de 5 minutes avant d’afficher ton UI personnalisée
+            setTimeout(() => {
+                installApp()
+            }, 10000)
+        })
     },
     methods: {
 
