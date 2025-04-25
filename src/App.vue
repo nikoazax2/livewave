@@ -34,7 +34,7 @@ export default {
             // Afficher le bouton d'installation après 5 minutes
             setTimeout(() => {
                 this.showInstallPrompt = true;
-            }, 1000); // 5 minutes en millisecondes
+            }, 300000); // 5 minutes en millisecondes
         });
     },
     methods: {
