@@ -36,6 +36,14 @@ export default {
                 this.showInstallPrompt = true;
             }, 300000); // 5 minutes en millisecondes
         });
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                const height = window.visualViewport.height;
+                document.body.style.paddingBottom = `${window.innerHeight - height}px`;
+            });
+        }
+
     },
     methods: {
         async installApp() {
