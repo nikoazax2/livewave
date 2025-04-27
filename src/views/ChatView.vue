@@ -382,6 +382,7 @@ export default {
                 let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
                 let uuid = crypto.randomUUID();
 
+                if(botMessage?.content == null) return;
                 this.messages.push({
                     username: usernameS,
                     content: botMessage?.content,
