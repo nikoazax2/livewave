@@ -48,7 +48,11 @@ export default {
         chatMessages: {
             type: Object,
             default: () => ({})
-        }
+        },
+        language: {
+            type: String,
+            default: 'en'
+        },
     }
 }
 </script>

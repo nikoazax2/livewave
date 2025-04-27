@@ -23,7 +23,7 @@
             <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" :vote="vote" @vote="vote = $event" />
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
-                    <Messages :chat="chat" :messages="messages" :loading="loading" :socials="socials"
+                    <Messages :language="language" :chat="chat" :messages="messages" :loading="loading" :socials="socials"
                         :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
                 </div>
             </v-card-text>
@@ -34,7 +34,7 @@
                             <v-icon class="mr-2">
                                 mdi-reply
                             </v-icon>
-                            <Message :chat="chat" v-if="answer" :msg="answer" :reply="true" />
+                            <Message :language="language" :chat="chat" v-if="answer" :msg="answer" :reply="true" />
                         </div>
                         <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
                     </div>
