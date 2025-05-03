@@ -14,17 +14,14 @@
 
                 </div>
                 <div class="d-flex align-center">
-                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)"
-                        :style="'font-size: 25px; cursor: pointer;'" class="mr-2"
-                        :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
             <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" :vote="vote" @vote="vote = $event" />
             <v-card-text class="h-100 card-container-messages">
                 <div class="chat-messages w-100 h-100">
-                    <Messages :language="language" :chat="chat" :messages="messages" :loading="loading" :socials="socials"
-                        :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
+                    <Messages :language="language" :chat="chat" :messages="messages" :loading="loading" :socials="socials" :likedMessages="likedMessages" @addLike="addLike" @setanswer="answer = $event" />
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -38,9 +35,7 @@
                         </div>
                         <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
                     </div>
-                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded
-                        v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage"
-                        @click:append-inner="sendMessage" />
+                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
                 </div>
             </v-card-actions>
         </v-card>
@@ -382,7 +377,7 @@ export default {
                 let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
                 let uuid = crypto.randomUUID();
 
-                if(botMessage?.content == null) return;
+                if (botMessage?.content == null) return;
                 this.messages.push({
                     username: usernameS,
                     content: botMessage?.content,
@@ -394,8 +389,6 @@ export default {
 
             // Send the first message within 3 seconds
             setTimeout(() => {
-                sendMessage();
-
                 // Continue sending messages between minTimeS and maxTimeS
                 setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
             }, Math.floor(Math.random() * 3000));

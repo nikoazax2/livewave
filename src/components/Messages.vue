@@ -53,6 +53,10 @@ export default {
             type: String,
             default: 'en'
         },
+        chat: {
+            type: Object,
+            required: false
+        }
     }
 }
 </script>
