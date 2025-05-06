@@ -302,7 +302,7 @@ export default {
                 });
         },
         setLivers() {
-            if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 1500) + 1200;
+            if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 800) + 200;
         },
         async getEvent() {
             const { data, error } = await supabase
