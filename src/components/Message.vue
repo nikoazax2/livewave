@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="msg.reply">
-            <v-icon class="mr-2">mdi-reply</v-icon> 
+            <v-icon class="mr-2">mdi-reply</v-icon>
             <strong :style="{ color: colorWithUsername(messagesReply.username) }" class="mr-2">
                 {{ messagesReply.username }}
             </strong> {{ messagesReply.content }}
@@ -28,14 +28,13 @@
             </div>
         </div>
         <!-- Message PUB -->
-        <div v-else>
+        <div v-else> 
             <!-- https://www.facebook.com/sharer/sharer.php?u= -->
             <strong :style="{ color: colorWithUsername(msg.username) }" class="mr-2">{{ msg.username
-                }}</strong>
+            }}</strong>
             <div v-html="msg.content"></div>
             <div class="mt-2 d-flex">
-                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small"
-                    text @click="shareOn(social.name, social.url)">
+                <v-btn v-for="social in socials" :key="social.name" variant="outlined" rounded class="mr-2" size="small" text @click="shareOn(chat, social.name, social.url)">
                     <v-icon class="mr-1">{{ social.icon }}</v-icon>
                     {{ social.name.charAt(0).toUpperCase() + social.name.slice(1) }}
                 </v-btn>
@@ -74,7 +73,7 @@ export default {
         },
     },
     computed: {
-        messagesReply() {  
+        messagesReply() {
             return this.messages.find(m => m.id === this.msg.reply);
         },
     },
@@ -93,9 +92,9 @@ export default {
             }
             return color;
         },
-        shareOn(social, url) {
-            let text = `Venez discuter de ${this.chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${this.chat.title} #LiveWave`;
-            let shareUrl = url + encodeURIComponent(text);
+        shareOn(chat,social, url) { 
+            let text = `Venez discuter de ${chat.title} sur LiveWave ! \n\n ${window.location.href} \n\n #${chat.title} #LiveWave`;
+            let shareUrl = url + 'https://livewave.fr/chat/' + chat.title
             window.open(shareUrl, '_blank');
         },
     }
@@ -139,6 +138,7 @@ export default {
         border-radius: 5px;
         padding: 3px 3px 1px 3px;
         transform: scale(0.9);
+
         i {
             transform: translate(0, -2px);
         }

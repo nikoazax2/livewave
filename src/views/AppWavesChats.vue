@@ -4,7 +4,7 @@
 
         <WavesView :language="language" v-if="$route.path === '/'" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
 
-        <ChatView v-if="$route.path.includes('/chat')" :backgroundImage="backgroundImage" @backgroundImage="backgroundImage = $event" :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" />
+        <ChatView v-if="$route.path.includes('/chat')" :backgroundImage="backgroundImage" @backgroundImage="backgroundImage = $event" :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" @setaskUsername="askUsername = $event" />
 
         <!-- <TopsMessages :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" /> -->
     </div>
@@ -78,6 +78,8 @@ export default {
 
             if (lang.startsWith('fr')) return 'fr';
             if (lang.startsWith('en')) return 'en';
+            if (lang.startsWith('es')) return 'es';
+            if (lang.startsWith('de')) return 'de';
 
             return 'en'; // default fallback 
         },

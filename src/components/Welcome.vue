@@ -30,23 +30,11 @@ export default {
     data() {
         return {
             dialog: true,
-            texts: {
-                en: {
-                    welcomeMessage: 'Welcome to LiveWave',
-                    description: 'LiveWave is a real-time conversation app around the events you love!',
-                    confirmText: 'Confirm'
-                },
-                fr: {
-                    welcomeMessage: 'Bienvenue sur LiveWave',
-                    description: 'LiveWave vous permet de discuter en temps réel autour des événements que vous aimez, bonne discussion !',
-                    confirmText: 'Valider'
-                }
-            }
         };
     },
     computed: {
         languageTexts() {
-            return this.texts[this.language] || this.texts.en;
+            return this.$texts[this.language] || this.$texts.en;
         }
     }
 };
