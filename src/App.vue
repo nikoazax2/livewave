@@ -1,7 +1,7 @@
 <template>
     <div :class="{ 'mobile': mobile }" class="app">
-        <router-view />
 
+        <router-view />
         <!-- Bouton d'installation visible après 5 minutes -->
         <div v-if="showInstallPrompt" class="install-prompt">
             <p>Voulez-vous installer Livewave sur votre appareil ?</p>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'App',
     data() {

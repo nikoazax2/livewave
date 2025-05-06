@@ -1,0 +1,66 @@
+{
+    "en": {
+        "roomName": "Room name",
+        "roomDescription": "Describe your room here",
+        "confirmText": "Confirm",
+        "welcomeMessage": "Welcome to LiveWave",
+        "description": "LiveWave is a real-time conversation app around the events you love!",
+        "writeMessage": "Write a message",
+        "room": "Waves Rooms",
+        "search": "Search an event...",
+        "createRoom": "Create a room",
+        "dontExist": {
+            "title": "This room does not exist yet",
+            "description": "Create it now to discuss it with the whole world!"
+        },
+        "noMessages": "No messages yet, be the first to send one!"
+    },
+    "fr": {
+        "roomName": "Nom de la salle",
+        "roomDescription": "Décris ta salle ici",
+        "description": "LiveWave vous permet de discuter en temps réel autour des événements que vous aimez, bonne discussion !",
+        "confirmText": "Valider",
+        "writeMessage": "Écrire un message",
+        "welcomeMessage": "Bienvenue sur LiveWave",
+        "room": "Salons Waves",
+        "search": "Chercher un évènement...",
+        "dontExist": {
+            "title": "Ce salon n\"existe pas encore",
+            "description": "Crée le maintenant pour en discuter avec le monde entier !"
+        },
+        "createRoom": "Créer un salon",
+        "noMessages": "Pas encore de messages, soyez le premier à en envoyer !"
+    },
+    "es": {
+        "roomName": "Nombre de la sala",
+        "roomDescription": "Describe tu sala aquí",
+        "description": "LiveWave te permite discutir en tiempo real sobre los eventos que amas, ¡buena discusión!",
+        "confirmText": "Confirmar",
+        "writeMessage": "Escribir un mensaje",
+        "welcomeMessage": "Bienvenido a LiveWave",
+        "room": "Salas Waves",
+        "search": "Buscar un evento...",
+        "dontExist": {
+            "title": "Esta sala no existe todavía",
+            "description": "¡Créalo ahora para discutirlo con el mundo entero!"
+        },
+        "createRoom": "Crear una sala",
+        "noMessages": "¡No hay mensajes todavía, sé el primero en enviar uno!"
+    },
+    "de": {
+        "roomName": "Raumname",
+        "roomDescription": "Beschreibe deinen Raum hier",
+        "description": "LiveWave ermöglicht es dir, in Echtzeit über die Ereignisse zu diskutieren, die du liebst, viel Spaß beim Diskutieren!",
+        "confirmText": "Bestätigen",
+        "writeMessage": "Nachricht schreiben",
+        "welcomeMessage": "Willkommen bei LiveWave",
+        "room": "Waves Räume",
+        "search": "Suche ein Ereignis...",
+        "dontExist": {
+            "title": "Dieser Raum existiert noch nicht",
+            "description": "Erstelle ihn jetzt, um mit der ganzen Welt darüber zu diskutieren!"
+        },
+        "createRoom": "Einen Raum erstellen",
+        "noMessages": "Noch keine Nachrichten, sei der Erste, der eine sendet!"
+    }
+}

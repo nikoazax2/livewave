@@ -5,16 +5,14 @@
             <v-card class="wave-card card-in">
                 <v-card-title>
                     <div class="d-flex justify-space-between align-center">
-                        <div class="mr-6"> 
+                        <div class="mr-6">
                             <img src="../../public/logobigwhite.png" height="40" alt="logo" class="ml-1" style="transform: translateY(7px);" />
                         </div>
                         <div style="width: 100%; max-width: 300px;" class="d-flex justify-space-between align-center">
-                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="texts[language]?.search" hide-details="true"></v-text-field>
+                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="$texts[language]?.search" hide-details="true"></v-text-field>
                             <v-icon size="24" @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
-                            <div class="ml-2 align-center d-flex" style="cursor: pointer;">
-                                <img v-if="language === 'en'" src="../assets/flags/en.png" width="24" height="24" @click="$emit('setLanguage', 'fr')" />
-                                <img v-else src="../assets/flags/fr.png" width="24" height="24" @click="$emit('setLanguage', 'en')" />
-                            </div>
+                          
+                            <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" />
                         </div>
                     </div>
                 </v-card-title>
@@ -37,10 +35,10 @@
                             <v-list-item v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length" @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
                                 <div class="left">
                                     <strong>
-                                        {{ texts[language]?.dontExist.title }}
+                                        {{ $texts[language]?.dontExist.title }}
                                     </strong>
                                     <div class="caption">
-                                        {{ texts[language]?.dontExist.description }}
+                                        {{ $texts[language]?.dontExist.description }}
                                     </div>
                                 </div>
                             </v-list-item>
@@ -51,7 +49,7 @@
                                 <v-icon>
                                     mdi-plus
                                 </v-icon>
-                                {{ texts[language]?.createRoom }}
+                                {{ $texts[language]?.createRoom }}
                             </v-btn>
                         </div>
                     </v-list>
@@ -66,12 +64,14 @@ import { supabase } from '../supabase';
 import CreateChat from '../components/CreateChat.vue';
 import trends from '../../public/trends.json';
 import Livers from '../components/LiversRedDot.vue';
+import SetLanguage from '../components/SetLanguage.vue';
 
 export default {
     name: 'waves',
     components: {
         CreateChat,
-        Livers
+        Livers,
+        SetLanguage
     },
     props: {
         bots: Boolean,
@@ -81,31 +81,7 @@ export default {
     data() {
         return {
             chats: [],
-            search: '',
-            texts: {
-                en: {
-                    welcomeMessage: 'Welcome to LiveWave',
-                    room: 'Waves Rooms',
-                    description: 'LiveWave is a real-time conversation app around the events you love!',
-                    search: 'Search an event...',
-                    dontExist: {
-                        title: 'This room does not exist yet',
-                        description: 'Create it now to discuss it with the whole world!'
-                    },
-                    createRoom: 'Create a room'
-                },
-                fr: {
-                    welcomeMessage: 'Bienvenue sur LiveWave',
-                    room: 'Salons Waves',
-                    description: 'LiveWave est une application de conversation en temps réel autour des événements qui vous passionnent !',
-                    search: 'Chercher un évènement...',
-                    dontExist: {
-                        title: 'Ce salon n\'existe pas encore',
-                        description: 'Crée le maintenant pour en discuter avec le monde entier !'
-                    },
-                    createRoom: 'Créer un salon'
-                }
-            }
+            search: ''
         };
     },
     computed: {
@@ -169,7 +145,8 @@ export default {
 }
 </style>
 
-<style scoped lang="scss"> 
+<style scoped lang="scss">
+
 .wave-card {
     div {
         color: rgb(255, 255, 255) !important;

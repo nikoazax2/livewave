@@ -16,6 +16,9 @@
 <script>
 export default {
     name: 'CreateChat',
+    props: {
+        language:String,
+    },
     data() {
         return {
             dialog: true,

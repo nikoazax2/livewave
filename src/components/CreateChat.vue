@@ -5,8 +5,8 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field v-model="chatName" :label="texts[language]?.roomName" required hide-details="true" />
-                            <v-textarea v-model="chatDescription" :label="texts[language]?.roomDescription" required hide-details="true" class="mt-4" />
+                            <v-text-field v-model="chatName" :label="$texts[language]?.roomName" required hide-details="true" />
+                            <v-textarea v-model="chatDescription" :label="$texts[language]?.roomDescription" required hide-details="true" class="mt-4" />
                         </v-col>
                     </v-row>
                 </v-container>
@@ -14,7 +14,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="savechatName">
-                    {{ texts[language]?.confirmText }}
+                    {{ $texts[language]?.confirmText }}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -31,19 +31,7 @@ export default {
         return {
             dialog: false,
             chatName: '',
-            chatDescription: '',
-            texts: {
-                en: {
-                    roomName: 'Room name',
-                    roomDescription: 'Describe your room here',
-                    confirmText: 'Confirm'
-                },
-                fr: {
-                    roomName: 'Nom de la salle',
-                    roomDescription: 'Décris ta salle ici',
-                    confirmText: 'Valider'
-                }
-            }
+            chatDescription: ''
         };
     },
     created() {

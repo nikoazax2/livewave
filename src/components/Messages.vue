@@ -15,8 +15,9 @@
     </div>
     <div v-else class="d-flex justify-center">
         <h4 class="text-center" :style="{ color: 'rgba(255, 255, 255,0.8)', fontWeight: 400 }">
-            {{ language === 'fr' ? 'Aucun message pour le moment, soyez le premier à écrire !' : `No
-            messages yet, be the first to write!` }}
+            <!-- {{ language === 'fr' ? 'Aucun message pour le moment, soyez le premier à écrire !' : `No
+            messages yet, be the first to write!` }} -->
+            {{ $texts[language]?.noMessages }}
         </h4>
     </div>
 </template>

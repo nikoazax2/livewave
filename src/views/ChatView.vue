@@ -15,6 +15,10 @@
                 </div>
                 <div class="d-flex align-center">
                     <v-icon v-if="!backgroundImage" @click="$emit('setthemeDark', !themeDark)" :style="'font-size: 25px; cursor: pointer;'" class="mr-2" :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'">mdi-theme-light-dark</v-icon>
+                    <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" class="mr-4" />
+                    <v-icon @click="$emit('setaskUsername', true)" class="mr-4" :style="'font-size: 25px; cursor: pointer;'">
+                        mdi-cog
+                    </v-icon> 
                     <LiversRedDot :livers="chat?.livers" />
                 </div>
             </v-card-title>
@@ -35,7 +39,7 @@
                         </div>
                         <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
                     </div>
-                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
+                    <v-text-field hide-details class="mb-2" variant="outlined" append-inner-icon="mdi-send" rounded v-model="newMessage" :label="$texts[language]?.writeMessage" @keyup.enter="sendMessage" @click:append-inner="sendMessage" />
                 </div>
             </v-card-actions>
         </v-card>
@@ -54,6 +58,7 @@ import bannedWords from '../assets/bannedwords.json'
 import Message from '../components/Message.vue';
 import Messages from '../components/Messages.vue';
 import Teams from '../components/Teams.vue';
+import SetLanguage from '../components/SetLanguage.vue';
 leoProfanity.loadDictionary('fr');
 leoProfanity.add(bannedWords);
 
@@ -68,6 +73,7 @@ export default {
         backgroundImage: String,
     },
     components: {
+        SetLanguage,
         LiversRedDot,
         Messages,
         Message,
@@ -109,15 +115,7 @@ export default {
                 icon: 'mdi-whatsapp',
                 name: 'whatsapp',
                 url: 'https://api.whatsapp.com/send?text='
-            }],
-            texts: {
-                en: {
-                    writeMessage: 'Write a message',
-                },
-                fr: {
-                    writeMessage: 'Écrire un message',
-                }
-            }
+            }]
         };
     },
     async mounted() {

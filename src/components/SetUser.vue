@@ -5,15 +5,16 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field v-model="userName" label="User name" required
-                                hide-details="true"></v-text-field>
+                            <v-text-field v-model="userName" label="User name" required hide-details="true"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-container>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="saveUserName">Valider</v-btn>
+                <v-btn color="blue darken-1" text @click="saveUserName">
+                    {{ $texts[language]?.confirmText }}
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -22,7 +23,7 @@
 <script>
 export default {
     props: {
-        username: String
+        language: String
     },
     data() {
         return {
