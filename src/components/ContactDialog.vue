@@ -16,6 +16,9 @@
 
             <v-col cols="12">
               <v-btn color="primary" block class="mb-2" elevation="0" @click="openEmail"> 📧 Envoyer un email </v-btn> 
+              <p class="text-center mb-4">
+                ({{ email }})
+              </p>
               <v-btn color="secondary" block variant="outlined" :href="twitterUrl" target="_blank">
                 🐦 Twitter @LiveWaveChat
               </v-btn>
@@ -36,7 +39,7 @@ export default {
     return {
       dialog: true,
       twitterUrl: "https://x.com/LiveWaveChat",
-      email: "nicolasage38@gmail.com",
+      email: "contact.livewave@gmail.com",
     };
   },
   methods: {
