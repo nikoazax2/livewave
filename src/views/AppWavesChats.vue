@@ -1,10 +1,13 @@
 <template>
     <div :class="{ 'mobile': mobile }" class="appwaveschats" :style="getBackgroundImage()">
-        <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername" />
+        <ContactDialog v-if="contact" @close="contact = false" :language="language" @setContact="contact = $event"  />
 
-        <WavesView :language="language" v-if="$route.path === '/'" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :bots="bots" @setaskUsername="askUsername = $event" :username="username" />
+        <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername"  />
 
-        <ChatView v-if="$route.path.includes('/chat')" :backgroundImage="backgroundImage" @backgroundImage="backgroundImage = $event" :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" @setaskUsername="askUsername = $event" />
+        <WavesView :language="language" v-if="$route.path === '/'" :themeDark="themeDark" :mobile="mobile" @setLanguage="setLanguage" :bots="bots" @setaskUsername="askUsername = $event" :username="username" @setContact="contact = $event" />
+
+        <ChatView v-if="$route.path.includes('/chat')" :backgroundImage="backgroundImage" @backgroundImage="backgroundImage = $event" :language="language" :themeDark="themeDark" :mobile="mobile" 
+       @setContact="contact = $event"   :bots="bots" @setLanguage="setLanguage" :username="username" @setaskUsername="askUsername = $event" />
 
         <!-- <TopsMessages :language="language" :themeDark="themeDark" :mobile="mobile" :bots="bots" @setLanguage="setLanguage" :username="username" /> -->
     </div>
@@ -17,6 +20,7 @@ import SetUser from '../components/SetUser.vue';
 import ChatView from './ChatView.vue';
 import WavesView from './WavesView.vue';
 import TopsMessages from '../components/TopsMessages.vue';
+import ContactDialog from '../components/ContactDialog.vue';
 
 export default {
     name: 'App',
@@ -25,10 +29,12 @@ export default {
         SetUser,
         WavesView,
         ChatView,
-        TopsMessages
+        TopsMessages,
+        ContactDialog
     },
     data() {
         return {
+            contact: false,
             username: null,
             askUsername: false,
             config: null,

@@ -9,7 +9,7 @@ const routes = [
     { path: '/', component: AppWavesChats, name: 'waves' },
     { path: '/chat/:id', component: AppWavesChats },
     { path: '/blog/:id', component: Blog, name: 'Blog' },
-    { path: '/blogs', component: Blogs, name: 'Blogs' },
+    { path: '/blogs', component: Blogs, name: 'Blogs' }
 ];
 
 const router = createRouter({

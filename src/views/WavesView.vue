@@ -1,210 +1,241 @@
 <template>
-    <div class="h-100 w-100 d-flex justify-center">
-        <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
-        <v-container class="card-container">
-            <v-card class="wave-card card-in">
-                <v-card-title>
-                    <div class="d-flex justify-space-between align-center">
-                        <div class="mr-6">
-                            <img src="../../public/logobigwhite.png" height="40" alt="logo" class="ml-1" style="transform: translateY(7px);" />
-                        </div>
-                        <div style="width: 100%; max-width: 300px;" class="d-flex justify-space-between align-center">
-                            <v-text-field class="mr-4" rounded prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" v-model="search" :label="$texts[language]?.search" hide-details="true"></v-text-field>
-                            <v-icon size="24" @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
-                          
-                            <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" />
-                        </div>
+  <div class="h-100 w-100 d-flex justify-center">
+    <CreateChat @create-chat="createChat" ref="createChat" :title="search" :language="language" />
+    <v-container class="card-container">
+      <v-card class="wave-card card-in">
+        <v-card-title>
+          <div class="d-flex justify-space-between align-center">
+            <div class="mr-6">
+              <img
+                src="../../public/logobigwhite.png"
+                height="40"
+                alt="logo"
+                class="ml-1"
+                style="transform: translateY(7px)"
+              />
+            </div>
+            <div style="width: 100%; max-width: 400px" class="d-flex justify-space-between align-center">
+              <v-text-field
+                class="mr-4"
+                rounded
+                prepend-inner-icon="mdi-magnify"
+                variant="outlined"
+                density="compact"
+                v-model="search"
+                :label="$texts[language]?.search"
+                hide-details="true"
+              ></v-text-field>
+              <v-icon class="mr-4" :style="'font-size: 25px; cursor: pointer;'" @click="$emit('setContact', true)">
+                mdi-email-heart-outline
+              </v-icon>
+              <v-icon size="24" @click="$emit('setaskUsername', true)">mdi-cog</v-icon>
+
+              <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" />
+            </div>
+          </div>
+        </v-card-title>
+        <v-card-text class="wave-messages" ref="waveMessages">
+          <v-list>
+            <div class="wave-messages-list">
+              <v-list-item
+                @click="clickRoom(chat)"
+                v-for="(chat, index) in roomsBySearch"
+                :key="index"
+                class="wave-message"
+              >
+                <div class="wave-message">
+                  <div class="left">
+                    <strong>{{ chat.title }}</strong>
+                    <div class="caption">
+                      {{ chat.description }}
                     </div>
-                </v-card-title>
-                <v-card-text class="wave-messages" ref="waveMessages">
-                    <v-list>
-                        <div class="wave-messages-list">
-                            <v-list-item @click="clickRoom(chat)" v-for="(chat, index) in roomsBySearch" :key="index" class="wave-message">
-                                <div class="wave-message">
-                                    <div class="left">
-                                        <strong>{{ chat.title }}</strong>
-                                        <div class="caption">
-                                            {{ chat.description }}
-                                        </div>
-                                    </div>
-                                    <livers v-if="chat?.livers > 0" :livers="chat?.livers"></livers>
-                                </div>
+                  </div>
+                  <livers v-if="chat?.livers > 0" :livers="chat?.livers"></livers>
+                </div>
+              </v-list-item>
+              <!-- last line to create a new chat -->
+              <v-list-item
+                v-if="
+                  search.length > 0 &&
+                  !chats?.filter((chat) => chat.title.toLowerCase().includes(search.toLowerCase()))?.length
+                "
+                @click="$refs.createChat.dialog = true"
+                class="wave-message create-chat-line"
+              >
+                <div class="left">
+                  <strong>
+                    {{ $texts[language]?.dontExist.title }}
+                  </strong>
+                  <div class="caption">
+                    {{ $texts[language]?.dontExist.description }}
+                  </div>
+                </div>
+              </v-list-item>
+            </div>
 
-                            </v-list-item>
-                            <!-- last line to create a new chat -->
-                            <v-list-item v-if="search.length > 0 && !chats?.filter(chat => chat.title.toLowerCase().includes(search.toLowerCase()))?.length" @click="$refs.createChat.dialog = true" class="wave-message create-chat-line">
-                                <div class="left">
-                                    <strong>
-                                        {{ $texts[language]?.dontExist.title }}
-                                    </strong>
-                                    <div class="caption">
-                                        {{ $texts[language]?.dontExist.description }}
-                                    </div>
-                                </div>
-                            </v-list-item>
-                        </div>
-
-                        <div class="create-chat">
-                            <v-btn size="small" rounded @click="$refs.createChat.dialog = true" elevation="0" color="rgba(46, 49, 50,1)" style="color: white; border: 1px solid white;">
-                                <v-icon>
-                                    mdi-plus
-                                </v-icon>
-                                {{ $texts[language]?.createRoom }}
-                            </v-btn>
-                        </div>
-                    </v-list>
-                </v-card-text>
-            </v-card>
-        </v-container>
-    </div>
+            <div class="create-chat">
+              <v-btn
+                size="small"
+                rounded
+                @click="$refs.createChat.dialog = true"
+                elevation="0"
+                color="rgba(46, 49, 50,1)"
+                style="color: white; border: 1px solid white"
+              >
+                <v-icon> mdi-plus </v-icon>
+                {{ $texts[language]?.createRoom }}
+              </v-btn>
+            </div>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script>
-import { supabase } from '../supabase';
-import CreateChat from '../components/CreateChat.vue';
-import trends from '../../public/trends.json';
-import Livers from '../components/LiversRedDot.vue';
-import SetLanguage from '../components/SetLanguage.vue';
+import { supabase } from "../supabase";
+import CreateChat from "../components/CreateChat.vue";
+import trends from "../../public/trends.json";
+import Livers from "../components/LiversRedDot.vue";
+import SetLanguage from "../components/SetLanguage.vue";
 
 export default {
-    name: 'waves',
-    components: {
-        CreateChat,
-        Livers,
-        SetLanguage
+  name: "waves",
+  components: {
+    CreateChat,
+    Livers,
+    SetLanguage,
+  },
+  props: {
+    bots: Boolean,
+    language: String,
+    themeDark: Boolean,
+  },
+  data() {
+    return {
+      chats: [],
+      search: "",
+    };
+  },
+  computed: {
+    roomsBySearch() {
+      return this.chats
+        ?.filter(
+          (chat) =>
+            chat.title.toLowerCase().includes(this.search.toLowerCase()) ||
+            chat.description?.toLowerCase().includes(this.search.toLowerCase())
+        )
+        .sort((a, b) => b.livers - a.livers);
     },
-    props: {
-        bots: Boolean,
-        language: String,
-        themeDark: Boolean,
+  },
+  methods: {
+    async clickRoom(chat) {
+      if (chat.id) this.$router.push(`/chat/${chat.id}`);
+      else {
+        chat = await this.createChat(chat.title);
+        this.$router.push(`/chat/${chat.id}`);
+      }
     },
-    data() {
-        return {
-            chats: [],
-            search: ''
-        };
+    async getRooms() {
+      const { data, error } = await supabase.from("chats").select("*").order("created_at", { ascending: false });
+      if (error) this.$toast.error(error.message);
+      else {
+        this.chats = data;
+        trends.sort((a, b) => b.volume - a.volume);
+        trends.forEach((trend) => {
+          if (!this.chats.find((chat) => chat.title === trend.trend)) {
+            let c = this.chats.push({ title: trend.trend, livers: 0 });
+          }
+        });
+        this.chats.forEach((chat) => {
+          if (chat?.livers < 3 && this.bots) {
+            // if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+            // else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
+          } else if (chat?.livers < 10) {
+            // if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
+            // else chat.livers = Math.floor(Math.random() * 4);
+          }
+        });
+      }
     },
-    computed: {
-        roomsBySearch() {
-            return this.chats?.filter(chat => chat.title.toLowerCase().includes(this.search.toLowerCase()) || chat.description?.toLowerCase().includes(this.search.toLowerCase())).sort((a, b) => b.livers - a.livers)
-        }
-    },
-    methods: {
-        async clickRoom(chat) {
-            if (chat.id) this.$router.push(`/chat/${chat.id}`)
-            else {
-                chat = await this.createChat(chat.title)
-                this.$router.push(`/chat/${chat.id}`)
-            }
-        },
-        async getRooms() {
-            const { data, error } = await supabase
-                .from('chats')
-                .select('*')
-                .order('created_at', { ascending: false });
-            if (error) this.$toast.error(error.message);
-            else {
-                this.chats = data;
-                trends.sort((a, b) => b.volume - a.volume);
-                trends.forEach(trend => {
-                    if (!this.chats.find(chat => chat.title === trend.trend)) {
-                        let c = this.chats.push({ title: trend.trend, livers: 0 });
-                    }
-                });
-                this.chats.forEach(chat => {
-                    if (chat?.livers < 3 && this.bots) {
-                        // if (chat.livers == 0) chat.livers = Math.floor(Math.random() * 20) + 4;
-                        // else chat.livers = chat.livers * Math.floor(Math.random() * 2) + 1;
-                    } else if (chat?.livers < 10) {
-                        // if (chat.livers > 0) chat.livers = Math.floor(Math.random() * 20) + 4;
-                        // else chat.livers = Math.floor(Math.random() * 4);
-                    }
+    async createChat(chatName, chatDescription) {
+      const { data, error } = await supabase.from("chats").insert([{ title: chatName, description: chatDescription }]);
+      this.$refs.createChat.dialog = false;
 
-                });
-            }
-        },
-        async createChat(chatName, chatDescription) {
-            const { data, error } = await supabase.from('chats').insert([{ title: chatName, description: chatDescription }]);
-            this.$refs.createChat.dialog = false;
-
-            await this.getRooms();
-            let c = this.chats.find(chat => chat.title === chatName);
-            this.$router.push(`/chat/${c.id}`);
-            return c
-        }
+      await this.getRooms();
+      let c = this.chats.find((chat) => chat.title === chatName);
+      this.$router.push(`/chat/${c.id}`);
+      return c;
     },
-    mounted() {
-        this.getRooms();
-    }
-};              
+  },
+  mounted() {
+    this.getRooms();
+  },
+};
 </script>
 
 <style lang="scss">
 .v-list-item__content {
-    width: 100% !important;
+  width: 100% !important;
 }
 </style>
 
 <style scoped lang="scss">
-
 .wave-card {
-    div {
-        color: rgb(255, 255, 255) !important;
-    }
+  div {
+    color: rgb(255, 255, 255) !important;
+  }
 
-    .wave-messages-list {
-        height: calc(100% - 50px);
-        overflow-y: auto;
-    }
+  .wave-messages-list {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+  }
 }
 
 .wave-messages {
-    height: 100%;
+  height: 100%;
 }
 
 .wave-message {
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0 10px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
 
-    .caption {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.7);
-        opacity: 0.7;
-        font-weight: normal;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+  .caption {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 0.7;
+    font-weight: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .left {
-        max-width: 80%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
+  .left {
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
-
-
 .v-list {
-    background-color: rgba(255, 255, 255, 0);
-    font-size: 20px;
-    font-weight: bold;
-    height: calc(100% - 50px);
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+  background-color: rgba(255, 255, 255, 0);
+  font-size: 20px;
+  font-weight: bold;
+  height: calc(100% - 50px);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 
-
-    .v-list-item {
-        border-radius: 10px !important;
-        padding: 10px;
-        margin: 0;
-        cursor: pointer;
-    }
+  .v-list-item {
+    border-radius: 10px !important;
+    padding: 10px;
+    margin: 0;
+    cursor: pointer;
+  }
 }
 </style>
