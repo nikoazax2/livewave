@@ -8,6 +8,9 @@
           <v-row>
             <v-col cols="12">
               <p>Une question, une collaboration ou une suggestion ?</p>
+              <p>
+                Contactez nous pour créer un chat dédié à votre communauté, votre événement ou votre entreprise.
+              </p>
               <p>Écris-nous par email ou sur Twitter :</p>
             </v-col>
 
