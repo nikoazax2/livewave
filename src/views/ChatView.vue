@@ -326,11 +326,12 @@ export default {
     },
     async getEvent() {
       const { data, error } = await supabase.from("events").select("*").eq("name", this.chat.title).single();
-      if (data?.teams) {
+
+      if (data?.id) {
         data.teams = await supabase
           .from("teams")
           .select("*")
-          .in("id", data.teams)
+          .eq("event", data.id)
           .then(({ data, error }) => {
             if (error) {
               console.error("Error fetching teams:", error);
