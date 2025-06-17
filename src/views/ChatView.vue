@@ -391,20 +391,22 @@ export default {
       const sendMessage = () => {
         if (!this.enventNow) return;
         // Only if there is a message with bot true
-        if (this.messages.length == 0 || this.messages?.filter((msg) => msg.bot).length == 0) return;
+        if (this.messages.length == 0) return;
 
         let randomIndex = Math.floor(Math.random() * usernames.length);
         let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
 
-        let recentMessages = this.messages.slice(-20).map((msg) => msg.content);
-        let botMessages = this.messages?.filter((msg) => msg.bot && !recentMessages.includes(msg.content));
-        let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
+        // Get a random message minus the last 20 messages
+        let recentMessages = this.messages.slice(0, -20);
+        //let botMessages = this.messages?.filter((msg) => msg.bot && !recentMessages.includes(msg.content));
+        //let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
+        let randomMessage = recentMessages[Math.floor(Math.random() * recentMessages.length)];
         let uuid = crypto.randomUUID();
 
-        if (botMessage?.content == null) return;
+        if (randomMessage?.content == null) return;
         this.messages.push({
-          username: usernameS,
-          content: botMessage?.content,
+          username: randomMessage?.username || usernameS,
+          content: randomMessage?.content,
           created_at: new Date().toISOString(),
           bot: true,
           id: uuid,
@@ -413,9 +415,8 @@ export default {
 
       // Send the first message within 3 seconds
       setTimeout(() => {
-        // Continue sending messages between minTimeS and maxTimeS
         setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
-      }, Math.floor(Math.random() * 3000));
+      }, Math.floor(Math.random() * 1000));
     },
     deleteMessagesLoop() {
       if (!this.deleteMessages) return;
