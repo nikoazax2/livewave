@@ -24,5 +24,5 @@ dist-ssr
 *.sw?
 .vercel
 dist
-
+.env
 # tweeterBotMarketing.js
