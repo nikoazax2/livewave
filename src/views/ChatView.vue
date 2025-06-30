@@ -184,7 +184,7 @@ export default {
     await this.getMessages(messagesbots);
     this.setLivers();
     this.liversLoop();
-    this.deleteMessagesLoop();
+    this.deleteMessagesLoop(); 
     if (this.bots) this.sendBotMessage();
     this.adMessage();
     this.setTeam();
@@ -376,7 +376,7 @@ export default {
       }, 60000); //every 1 minute
     },
     sendBotMessage() {
-      if (!this.enventNow || !this.forcebot) return;
+    //   if (!this.enventNow || !this.forcebot) return;
       let paramsForce = [
         { min: 60 * 8, max: 60 * 10 },
         { min: 60 * 3, max: 60 * 5 },
@@ -389,7 +389,7 @@ export default {
       let maxTimeS = paramsForce[this.forcebot - 1].max;
 
       const sendMessage = () => {
-        if (!this.enventNow) return;
+        // if (!this.enventNow) return;
         // Only if there is a message with bot true
         if (this.messages.length == 0) return;
 
