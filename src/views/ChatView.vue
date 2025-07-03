@@ -384,6 +384,12 @@ export default {
         { min: 30, max: 60 },
         { min: 10, max: 30 },
         { min: 1, max: 10 },
+        { min: 1, max: 5 },
+        { min: 1, max: 3 },
+        { min: 0.5, max: 1 },
+        { min: 0.1, max: 0.5 },
+        { min: 0.05, max: 0.1 },
+        { min: 0.01, max: 0.05 }
       ];
       let minTimeS = paramsForce[this.forcebot - 1].min;
       let maxTimeS = paramsForce[this.forcebot - 1].max;
