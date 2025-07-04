@@ -191,7 +191,7 @@ export default {
     this.storeUserInfos();
 
     //set title of the page with the chat name
-    document.title = `LiveWave - ${this.chat?.title}`;
+    document.title = `LiveWave - ${this.chat?.title_full || this.chat?.title}`;
 
     const chatMessagesList = document.getElementById("chat-messages-list");
     const observer = new MutationObserver(() => {
