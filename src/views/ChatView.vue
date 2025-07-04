@@ -11,7 +11,7 @@
             mdi-arrow-left
           </v-icon>
           <div class="title-caption">
-            <div class="title">{{ chat?.title }}</div>
+            <div class="title">{{ chat?.title_full || chat?.title }}</div>
             <div class="caption">{{ chat?.description }}</div>
           </div>
         </div>
