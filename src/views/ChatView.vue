@@ -11,7 +11,7 @@
             mdi-arrow-left
           </v-icon>
           <div class="title-caption">
-            <div class="title">{{ chat?.title }}</div>
+            <div class="title">{{ chat?.title_full || chat?.title }}</div>
             <div class="caption">{{ chat?.description }}</div>
           </div>
         </div>
@@ -184,14 +184,14 @@ export default {
     await this.getMessages(messagesbots);
     this.setLivers();
     this.liversLoop();
-    this.deleteMessagesLoop();
+    this.deleteMessagesLoop(); 
     if (this.bots) this.sendBotMessage();
     this.adMessage();
     this.setTeam();
     this.storeUserInfos();
 
     //set title of the page with the chat name
-    document.title = `LiveWave - ${this.chat?.title}`;
+    document.title = `LiveWave - ${this.chat?.title_full || this.chat?.title}`;
 
     const chatMessagesList = document.getElementById("chat-messages-list");
     const observer = new MutationObserver(() => {
@@ -376,7 +376,7 @@ export default {
       }, 60000); //every 1 minute
     },
     sendBotMessage() {
-      if (!this.enventNow || !this.forcebot) return;
+    //   if (!this.enventNow || !this.forcebot) return;
       let paramsForce = [
         { min: 60 * 8, max: 60 * 10 },
         { min: 60 * 3, max: 60 * 5 },
@@ -384,12 +384,18 @@ export default {
         { min: 30, max: 60 },
         { min: 10, max: 30 },
         { min: 1, max: 10 },
+        { min: 1, max: 5 },
+        { min: 1, max: 3 },
+        { min: 0.5, max: 1 },
+        { min: 0.1, max: 0.5 },
+        { min: 0.05, max: 0.1 },
+        { min: 0.01, max: 0.05 }
       ];
       let minTimeS = paramsForce[this.forcebot - 1].min;
       let maxTimeS = paramsForce[this.forcebot - 1].max;
 
       const sendMessage = () => {
-        if (!this.enventNow) return;
+        // if (!this.enventNow) return;
         // Only if there is a message with bot true
         if (this.messages.length == 0) return;
 

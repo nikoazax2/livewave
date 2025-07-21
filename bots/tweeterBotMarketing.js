@@ -25,10 +25,10 @@ await agent.login({
 // Liste des clients Twitter (tu peux en ajouter d’autres ici)
 const twitterClients = [
     new TwitterApi({
-        appKey: process.env.TWITTER_API_KEY,
-        appSecret: process.env.TWITTER_API_SECRET,
-        accessToken: process.env.TWITTER_ACCESS_TOKEN,
-        accessSecret: process.env.TWITTER_ACCESS_SECRET
+        appKey: process.env.TWITTER_API_KEY_2,
+        appSecret: process.env.TWITTER_API_SECRET_2,
+        accessToken: process.env.TWITTER_ACCESS_TOKEN_2,
+        accessSecret: process.env.TWITTER_ACCESS_SECRET_2
     })
 ];
 
