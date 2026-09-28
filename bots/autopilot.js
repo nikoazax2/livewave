@@ -16,6 +16,7 @@ import { fetchTrends, isSensitive } from "./autopilot/trends.js";
 import { fetchTonight } from "./autopilot/tvguide.js";
 import { selectEvents } from "./autopilot/select.js";
 import { eventSlots, eventPost, trendPost, chatUrl } from "./autopilot/posts.js";
+import { hostSlots, hostText, HOST_NAME } from "./autopilot/host.js";
 import { postX, postBsky, getX, hasBsky } from "./autopilot/publish.js";
 import { parisDate } from "./autopilot/text.js";
 import { ogImageUrl } from "../api/share.js";
@@ -216,6 +217,35 @@ export async function post() {
     }
   }
   if (!due.length) log("rien a publier");
+  await hostPrompts(events || []);
+}
+
+// L'animateur LiveWave pose des questions dans les salons des emissions en cours
+async function hostPrompts(events) {
+  const now = Date.now();
+  for (const e of events) {
+    if ((e.priority ?? 3) < POST_MIN_PRIORITY) continue;
+    if (now < new Date(e.datestart).getTime() || now > new Date(e.dateend).getTime()) continue;
+    for (const s of hostSlots(e)) {
+      if (s.at > now || now - s.at > 15 * MIN) continue;
+      const text = hostText(e, s);
+      const ref = `event:${e.name}:${parisDate(new Date(e.datestart))}`;
+      const network = LIVE ? "host" : "host-test";
+      const { error: dup } = await db.from("social_posts").insert({ network, ref, slot: s.slot, text, status: LIVE ? "sent" : "test" });
+      if (dup) {
+        if (dup.code !== "23505") log("animateur :", dup.message);
+        continue;
+      }
+      if (!LIVE) {
+        log(`[TEST animateur] ${e.name}/${s.slot} : ${text}`);
+        continue;
+      }
+      const { data: chat } = await db.from("chats").select("id").ilike("title", e.name).limit(1).maybeSingle();
+      if (!chat) continue;
+      const { error } = await db.from("messages").insert({ chat_id: chat.id, username: HOST_NAME, content: text, host: true });
+      log(error ? `animateur echec ${e.name}/${s.slot} : ${error.message}` : `animateur ${e.name}/${s.slot} : ${text}`);
+    }
+  }
 }
 
 export async function preview() {

@@ -463,10 +463,12 @@ export default {
         // this.newMessage = leoProfanity.clean(this.newMessage);
         this.newMessage = this.cleanMessage(this.newMessage);
 
+        // Le pseudo de l'animateur est reserve
+        const username = /live\s*wave/i.test(this.username || "") ? `${this.username}_fan` : this.username;
         let mess = await supabase.from("messages").insert([
           {
             chat_id: this.chatId,
-            username: this.username,
+            username,
             content: this.newMessage,
             reply: this.answer?.id || null,
           },

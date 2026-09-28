@@ -1,5 +1,5 @@
 <template>
-  <div class="message" :class="{ own, share: msg.shareMessage, compact: reply }">
+  <div class="message" :class="{ own, share: msg.shareMessage, compact: reply, host: msg.host }">
     <div class="avatar" :style="{ background: avatarColor(msg.username) }">{{ initial(msg.username) }}</div>
 
     <div class="bubble-wrap">
@@ -10,7 +10,9 @@
           <span>{{ messagesReply.content }}</span>
         </div>
 
-        <strong class="name" :style="{ color: own ? 'white' : nameColor(msg.username) }">{{ msg.username }}</strong>
+        <strong class="name" :style="{ color: own || msg.host ? 'white' : nameColor(msg.username) }">
+          {{ msg.username }}<span v-if="msg.host" class="host-badge">🎙️ {{ $texts[language]?.host }}</span>
+        </strong>
 
         <template v-if="!msg.shareMessage">
           <span class="content">{{ msg.content }}</span>
@@ -289,6 +291,29 @@ export default {
     opacity: 0.7;
     transform: none;
   }
+}
+
+.host {
+  .avatar {
+    background: var(--lw-gradient) !important;
+  }
+
+  .bubble {
+    background: linear-gradient(135deg, rgba(77, 124, 255, 0.28), rgba(255, 61, 139, 0.22));
+    border-color: rgba(139, 61, 255, 0.55);
+    font-weight: 500;
+  }
+}
+
+.host-badge {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.16);
+  vertical-align: 1px;
 }
 
 .share {

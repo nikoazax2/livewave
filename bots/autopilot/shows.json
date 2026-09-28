@@ -24,25 +24,49 @@
       "match": "^Star Academy",
       "name": "Star Academy",
       "hashtags": "#StarAc #StarAcademy",
-      "weight": 4
+      "weight": 4,
+      "questions": [
+        "🎤 Prime de la Star Ac ! Votre favori ce soir ?",
+        "La meilleure prestation jusqu'ici ?",
+        "Qui est en danger selon vous ?",
+        "Qui doit rester au château ce soir ?"
+      ]
     },
     {
       "match": "^Koh[- ]Lanta",
       "name": "Koh-Lanta",
       "hashtags": "#KohLanta",
-      "weight": 4
+      "weight": 4,
+      "questions": [
+        "🌴 Koh-Lanta commence ! Qui est votre aventurier préféré ?",
+        "Quelle stratégie vous a le plus surpris ?",
+        "Qui va être éliminé ce soir ?",
+        "Le conseil approche : vous votez pour qui ?"
+      ]
     },
     {
       "match": "^Top Chef",
       "name": "Top Chef",
       "hashtags": "#TopChef",
-      "weight": 4
+      "weight": 4,
+      "questions": [
+        "👨‍🍳 Top Chef ! Quel candidat vous donne le plus faim ?",
+        "L'assiette la plus réussie pour l'instant ?",
+        "Quelle brigade s'en sort le mieux ?",
+        "Qui quitte la compétition ce soir selon vous ?"
+      ]
     },
     {
       "match": "^Secret Story",
       "name": "Secret Story",
       "hashtags": "#SecretStory",
-      "weight": 4
+      "weight": 4,
+      "questions": [
+        "🔐 Secret Story ! Vous avez une idée de secret à percer ?",
+        "Qui joue le mieux le jeu dans la maison ?",
+        "Ce qui vient de se passer, stratégie ou vraie embrouille ?",
+        "Qui est nominé selon vous ?"
+      ]
     },
     {
       "match": "^Pékin Express",
@@ -78,7 +102,13 @@
       "match": "^L'amour est dans le pré",
       "name": "L'amour est dans le pré",
       "hashtags": "#ADP #LAmourEstDansLePre",
-      "weight": 4
+      "weight": 4,
+      "questions": [
+        "🌾 C'est parti pour L'amour est dans le pré ! Vous suivez quel agriculteur de près ?",
+        "Quel couple vous y croyez le plus pour l'instant ?",
+        "Ce tête-à-tête, ça sent le coup de foudre ou pas du tout ? 💘",
+        "Qui repart seul(e) selon vous à la fin de la saison ?"
+      ]
     },
     {
       "match": "^Qui veut être mon associé",
@@ -108,7 +138,13 @@
       "match": "^Quotidien",
       "name": "Quotidien",
       "hashtags": "#Quotidien",
-      "weight": 3
+      "weight": 3,
+      "questions": [
+        "📺 Quotidien commence ! Le sujet qui vous intéresse le plus ce soir ?",
+        "L'invité le plus intéressant jusqu'ici ?",
+        "Votre moment préféré de l'émission ?",
+        "Le meilleur passage de ce soir ?"
+      ]
     },
     {
       "match": "^Touche pas à mon poste",

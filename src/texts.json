@@ -49,7 +49,8 @@
         "onAir": "On air",
         "share": "Share",
         "shareText": "Come chat live about {title} with me on LiveWave!",
-        "linkCopied": "Link copied"
+        "linkCopied": "Link copied",
+        "host": "Host"
     },
     "fr": {
         "roomName": "Nom de la salle",
@@ -101,7 +102,8 @@
         "onAir": "En direct",
         "share": "Partager",
         "shareText": "Viens commenter {title} en direct avec moi sur LiveWave !",
-        "linkCopied": "Lien copié"
+        "linkCopied": "Lien copié",
+        "host": "Animateur"
     },
     "es": {
         "roomName": "Nombre de la sala",
@@ -152,7 +154,8 @@
         "onAir": "En directo",
         "share": "Compartir",
         "shareText": "¡Ven a comentar {title} en directo conmigo en LiveWave!",
-        "linkCopied": "Enlace copiado"
+        "linkCopied": "Enlace copiado",
+        "host": "Presentador"
     },
     "de": {
         "roomName": "Raumname",
@@ -203,6 +206,7 @@
         "onAir": "Live",
         "share": "Teilen",
         "shareText": "Komm und chatte live mit mir über {title} auf LiveWave!",
-        "linkCopied": "Link kopiert"
+        "linkCopied": "Link kopiert",
+        "host": "Moderator"
     }
 }
