@@ -1,82 +1,70 @@
 <template>
-  <v-container class="card-container">
-    <v-card class="chat-card card-in" :style="getStyleChatCard()">
-      <v-card-title class="d-flex justify-space-between">
-        <div class="d-flex align-center left">
-          <v-icon
-            v-if="!implemented"
-            @click="$router.push({ name: 'waves' }), $emit('backgroundImage', null)"
-            class="mr-4"
-          >
-            mdi-arrow-left
-          </v-icon>
-          <div class="title-caption">
-            <div class="title">{{ chat?.title_full || chat?.title }}</div>
-            <div class="caption">{{ chat?.description }}</div>
+  <div class="chat-shell">
+    <section class="chat-panel glass">
+      <BorderBeam :size="260" :duration="12000" color-from="#4d7cff" color-to="#ff3d8b" :border-width="1.5" />
+      <header class="chat-header">
+        <button
+          v-if="!implemented"
+          class="icon-btn"
+          :aria-label="$texts[language]?.back"
+          @click="$router.push({ name: 'waves' }), $emit('backgroundImage', null)"
+        >
+          <v-icon>mdi-arrow-left</v-icon>
+        </button>
+        <div class="title-caption">
+          <h1 class="title">{{ chat?.title_full || chat?.title }}</h1>
+          <div v-if="chat?.description" class="caption">{{ chat?.description }}</div>
+        </div>
+        <span class="live-pill"><span class="dot"></span><NumberTicker :value="chat?.livers || 0" :decimal-places="0" :duration="1200" /></span>
+        <div class="header-actions">
+          <button class="icon-btn" :aria-label="$texts[language]?.contact" @click="$emit('setContact', true)">
+            <v-icon>mdi-email-heart-outline</v-icon>
+          </button>
+          <div class="icon-btn" :aria-label="$texts[language]?.language">
+            <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" />
           </div>
+          <button class="icon-btn" :aria-label="$texts[language]?.settings" @click="$emit('setaskUsername', true)">
+            <v-icon>mdi-account-cog-outline</v-icon>
+          </button>
         </div>
-        <div class="d-flex align-center">
-          <v-icon
-            v-if="!backgroundImage"
-            @click="$emit('setthemeDark', !themeDark)"
-            :style="'font-size: 25px; cursor: pointer;'"
-            class="mr-2"
-            :color="themeDark ? 'white' : 'rgba(0, 0, 0, 0.5)'"
-            >mdi-theme-light-dark</v-icon
-          >
-          <v-icon class="mr-4" :style="'font-size: 25px; cursor: pointer;'" @click="$emit('setContact', true)">
-            mdi-email-heart-outline
-          </v-icon>
-          <SetLanguage @setLanguage="$emit('setLanguage', $event)" :language="language" class="mr-4" />
-          <v-icon @click="$emit('setaskUsername', true)" class="mr-4" :style="'font-size: 25px; cursor: pointer;'">
-            mdi-cog
-          </v-icon>
-          <LiversRedDot :livers="chat?.livers" />
-        </div>
-      </v-card-title>
-      <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams" :vote="vote" @vote="vote = $event" />
-      <v-card-text class="h-100 card-container-messages">
-        <div class="chat-messages w-100 h-100">
-          <Messages
-            :language="language"
-            :chat="chat"
-            :messages="messages"
-            :loading="loading"
-            :socials="socials"
-            :likedMessages="likedMessages"
-            @addLike="addLike"
-            @setanswer="answer = $event"
-          />
-        </div>
-      </v-card-text>
-      <v-card-actions>
-        <div class="d-flex flex-column w-100">
-          <div class="mb-4 d-flex justify-space-between" v-if="answer">
-            <div class="d-flex align-center">
-              <v-icon class="mr-2"> mdi-reply </v-icon>
-              <Message :language="language" :chat="chat" v-if="answer" :msg="answer" :reply="true" />
-            </div>
-            <v-icon @click="answer = null" class="mr-12">mdi-close</v-icon>
+      </header>
+
+      <Teams @teamClick="teamClick" :teams="event.teams" v-if="event?.teams?.length" :vote="vote" @vote="vote = $event" />
+
+      <Messages
+        :language="language"
+        :chat="chat"
+        :messages="messages"
+        :loading="loading"
+        :socials="socials"
+        :likedMessages="likedMessages"
+        :username="username"
+        @addLike="addLike"
+        @setanswer="answer = $event"
+      />
+
+      <footer class="composer">
+        <div class="reply-preview" v-if="answer">
+          <v-icon size="18">mdi-reply</v-icon>
+          <div class="reply-text">
+            <strong>{{ answer.username }}</strong> {{ answer.content }}
           </div>
-          <v-text-field
-            hide-details
-            class="mb-2"
-            variant="outlined"
-            append-inner-icon="mdi-send"
-            rounded
-            v-model="newMessage"
-            :label="$texts[language]?.writeMessage"
-            @keyup.enter="sendMessage"
-            @click:append-inner="sendMessage"
-          />
+          <button class="icon-btn small" aria-label="close" @click="answer = null"><v-icon>mdi-close</v-icon></button>
         </div>
-      </v-card-actions>
-    </v-card>
-  </v-container>
+        <VanishingInput
+          v-model="newMessage"
+          class="composer-input"
+          :placeholders="$texts[language]?.composer || [$texts[language]?.writeMessage]"
+          @submit="sendMessage"
+        />
+      </footer>
+    </section>
+  </div>
 </template>
 
 <script>
 import { supabase } from "../supabase";
+import { pulseBackground } from "../background";
 import { useToast } from "vue-toastification";
 import LiversRedDot from "../components/LiversRedDot.vue";
 import trends from "../../public/trends.json";
@@ -88,6 +76,9 @@ import Message from "../components/Message.vue";
 import Messages from "../components/Messages.vue";
 import Teams from "../components/Teams.vue";
 import SetLanguage from "../components/SetLanguage.vue";
+import { VanishingInput } from "../components/inspira/vanishing-input";
+import { NumberTicker } from "../components/inspira/number-ticker";
+import { BorderBeam } from "../components/inspira/border-beam";
 leoProfanity.loadDictionary("fr");
 leoProfanity.add(bannedWords);
 
@@ -103,6 +94,9 @@ export default {
   },
   components: {
     SetLanguage,
+    VanishingInput,
+    NumberTicker,
+    BorderBeam,
     LiversRedDot,
     Messages,
     Message,
@@ -194,16 +188,17 @@ export default {
     document.title = `LiveWave - ${this.chat?.title_full || this.chat?.title}`;
 
     const chatMessagesList = document.getElementById("chat-messages-list");
-    const observer = new MutationObserver(() => {
-      chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
-    });
-    observer.observe(chatMessagesList, { childList: true });
+    if (chatMessagesList) {
+      this.observer = new MutationObserver(() => {
+        chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+      });
+      this.observer.observe(chatMessagesList, { childList: true, subtree: true });
+    }
 
     //after  2s scroll to bottom (transition of 1s)
     setTimeout(async () => {
       let chat = document.getElementById("chat-messages-list");
-      //set scrollTop to the bottom of the chat
-      chat.scrollTop = chat.scrollHeight + 20;
+      if (chat) chat.scrollTop = chat.scrollHeight + 20;
 
       // let height = chat.scrollHeight
       // let documentHeight = document.documentElement.scrollHeight
@@ -215,8 +210,17 @@ export default {
       // }
     }, 200);
   },
+  created() {
+    this.intervals = [];
+  },
+  beforeUnmount() {
+    this.intervals.forEach(clearInterval);
+    this.observer?.disconnect();
+    if (this.channel) supabase.removeChannel(this.channel);
+  },
   methods: {
     setTeam() {
+      if (!this.event?.teams) return;
       let params = JSON.parse(localStorage.getItem("livewave-params") || "{}");
       params.teams = params.teams || [];
 
@@ -325,7 +329,8 @@ export default {
       if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 800) + 200;
     },
     async getEvent() {
-      const { data, error } = await supabase.from("events").select("*").eq("name", this.chat.title).single();
+      if (!this.chat?.title) return [];
+      const { data, error } = await supabase.from("events").select("*").eq("name", this.chat.title).maybeSingle();
 
       if (data?.id) {
         data.teams = await supabase
@@ -356,7 +361,7 @@ export default {
 
     adMessage() {
       //Every 1 minutes send a message telling "LiveWave à besoin de vous pour continuer à vivre, vous pouvez aider en partageant le lien de la page"
-      setInterval(() => {
+      this.intervals.push(setInterval(() => {
         //send if there is no share message in last 5 messages
         if (this.messages.slice(-15).findIndex((msg) => msg.shareMessage) !== -1) return;
         let msg =
@@ -373,7 +378,7 @@ export default {
           backgroundColor: backgroundsColor[Math.floor(Math.random() * backgroundsColor.length)],
           shareMessage: true, //to add share buttons
         });
-      }, 60000); //every 1 minute
+      }, 60000)); //every 1 minute
     },
     sendBotMessage() {
     //   if (!this.enventNow || !this.forcebot) return;
@@ -391,6 +396,7 @@ export default {
         { min: 0.05, max: 0.1 },
         { min: 0.01, max: 0.05 }
       ];
+      if (!paramsForce[this.forcebot - 1]) return;
       let minTimeS = paramsForce[this.forcebot - 1].min;
       let maxTimeS = paramsForce[this.forcebot - 1].max;
 
@@ -421,21 +427,21 @@ export default {
 
       // Send the first message within 3 seconds
       setTimeout(() => {
-        setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000);
+        this.intervals.push(setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000));
       }, Math.floor(Math.random() * 1000));
     },
     deleteMessagesLoop() {
       if (!this.deleteMessages) return;
       //every 10second deletes messages exist for more than 2 minutes (only in frontend)
       const deleteMessageAfterS = 40;
-      setInterval(() => {
+      this.intervals.push(setInterval(() => {
         let now = new Date();
         this.messages = this.messages.filter((msg) => {
           let date = new Date(msg.created_at);
 
           return now - date < deleteMessageAfterS * 1000;
         });
-      }, 1000);
+      }, 1000));
     },
     async createChat(chatName) {
       const { data, error } = await supabase.from("chats").insert([{ title: chatName }]);
@@ -490,13 +496,14 @@ export default {
         this.loading = false;
       }
 
-      supabase
+      this.channel = supabase
         .channel("public:messages")
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
           if (payload.new.chat_id !== this.chatId) return;
           this.messages.push(payload.new);
+          pulseBackground();
           let chat = document.getElementById("chat-messages-list");
-          chat.scrollTop = chat.scrollHeight + 20;
+          if (chat) chat.scrollTop = chat.scrollHeight + 20;
         })
         .subscribe();
       return;
@@ -504,8 +511,7 @@ export default {
     async sendMessage() {
       const toast = useToast();
       if (this.newMessage.length > 200) {
-        // toast.error('Message trop long');
-        window.alert("Message trop long");
+        toast.error(this.$texts[this.language]?.tooLong);
         return;
       }
       if (this.newMessage) {
@@ -550,6 +556,7 @@ export default {
       return;
     },
     addLiver() {
+      if (!this.chat) return;
       supabase
         .from("chats")
         .update({ livers: this.chat.livers + 1 })
@@ -563,71 +570,211 @@ export default {
         });
     },
     liversLoop() {
-      setInterval(() => {
+      this.intervals.push(setInterval(() => {
         const minutes = new Date().getMinutes();
         const seconds = new Date().getSeconds();
         if (minutes % 2 === 1 && seconds === 2) {
           this.addLiver();
         }
-      }, 1000); // Check every second
+      }, 1000)); // Check every second
     },
   },
 };
 </script>
 
-<style>
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-</style>
-
 <style scoped lang="scss">
-.chat-container {
+.chat-shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: clamp(0px, 2.5vh, 28px) clamp(0px, 3vw, 32px);
 }
 
-.chat-card {
+.chat-panel {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  height: 100%;
+  display: flex;
   flex-direction: column;
-  padding: 10px 10px 0 10px;
+  border-radius: 28px;
+  overflow: hidden;
+  animation: lw-rise 0.5s ease both;
+}
 
-  div {
-    color: rgb(255, 255, 255) !important;
+.live-pill :deep(span) {
+  color: inherit !important;
+  letter-spacing: 0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--lw-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
+
+  .title-caption {
+    flex: 1;
+    min-width: 0;
+
+    .title {
+      font-family: var(--lw-font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .caption {
+      font-size: 13px;
+      color: var(--lw-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
-  .card-container-messages {
-    height: calc(100% - 500px) !important;
+  .header-actions {
+    display: flex;
+    gap: 6px;
   }
 
-  .left {
-    max-width: calc(100% - 100px);
+  :deep(.flag) {
+    margin: 0 !important;
+  }
+}
+
+.composer {
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--lw-border);
+  background: linear-gradient(0deg, rgba(5, 6, 15, 0.4), transparent);
+}
+
+.reply-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 8px 8px 14px;
+  border-radius: 14px;
+  background: rgba(139, 61, 255, 0.12);
+  border-left: 3px solid var(--lw-violet);
+  font-size: 13px;
+
+  .reply-text {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--lw-muted);
 
-    .title-caption {
-      width: 100%;
+    strong {
+      color: var(--lw-text);
+    }
+  }
 
-      .title {
-        font-size: 20px;
-        font-weight: 500;
-      }
+  .icon-btn.small {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+}
 
-      .caption {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.7);
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
+.composer-input {
+  max-width: none !important;
+  height: 52px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 0 0 1px var(--lw-border) !important;
+  transition: box-shadow 0.2s;
+
+  &:focus-within {
+    box-shadow: 0 0 0 1px rgba(139, 61, 255, 0.6), 0 0 0 5px rgba(139, 61, 255, 0.14) !important;
+  }
+
+  :deep(input) {
+    font-size: 16px !important;
+  }
+
+  :deep(button[type="submit"]) {
+    width: 40px;
+    height: 40px;
+    background: var(--lw-gradient) !important;
+    box-shadow: 0 6px 20px -6px rgba(139, 61, 255, 0.9);
+
+    &:disabled {
+      background: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: none;
+    }
+
+    svg {
+      color: white;
     }
   }
 }
 
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
   display: flex;
-  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: var(--lw-gradient);
+  cursor: pointer;
+  box-shadow: 0 8px 24px -6px rgba(139, 61, 255, 0.8);
+  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.08) rotate(-8deg);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 600px) {
+  .chat-shell {
+    padding: 0;
+  }
+
+  .chat-panel {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .chat-header {
+    padding: 12px;
+    gap: 8px;
+
+    .header-actions .icon-btn:first-child {
+      display: none;
+    }
+
+    .title-caption .title {
+      font-size: 17px;
+    }
+  }
+
+  .composer {
+    padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+  }
 }
 </style>

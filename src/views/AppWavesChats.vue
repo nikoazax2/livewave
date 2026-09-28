@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'mobile': mobile }" class="appwaveschats" :style="getBackgroundImage()">
+    <div :class="{ 'mobile': mobile }" class="appwaveschats">
         <ContactDialog v-if="contact" @close="contact = false" :language="language" @setContact="contact = $event"  />
 
         <SetUser :language="language" v-if="askUsername" :username="username" @set-username="setUsername"  />
@@ -21,6 +21,7 @@ import ChatView from './ChatView.vue';
 import WavesView from './WavesView.vue';
 import TopsMessages from '../components/TopsMessages.vue';
 import ContactDialog from '../components/ContactDialog.vue';
+import { background } from '../background';
 
 export default {
     name: 'App',
@@ -47,6 +48,17 @@ export default {
             backgroundImage: null,
         };
     },
+    watch: {
+        backgroundImage: {
+            immediate: true,
+            handler(image) {
+                background.image = image;
+            }
+        }
+    },
+    unmounted() {
+        background.image = null;
+    },
     created() {
         this.config = localStorage.getItem('livewave-params')
         if (this.config) {
@@ -66,15 +78,6 @@ export default {
         this.mobile = window.innerWidth < 600
     },
     methods: {
-        getBackgroundImage() {
-            let background = ''
-            if (this.backgroundImage) {
-                background = `background: url(${this.backgroundImage}) center center fixed; background-size: cover!important;`;
-            } else {
-                background = `background: url('/backgroundchat${this.themeDark ? '' : 'white'}.png') center center fixed;  `;
-            }
-            return background;
-        },
         setthemeDark(theme) {
             this.themeDark = theme
             localStorage.setItem('livewave-theme', JSON.stringify({ themeDark: this.themeDark }))
@@ -103,90 +106,10 @@ export default {
 </script>
 
 <style lang="scss">
-.mobile{
-    .card-container{
-        padding: 0;
-        min-width: 0!important;
-        width: 100%!important;
-    }
-    .appwaveschats{
-        width: 100%;
-    }
-}
-
-.card-container {
-    min-width: 600px;
-    height: 100% !important;
-    width: fit-content !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden !important;
-    margin: 0 !important;
-    max-width: none !important;
-    // background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 700px 700px !important;
-}
-
-.card-in {
-    min-width: 300px;
-    max-width: 600px;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    border-radius: 10px;
-    background-color: rgba(46, 49, 50, 0.5);
-    padding: 10px 10px 0 10px;
-    flex-direction: column;
-    color: white;
-}
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    height: 100% !important;
-}
-
 .appwaveschats {
-    height: 100% !important;
-    background-size: 700px 700px !important;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
-}
-
-.mobile {
-
-    .chat-container,
-    .wave-container,
-    .wave-card,
-    .chat-card {
-        height: 100% !important;
-        padding: 0 !important;
-        border-radius: 0 !important;
-    }
-}
-
-.wave-container,
-.chat-container {
-    padding: 16px;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
 }
 </style>

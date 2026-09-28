@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="prose-container">
-            <article class="prose lg:prose-xl max-w-4xl mx-auto py-10">
-                <h1>{{ article.title }}</h1>
-                <p class="text-sm text-gray-500">{{ formattedDate }}</p>
-                <div v-html="article.content"></div>
-            </article>
-        </div>
+        <article class="prose glass">
+            <router-link to="/blogs" class="back"><v-icon size="18">mdi-arrow-left</v-icon> Blog</router-link>
+            <p class="date">{{ formattedDate }}</p>
+            <h1>{{ article.title }}</h1>
+            <img v-if="article.image" :src="article.image" :alt="article.title" class="cover" />
+            <div class="body" v-html="article.content"></div>
+        </article>
     </div>
 </template>
 
@@ -23,19 +23,15 @@ export default {
         }
     },
     async created() {
-        let datas
-        try {
-            const { data, error } = await supabase
+        let { data: datas } = await supabase
+            .from('blog')
+            .select('*')
+            .eq('keyurl', this.$route.params.id)
+        if (!datas?.length && /^\d+$/.test(this.$route.params.id)) {
+            ({ data: datas } = await supabase
                 .from('blog')
                 .select('*')
-                .eq('keyurl', this.$route.params.id)
-            datas = data
-        } catch (error) {
-            const { data, _ } = await supabase
-                .from('blog')
-                .select('*')
-                .eq('id', this.$route.params.id)
-            datas = data
+                .eq('id', this.$route.params.id))
         }
         const data = datas
         if (data && data.length > 0) {
@@ -92,45 +88,69 @@ export default {
 }
 </script>
 
-<style lang="scss">
-h2 {
-    margin: 30px 0 !important;
-    font-size: 35px;
-}
-</style>
-
 <style scoped lang="scss">
 .container {
-    background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 100px 100px;
     width: 100%;
-    height: 100vh;
-
-    display: flex;
-    justify-content: center;
-
+    height: 100%;
     overflow-y: auto;
-
-    padding: 0 20px;
-
-}
-
-.prose-container {
-    overflow-y: auto;
-    width: 100%;
-
+    padding: clamp(16px, 5vh, 60px) 16px;
 }
 
 .prose {
-    max-width: 800px;
-    width: 100%;
-    height: fit-content;
-    color: white;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 56px);
+    border-radius: 28px;
+    color: var(--lw-text);
+    line-height: 1.75;
+    font-size: 17px;
+    animation: lw-rise 0.6s ease both;
+
+    .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--lw-muted);
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .date {
+        color: var(--lw-muted);
+        font-size: 14px;
+        margin: 20px 0 6px;
+    }
 
     h1 {
-        font-weight: 400;
-        font-size: 48px;
-        margin-bottom: 20px;
+        font-family: var(--lw-font-display);
+        font-weight: 700;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin: 0 0 24px;
+    }
+
+    .cover {
+        width: 100%;
+        border-radius: 18px;
+        margin-bottom: 24px;
+    }
+
+    .body :deep(h2) {
+        font-family: var(--lw-font-display);
+        font-size: 26px;
+        margin: 36px 0 12px;
+    }
+
+    .body :deep(a) {
+        color: #b89bff;
+        text-decoration: underline;
+    }
+
+    .body :deep(iframe) {
+        border-radius: 14px;
+        margin: 10px 0;
+        max-width: 100%;
     }
 }
 </style>

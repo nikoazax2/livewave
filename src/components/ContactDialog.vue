@@ -1,30 +1,23 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px" @click:outside="$emit('setContact', false)">
-    <v-card>
-      <v-card-title class="text-h6">Contacte l’équipe LiveWave</v-card-title>
+  <v-dialog v-model="dialog" max-width="480px" @click:outside="$emit('setContact', false)" @keydown.esc="$emit('setContact', false)">
+    <v-card class="pa-2 contact">
+      <v-card-title class="d-flex align-center">
+        <span>Contacte l'équipe LiveWave</span>
+        <v-spacer></v-spacer>
+        <button class="icon-btn" aria-label="close" @click="$emit('setContact', false)"><v-icon>mdi-close</v-icon></button>
+      </v-card-title>
 
       <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <p>Une question, une collaboration ou une suggestion ?</p>
-              <p>
-                Contactez nous pour créer un chat dédié à votre communauté, votre événement ou votre entreprise.
-              </p>
-              <p>Écris-nous par email ou sur Twitter :</p>
-            </v-col>
+        <p>Une question, une collaboration ou une suggestion ?</p>
+        <p>Contacte-nous pour créer un chat dédié à ta communauté, ton événement ou ton entreprise.</p>
 
-            <v-col cols="12">
-              <v-btn color="primary" block class="mb-2" elevation="0" @click="openEmail"> 📧 Envoyer un email </v-btn> 
-              <p class="text-center mb-4">
-                ({{ email }})
-              </p>
-              <v-btn color="secondary" block variant="outlined" :href="twitterUrl" target="_blank">
-                🐦 Twitter @LiveWaveChat
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+        <button class="btn-gradient w-100 justify-center mt-4" @click="openEmail">
+          <v-icon size="18">mdi-email-outline</v-icon> Envoyer un email
+        </button>
+        <p class="text-center mt-2 email">{{ email }}</p>
+        <a class="social-link" :href="twitterUrl" target="_blank" rel="noopener">
+          <v-icon size="18">mdi-twitter</v-icon> @LiveWaveChat
+        </a>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -49,3 +42,33 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.contact {
+  p {
+    color: var(--lw-muted);
+    margin-bottom: 6px;
+  }
+
+  .email {
+    font-size: 13px;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 11px;
+    border-radius: 999px;
+    border: 1px solid var(--lw-border-strong);
+    font-weight: 600;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+}
+</style>

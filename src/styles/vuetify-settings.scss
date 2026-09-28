@@ -1,0 +1,5 @@
+@use "vuetify/settings" with (
+  $utilities: (
+    "opacity": false,
+  )
+);

@@ -1,11 +1,21 @@
 <template>
     <div class="container">
-       <div class="articles">
-            <div class="article" v-for="article in articles" :key="article.id" @click="goToArticle(article.id)">
-                <h2>{{ article.title }}</h2>
-                <p>{{ article.date }}</p> 
-            </div>
-       </div>
+        <header class="head">
+            <router-link to="/" class="back"><v-icon size="18">mdi-arrow-left</v-icon> LiveWave</router-link>
+            <h1>Le <span class="gradient-text">blog</span></h1>
+        </header>
+        <div class="articles">
+            <button class="article glass" v-for="(article, index) in articles" :key="article.id"
+                :style="{ animationDelay: `${index * 60}ms` }" @click="goToArticle(article.keyurl || article.id)">
+                <div v-if="article.image" class="thumb" :style="{ backgroundImage: `url(${article.image})` }"></div>
+                <div v-else class="thumb placeholder"><v-icon size="36">mdi-waveform</v-icon></div>
+                <div class="info">
+                    <span class="date">{{ article.date }}</span>
+                    <h2>{{ article.title }}</h2>
+                    <p v-if="article.excerpt">{{ article.excerpt }}</p>
+                </div>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -30,7 +40,7 @@ export default {
         //                     "meta": "[                 {                     name: 'description',                     content: 'Découvrez comment LiveWave transforme l\\'engagement en direct grâce à une plateforme interactive innovante.'                 },                 { property: 'og:title', content: this.article.title },                 {                     property: 'og:description',                     content: 'LiveWave permet aux spectateurs d\\'échanger en temps réel autour de vos émissions.'                 },                 { property: 'og:type', content: 'article' },                 { property: 'og:url', content: 'https://tonsite.com/articles/livewave' },                 { property: 'og:image', content: 'https://tonsite.com/images/livewave-cover.jpg' },             ]",
         //                         "date": "2025-05-23T00:00:00"
         // }
-        this.articles = data
+        this.articles = data || []
         this.articles.forEach(article => {
             article.date = new Date(article.date).toLocaleDateString('fr-FR')
         })
@@ -44,53 +54,92 @@ export default {
 } 
 </script>
  
-<style lang="scss">
-iframe {
-    border-radius: 10px;
-    margin: 10px 0;     
-}
-</style>
-
 <style scoped lang="scss">
 .container {
-    background: url('../assets/backgroundchat.png') center center fixed;
-    background-size: 100px 100px;
     width: 100%;
-    height: 100vh;
-
-    display: flex;
-    justify-content: center;
-
+    height: 100%;
     overflow-y: auto;
-
-    padding: 20px 20px;
-
+    padding: clamp(16px, 5vh, 56px) clamp(16px, 4vw, 48px);
 }
-.articles {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
 
-    .article {
-        margin: 1rem;
-        padding: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: rgba(255, 255, 255, 0.699);
-        width: 300px;
-        height: 300px;
-        
-        &:hover {
-            transition: all 0.3s;
-            background-color: #f9f9f96b;
-            transform: scale(1.02);
-            cursor: pointer;
+.head {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+
+    .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--lw-muted);
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    h1 {
+        font-family: var(--lw-font-display);
+        font-size: clamp(36px, 6vw, 60px);
+        letter-spacing: -0.03em;
+        margin: 12px 0 0;
+    }
+}
+
+.articles {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.article {
+    text-align: left;
+    color: var(--lw-text);
+    font-family: inherit;
+    border-radius: 22px;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.25s, border-color 0.25s;
+    animation: lw-rise 0.5s ease both;
+
+    &:hover {
+        transform: translateY(-4px);
+        border-color: rgba(139, 61, 255, 0.45);
+    }
+
+    .thumb {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+
+        &.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(77, 124, 255, 0.35), rgba(255, 61, 139, 0.3));
         }
-        
-        h2 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
+    }
+
+    .info {
+        padding: 18px 20px 22px;
+    }
+
+    .date {
+        font-size: 13px;
+        color: var(--lw-muted);
+    }
+
+    h2 {
+        font-family: var(--lw-font-display);
+        font-size: 19px;
+        line-height: 1.25;
+        margin: 6px 0 8px;
+    }
+
+    p {
+        color: var(--lw-muted);
+        font-size: 14px;
+        margin: 0;
     }
 }
 </style>

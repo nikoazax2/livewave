@@ -1,24 +1,30 @@
 <template>
     <div :class="{ 'mobile': mobile }" class="app">
-
-        <router-view />
+        <WaveBackground :image="background.image" />
+        <div class="app-content">
+            <router-view />
+        </div>
         <!-- Bouton d'installation visible après 5 minutes -->
-        <div v-if="showInstallPrompt" class="install-prompt">
+        <div v-if="showInstallPrompt" class="install-prompt glass">
             <p>Voulez-vous installer Livewave sur votre appareil ?</p>
-            <v-btn @click="showInstallPrompt = false" color="secondary" class="mr-2">Annuler</v-btn>
-            <v-btn @click="installApp" color="primary">Installer</v-btn>
-            <!-- <button @click="showInstallPrompt = false">Annuler</button>
-            <button @click="installApp">Installer</button> -->
+            <div class="install-actions">
+                <button class="icon-btn install-cancel" @click="showInstallPrompt = false">Annuler</button>
+                <button class="btn-gradient" @click="installApp">Installer</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import WaveBackground from './components/WaveBackground.vue';
+import { background } from './background';
 
 export default {
     name: 'App',
+    components: { WaveBackground },
     data() {
         return {
+            background,
             mobile: false,
             deferredPrompt: null,
             showInstallPrompt: false, // Pour afficher le bouton d'installation
@@ -66,21 +72,38 @@ export default {
 </script>
 
 <style lang="scss">
-#app,
-.app {
+.app-content {
+    position: relative;
+    z-index: 1;
     height: 100%;
 }
 
 .install-prompt {
     position: fixed;
     bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: #222;
-    color: white;
-    padding: 1rem;
-    border-radius: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(440px, calc(100% - 32px));
+    padding: 18px 20px;
+    border-radius: var(--lw-radius);
     text-align: center;
     z-index: 1000;
+    animation: lw-rise 0.5s ease both;
+
+    p {
+        margin: 0 0 14px;
+    }
+
+    .install-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .install-cancel {
+        width: auto;
+        padding: 0 18px;
+        border-radius: 999px;
+    }
 }
 </style>

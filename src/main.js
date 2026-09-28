@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 
 // Vuetify
 import 'vuetify/styles'
+import './styles/tailwind.css'
+import './styles/theme.scss'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
@@ -15,6 +17,22 @@ import texts from './texts.json'
 const vuetify = createVuetify({
     components,
     directives,
+    theme: {
+        defaultTheme: 'livewave',
+        themes: {
+            livewave: {
+                dark: true,
+                colors: {
+                    background: '#05060f',
+                    surface: '#12142c',
+                    primary: '#8b3dff',
+                    secondary: '#4d7cff',
+                    accent: '#ff3d8b',
+                    error: '#ff4757',
+                },
+            },
+        },
+    },
 })
 
 

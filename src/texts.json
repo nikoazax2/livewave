@@ -13,7 +13,38 @@
             "title": "This room does not exist yet",
             "description": "Create it now to discuss it with the whole world!"
         },
-        "noMessages": "No messages yet, be the first to send one!"
+        "noMessages": "No messages yet, be the first to send one!",
+        "heroTag": "Live now",
+        "heroTitle": "Talk about what's happening,",
+        "heroTitle2": "live, together.",
+        "heroSubtitle": "Join live rooms for every match, show and trend. No account, just vibes.",
+        "trending": "Trending rooms",
+        "live": "live",
+        "noRooms": "No room matches your search.",
+        "reply": "Reply",
+        "like": "Like",
+        "contact": "Contact",
+        "settings": "Settings",
+        "language": "Language",
+        "back": "Back",
+        "send": "Send",
+        "heroLead": "Talk about",
+        "flipWords": [
+            "the match",
+            "the show",
+            "the trends",
+            "the news",
+            "the drama"
+        ],
+        "composer": [
+            "Say something nice...",
+            "React to the moment...",
+            "What do you think?"
+        ],
+        "featured": "Hot right now",
+        "worldwide": "people chatting worldwide",
+        "join": "Join",
+        "tooLong": "Message too long (200 max)"
     },
     "fr": {
         "roomName": "Nom de la salle",
@@ -25,11 +56,42 @@
         "room": "Salons Waves",
         "search": "Chercher un évènement...",
         "dontExist": {
-            "title": "Ce salon n\"existe pas encore",
+            "title": "Ce salon n'existe pas encore",
             "description": "Crée le maintenant pour en discuter avec le monde entier !"
         },
         "createRoom": "Créer un salon",
-        "noMessages": "Pas encore de messages, soyez le premier à en envoyer !"
+        "noMessages": "Pas encore de messages, soyez le premier à en envoyer !",
+        "heroTag": "En direct",
+        "heroTitle": "Parle de ce qui se passe,",
+        "heroTitle2": "en direct, ensemble.",
+        "heroSubtitle": "Rejoins les salons en direct pour chaque match, émission et tendance. Sans compte, juste l'ambiance.",
+        "trending": "Salons tendance",
+        "live": "en ligne",
+        "noRooms": "Aucun salon ne correspond à ta recherche.",
+        "reply": "Répondre",
+        "like": "Aimer",
+        "contact": "Contact",
+        "settings": "Paramètres",
+        "language": "Langue",
+        "back": "Retour",
+        "send": "Envoyer",
+        "heroLead": "Parle",
+        "flipWords": [
+            "du match",
+            "de l'émission",
+            "des tendances",
+            "de l'actu",
+            "du clash"
+        ],
+        "composer": [
+            "Dis quelque chose de sympa...",
+            "Réagis au moment...",
+            "T'en penses quoi ?"
+        ],
+        "featured": "Ça chauffe en ce moment",
+        "worldwide": "personnes discutent dans le monde",
+        "join": "Rejoindre",
+        "tooLong": "Message trop long (200 max)"
     },
     "es": {
         "roomName": "Nombre de la sala",
@@ -45,7 +107,37 @@
             "description": "¡Créalo ahora para discutirlo con el mundo entero!"
         },
         "createRoom": "Crear una sala",
-        "noMessages": "¡No hay mensajes todavía, sé el primero en enviar uno!"
+        "noMessages": "¡No hay mensajes todavía, sé el primero en enviar uno!",
+        "heroTag": "En directo",
+        "heroTitle": "Habla de lo que pasa,",
+        "heroTitle2": "en directo, juntos.",
+        "heroSubtitle": "Únete a salas en directo para cada partido, programa y tendencia. Sin cuenta.",
+        "trending": "Salas en tendencia",
+        "live": "en línea",
+        "noRooms": "Ninguna sala coincide con tu búsqueda.",
+        "reply": "Responder",
+        "like": "Me gusta",
+        "contact": "Contacto",
+        "settings": "Ajustes",
+        "language": "Idioma",
+        "back": "Volver",
+        "send": "Enviar",
+        "heroLead": "Habla",
+        "flipWords": [
+            "del partido",
+            "del programa",
+            "de las tendencias",
+            "de la actualidad"
+        ],
+        "composer": [
+            "Di algo bonito...",
+            "Reacciona al momento...",
+            "¿Qué opinas?"
+        ],
+        "featured": "Lo más caliente",
+        "worldwide": "personas charlando en el mundo",
+        "join": "Unirse",
+        "tooLong": "Mensaje demasiado largo (200 máx)"
     },
     "de": {
         "roomName": "Raumname",
@@ -61,6 +153,36 @@
             "description": "Erstelle ihn jetzt, um mit der ganzen Welt darüber zu diskutieren!"
         },
         "createRoom": "Einen Raum erstellen",
-        "noMessages": "Noch keine Nachrichten, sei der Erste, der eine sendet!"
+        "noMessages": "Noch keine Nachrichten, sei der Erste, der eine sendet!",
+        "heroTag": "Live",
+        "heroTitle": "Rede über das, was passiert,",
+        "heroTitle2": "live, gemeinsam.",
+        "heroSubtitle": "Tritt Live-Räumen zu jedem Spiel, jeder Show und jedem Trend bei. Ohne Konto.",
+        "trending": "Angesagte Räume",
+        "live": "online",
+        "noRooms": "Kein Raum passt zu deiner Suche.",
+        "reply": "Antworten",
+        "like": "Gefällt mir",
+        "contact": "Kontakt",
+        "settings": "Einstellungen",
+        "language": "Sprache",
+        "back": "Zurück",
+        "send": "Senden",
+        "heroLead": "Rede über",
+        "flipWords": [
+            "das Spiel",
+            "die Show",
+            "die Trends",
+            "die News"
+        ],
+        "composer": [
+            "Sag etwas Nettes...",
+            "Reagiere auf den Moment...",
+            "Was denkst du?"
+        ],
+        "featured": "Gerade angesagt",
+        "worldwide": "Menschen chatten weltweit",
+        "join": "Beitreten",
+        "tooLong": "Nachricht zu lang (max. 200)"
     }
 }

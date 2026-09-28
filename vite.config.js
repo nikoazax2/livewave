@@ -1,10 +1,17 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import tailwindcss from '@tailwindcss/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import vuetify from 'vite-plugin-vuetify'
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [vue(), VitePWA({
+    plugins: [vue(), vuetify({ autoImport: false, styles: { configFile: 'src/styles/vuetify-settings.scss' } }), tailwindcss(), AutoImport({
+        imports: ['vue', '@vueuse/core'],
+        include: [/components[\/]inspira[\/].*\.(vue|ts)$/],
+        dts: false,
+    }), VitePWA({
         registerType: 'autoUpdate',
         manifest: {
             name: 'Livewave',
