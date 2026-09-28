@@ -44,12 +44,18 @@ export default {
             }, 300000); // 5 minutes en millisecondes
         });
 
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', () => {
-                const height = window.visualViewport.height;
-                document.body.style.paddingBottom = `${window.innerHeight - height}px`;
-            });
-        }
+        // Clavier mobile : l'app prend la hauteur visible reelle et revient en place a la fermeture
+        const vv = window.visualViewport;
+        const fitViewport = () => {
+            const height = vv ? vv.height : window.innerHeight;
+            document.documentElement.style.setProperty('--app-height', `${Math.round(height)}px`);
+            if (!vv || vv.offsetTop > 0 || window.scrollY > 0) window.scrollTo(0, 0);
+        };
+        fitViewport();
+        vv?.addEventListener('resize', fitViewport);
+        vv?.addEventListener('scroll', fitViewport);
+        window.addEventListener('resize', fitViewport);
+        window.addEventListener('focusout', () => setTimeout(fitViewport, 50));
 
     },
     methods: {
