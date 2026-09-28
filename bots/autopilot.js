@@ -4,6 +4,7 @@
 //   node bots/autopilot.js refresh   met a jour tendances, evenements et salons dans Supabase
 //   node bots/autopilot.js post      publie les posts dus maintenant
 //   node bots/autopilot.js run       boucle continue (pm2) : refresh + post
+//   node bots/autopilot.js tick      un passage (cron / GitHub Actions) : refresh si besoin + post
 //
 // Variables (.env) : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, TWITTER_*_2, BSKY_IDENTIFIER, BSKY_PASSWORD
 //   LIVE=1 pour publier reellement (sinon mode test), X_DAILY_LIMIT (15), TRENDS_PER_DAY (4), TREND_GAP_MIN (45),
@@ -26,7 +27,7 @@ const X_DAILY_LIMIT = Number(process.env.X_DAILY_LIMIT || 15);
 const TRENDS_PER_DAY = Number(process.env.TRENDS_PER_DAY || 4);
 const TREND_GAP_MIN = Number(process.env.TREND_GAP_MIN || 45);
 const POST_MIN_PRIORITY = Number(process.env.POST_MIN_PRIORITY || 3);
-const SLOT_TOLERANCE_MIN = 25;
+const SLOT_TOLERANCE_MIN = 40;
 const MIN = 60000;
 
 const log = (...a) => console.log(new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }), ...a);
@@ -211,6 +212,14 @@ export async function preview() {
   console.log(`\n=== Exemple post tendance ===\n${trendPost(trends[0])}\n`);
 }
 
+// Un passage unique, pour un planificateur externe
+async function tick() {
+  const { data } = await requireDb().from("trends").select("fetched_at").order("fetched_at", { ascending: false }).limit(1);
+  const last = data?.[0] ? new Date(data[0].fetched_at).getTime() : 0;
+  if (Date.now() - last >= 55 * MIN) await refresh();
+  await post();
+}
+
 async function run() {
   log(`autopilot lance (${LIVE ? "PUBLICATION REELLE" : "mode test"})`);
   let lastRefresh = 0;
@@ -230,9 +239,9 @@ async function run() {
 }
 
 const cmd = process.argv[2] || "preview";
-const actions = { preview, refresh, post, run };
+const actions = { preview, refresh, post, run, tick };
 if (!actions[cmd]) {
-  console.error(`commande inconnue : ${cmd} (preview | refresh | post | run)`);
+  console.error(`commande inconnue : ${cmd} (preview | refresh | post | run | tick)`);
   process.exit(1);
 }
 await actions[cmd]();

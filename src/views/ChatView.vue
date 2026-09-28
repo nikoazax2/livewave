@@ -17,6 +17,9 @@
         </div>
         <span class="live-pill"><span class="dot"></span><NumberTicker :value="chat?.livers || 0" :decimal-places="0" :duration="1200" /></span>
         <div class="header-actions">
+          <button class="icon-btn share-btn" :aria-label="$texts[language]?.share" @click="shareChat">
+            <v-icon>mdi-share-variant</v-icon>
+          </button>
           <button class="icon-btn" :aria-label="$texts[language]?.contact" @click="$emit('setContact', true)">
             <v-icon>mdi-email-heart-outline</v-icon>
           </button>
@@ -219,6 +222,21 @@ export default {
     if (this.channel) supabase.removeChannel(this.channel);
   },
   methods: {
+    async shareChat() {
+      const title = this.chat?.title_full || this.chat?.title || "LiveWave";
+      const url = `https://www.livewave.fr/chat/${encodeURIComponent(this.chat?.title || this.chatId)}`;
+      const text = this.$texts[this.language]?.shareText?.replace("{title}", title) || title;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: `${title} | LiveWave`, text, url });
+          return;
+        }
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        useToast().success(this.$texts[this.language]?.linkCopied || "OK");
+      } catch (e) {
+        if (e?.name !== "AbortError") window.open(`https://x.com/intent/post?text=${encodeURIComponent(`${text} ${url}`)}`, "_blank");
+      }
+    },
     setTeam() {
       if (!this.event?.teams) return;
       let params = JSON.parse(localStorage.getItem("livewave-params") || "{}");
@@ -764,7 +782,7 @@ export default {
     padding: 12px;
     gap: 8px;
 
-    .header-actions .icon-btn:first-child {
+    .header-actions .icon-btn:nth-child(2) {
       display: none;
     }
 

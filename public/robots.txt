@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Allow: /api/og
+
+Sitemap: https://www.livewave.fr/sitemap.xml

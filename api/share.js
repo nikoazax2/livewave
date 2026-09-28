@@ -41,6 +41,38 @@ export async function GET(request) {
   const image = event?.og || ogImageUrl({ title: display, subtitle: "Chat en direct" });
   const url = `${SITE}/chat/${encodeURIComponent(name)}`;
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: title,
+      description,
+      url,
+      image,
+      isPartOf: { "@type": "WebSite", name: "LiveWave", url: SITE },
+    },
+  ];
+  if (event?.datestart) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": event.kind === "match" ? "SportsEvent" : "BroadcastEvent",
+      name: display,
+      description,
+      startDate: event.datestart,
+      endDate: event.dateend || undefined,
+      image,
+      eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      location: { "@type": "VirtualLocation", url },
+      ...(event.kind === "match" && event.team_a
+        ? { competitor: [event.team_a, event.team_b].map((n) => ({ "@type": "SportsTeam", name: n })) }
+        : {}),
+      ...(event.channel ? { publisher: { "@type": "Organization", name: event.channel } } : {}),
+      organizer: { "@type": "Organization", name: "LiveWave", url: SITE },
+      isAccessibleForFree: true,
+    });
+  }
+
   const html = `<!doctype html>
 <html lang="fr">
 <head>
@@ -62,8 +94,14 @@ export async function GET(request) {
 <meta name="twitter:title" content="${esc(title)}" />
 <meta name="twitter:description" content="${esc(description)}" />
 <meta name="twitter:image" content="${esc(image)}" />
+<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>
 </head>
-<body><a href="${esc(url)}">${esc(display)}</a></body>
+<body>
+<h1>${esc(display)} : le chat en direct</h1>
+<p>${esc(description)}</p>
+${event?.channel ? `<p>Diffusion : ${esc(event.channel)}</p>` : ""}
+<p><a href="${esc(url)}">Rejoindre la discussion en direct sur LiveWave</a></p>
+</body>
 </html>`;
 
   return new Response(html, {

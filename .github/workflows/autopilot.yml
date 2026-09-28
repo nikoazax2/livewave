@@ -1,0 +1,34 @@
+name: LiveWave autopilot
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: autopilot
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node bots/autopilot.js tick
+        env:
+          LIVE: ${{ vars.LIVE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
+          TWITTER_API_KEY_2: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET_2: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN_2: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET_2: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          X_DAILY_LIMIT: ${{ vars.X_DAILY_LIMIT || '15' }}

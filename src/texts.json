@@ -46,7 +46,10 @@
         "join": "Join",
         "tooLong": "Message too long (200 max)",
         "tonight": "Tonight on TV",
-        "onAir": "On air"
+        "onAir": "On air",
+        "share": "Share",
+        "shareText": "Come chat live about {title} with me on LiveWave!",
+        "linkCopied": "Link copied"
     },
     "fr": {
         "roomName": "Nom de la salle",
@@ -95,7 +98,10 @@
         "join": "Rejoindre",
         "tooLong": "Message trop long (200 max)",
         "tonight": "Ce soir à la télé",
-        "onAir": "En direct"
+        "onAir": "En direct",
+        "share": "Partager",
+        "shareText": "Viens commenter {title} en direct avec moi sur LiveWave !",
+        "linkCopied": "Lien copié"
     },
     "es": {
         "roomName": "Nombre de la sala",
@@ -143,7 +149,10 @@
         "join": "Unirse",
         "tooLong": "Mensaje demasiado largo (200 máx)",
         "tonight": "Esta noche en la tele",
-        "onAir": "En directo"
+        "onAir": "En directo",
+        "share": "Compartir",
+        "shareText": "¡Ven a comentar {title} en directo conmigo en LiveWave!",
+        "linkCopied": "Enlace copiado"
     },
     "de": {
         "roomName": "Raumname",
@@ -191,6 +200,9 @@
         "join": "Beitreten",
         "tooLong": "Nachricht zu lang (max. 200)",
         "tonight": "Heute Abend im TV",
-        "onAir": "Live"
+        "onAir": "Live",
+        "share": "Teilen",
+        "shareText": "Komm und chatte live mit mir über {title} auf LiveWave!",
+        "linkCopied": "Link kopiert"
     }
 }
