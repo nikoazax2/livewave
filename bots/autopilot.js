@@ -163,13 +163,14 @@ export async function post() {
     .order("created_at", { ascending: false })
     .limit(1);
   const gapOk = !lastTrendPost?.length || now - new Date(lastTrendPost[0].created_at).getTime() >= TREND_GAP_MIN * MIN;
-  const { count: trendsToday } = await client
+  const { data: trendRows } = await client
     .from("social_posts")
-    .select("id", { count: "exact", head: true })
+    .select("ref")
     .like("ref", `trend:%:${today}`)
-    .in("network", LIVE ? ["x"] : ["x-test"]);
+    .in("network", LIVE ? ["x", "bluesky"] : ["x-test", "bluesky-test"]);
+  const trendsToday = new Set((trendRows || []).map((r) => r.ref)).size;
 
-  if (!due.length && gapOk && budget > 0 && (trendsToday || 0) < TRENDS_PER_DAY) {
+  if (!due.length && gapOk && budget > 0 && trendsToday < TRENDS_PER_DAY) {
     const { data: latest } = await client.from("trends").select("*").order("fetched_at", { ascending: false }).order("rank").limit(10);
     const { data: done } = await client.from("social_posts").select("ref").like("ref", `trend:%:${today}`);
     const doneRefs = new Set((done || []).map((d) => d.ref));
