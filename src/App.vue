@@ -86,10 +86,12 @@ export default {
 
 .install-prompt {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(440px, calc(100% - 32px));
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
+    max-width: 440px;
+    margin: 0 auto;
+    box-sizing: border-box;
     padding: 18px 20px;
     border-radius: var(--lw-radius);
     text-align: center;

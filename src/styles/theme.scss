@@ -36,6 +36,8 @@ body {
 html,
 body {
   overscroll-behavior: none;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .v-application {
