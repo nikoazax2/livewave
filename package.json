@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "autopilot": "node bots/autopilot.js"
   },
   "dependencies": {
     "@atproto/api": "^0.15.0",
@@ -14,6 +15,7 @@
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.49.1",
     "@tailwindcss/vite": "^4.3.3",
+    "@vercel/og": "^0.8.6",
     "@vueuse/core": "^15.0.0",
     "@vueuse/head": "^2.0.0",
     "apify": "^3.3.2",

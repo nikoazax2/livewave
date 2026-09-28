@@ -1,0 +1,240 @@
+{
+  "maxEvents": 5,
+  "primeTimeChannels": [
+    "TF1.fr",
+    "France2.fr",
+    "M6.fr",
+    "France3.fr",
+    "CanalPlus.fr",
+    "TMC.fr",
+    "W9.fr"
+  ],
+  "primeTimeCategories": [
+    "Divertissement",
+    "Jeu",
+    "Téléréalité",
+    "Télé-réalité",
+    "Sport",
+    "Talk-show",
+    "Musique",
+    "Concours"
+  ],
+  "shows": [
+    {
+      "match": "^Star Academy",
+      "name": "Star Academy",
+      "hashtags": "#StarAc #StarAcademy",
+      "weight": 4
+    },
+    {
+      "match": "^Koh[- ]Lanta",
+      "name": "Koh-Lanta",
+      "hashtags": "#KohLanta",
+      "weight": 4
+    },
+    {
+      "match": "^Top Chef",
+      "name": "Top Chef",
+      "hashtags": "#TopChef",
+      "weight": 4
+    },
+    {
+      "match": "^Secret Story",
+      "name": "Secret Story",
+      "hashtags": "#SecretStory",
+      "weight": 4
+    },
+    {
+      "match": "^Pékin Express",
+      "name": "Pékin Express",
+      "hashtags": "#PekinExpress",
+      "weight": 4
+    },
+    {
+      "match": "^Danse avec les stars",
+      "name": "Danse avec les stars",
+      "hashtags": "#DALS",
+      "weight": 4
+    },
+    {
+      "match": "^The Voice",
+      "name": "The Voice",
+      "hashtags": "#TheVoice",
+      "weight": 4
+    },
+    {
+      "match": "^Mask Singer",
+      "name": "Mask Singer",
+      "hashtags": "#MaskSinger",
+      "weight": 4
+    },
+    {
+      "match": "^Fort Boyard",
+      "name": "Fort Boyard",
+      "hashtags": "#FortBoyard",
+      "weight": 4
+    },
+    {
+      "match": "^L'amour est dans le pré",
+      "name": "L'amour est dans le pré",
+      "hashtags": "#ADP #LAmourEstDansLePre",
+      "weight": 4
+    },
+    {
+      "match": "^Qui veut être mon associé",
+      "name": "Qui veut être mon associé ?",
+      "hashtags": "#QVEMA",
+      "weight": 4
+    },
+    {
+      "match": "^Le Meilleur Pâtissier",
+      "name": "Le Meilleur Pâtissier",
+      "hashtags": "#LMP",
+      "weight": 4
+    },
+    {
+      "match": "^Les Traîtres",
+      "name": "Les Traîtres",
+      "hashtags": "#LesTraitres",
+      "weight": 4
+    },
+    {
+      "match": "^La France a un incroyable talent",
+      "name": "La France a un incroyable talent",
+      "hashtags": "#LFAUIT",
+      "weight": 4
+    },
+    {
+      "match": "^Quotidien",
+      "name": "Quotidien",
+      "hashtags": "#Quotidien",
+      "weight": 3
+    },
+    {
+      "match": "^Touche pas à mon poste",
+      "name": "Touche pas à mon poste",
+      "hashtags": "#TPMP",
+      "weight": 3
+    },
+    {
+      "match": "^N'oubliez pas les paroles",
+      "name": "N'oubliez pas les paroles",
+      "hashtags": "#NOPLP",
+      "weight": 3
+    },
+    {
+      "match": "^Les 12 coups de midi",
+      "name": "Les 12 coups de midi",
+      "hashtags": "#12CoupsDeMidi",
+      "weight": 1
+    },
+    {
+      "match": "^Questions pour un champion",
+      "name": "Questions pour un champion",
+      "hashtags": "#QPUC",
+      "weight": 1
+    },
+    {
+      "match": "^C à vous",
+      "name": "C à vous",
+      "hashtags": "#CaVous",
+      "weight": 1
+    },
+    {
+      "match": "^Complément d'enquête",
+      "name": "Complément d'enquête",
+      "hashtags": "#ComplementDEnquete",
+      "weight": 3
+    },
+    {
+      "match": "^Envoyé spécial",
+      "name": "Envoyé spécial",
+      "hashtags": "#EnvoyeSpecial",
+      "weight": 3
+    },
+    {
+      "match": "^Zone interdite",
+      "name": "Zone interdite",
+      "hashtags": "#ZoneInterdite",
+      "weight": 3
+    },
+    {
+      "match": "^Capital$",
+      "name": "Capital",
+      "hashtags": "#Capital",
+      "weight": 3
+    },
+    {
+      "match": "^Un si grand soleil",
+      "name": "Un si grand soleil",
+      "hashtags": "#USGS",
+      "weight": 1
+    },
+    {
+      "match": "^Demain nous appartient",
+      "name": "Demain nous appartient",
+      "hashtags": "#DNA",
+      "weight": 1
+    },
+    {
+      "match": "^Ici tout commence",
+      "name": "Ici tout commence",
+      "hashtags": "#ITC",
+      "weight": 1
+    },
+    {
+      "match": "^Plus belle la vie",
+      "name": "Plus belle la vie",
+      "hashtags": "#PBLV",
+      "weight": 1
+    },
+    {
+      "match": "^Miss France",
+      "name": "Miss France",
+      "hashtags": "#MissFrance",
+      "weight": 4
+    },
+    {
+      "match": "^Eurovision",
+      "name": "Eurovision",
+      "hashtags": "#Eurovision",
+      "weight": 4
+    }
+  ],
+  "sportKeywords": [
+    "Football",
+    "Rugby",
+    "Tennis",
+    "Cyclisme",
+    "Handball",
+    "Basket",
+    "Formule 1",
+    "Athlétisme",
+    "Jeux olympiques"
+  ],
+  "bigTeams": [
+    "France",
+    "Bleus",
+    "PSG",
+    "Paris Saint-Germain",
+    "Marseille",
+    "OM",
+    "Lyon",
+    "OL",
+    "Lens",
+    "Lille",
+    "Monaco",
+    "Nice",
+    "Toulouse",
+    "Real Madrid",
+    "Barcelone",
+    "Bayern",
+    "Liverpool",
+    "Manchester",
+    "Arsenal",
+    "Chelsea",
+    "Juventus",
+    "Inter",
+    "Milan"
+  ]
+}

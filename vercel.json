@@ -1,7 +1,18 @@
 {
     "rewrites": [
         {
-            "source": "/(.*)",
+            "source": "/chat/:id",
+            "has": [
+                {
+                    "type": "header",
+                    "key": "user-agent",
+                    "value": "(?i).*(twitterbot|facebookexternalhit|facebot|linkedinbot|slackbot|discordbot|telegrambot|whatsapp|skypeuripreview|pinterest|redditbot|embedly|bluesky|cardyb|mastodon|applebot|googlebot|bingbot|iframely|vkshare|quora).*"
+                }
+            ],
+            "destination": "/api/share?id=:id"
+        },
+        {
+            "source": "/((?!api/).*)",
             "destination": "/"
         }
     ],

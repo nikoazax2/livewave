@@ -44,7 +44,9 @@
         "featured": "Hot right now",
         "worldwide": "people chatting worldwide",
         "join": "Join",
-        "tooLong": "Message too long (200 max)"
+        "tooLong": "Message too long (200 max)",
+        "tonight": "Tonight on TV",
+        "onAir": "On air"
     },
     "fr": {
         "roomName": "Nom de la salle",
@@ -91,7 +93,9 @@
         "featured": "Ça chauffe en ce moment",
         "worldwide": "personnes discutent dans le monde",
         "join": "Rejoindre",
-        "tooLong": "Message trop long (200 max)"
+        "tooLong": "Message trop long (200 max)",
+        "tonight": "Ce soir à la télé",
+        "onAir": "En direct"
     },
     "es": {
         "roomName": "Nombre de la sala",
@@ -137,7 +141,9 @@
         "featured": "Lo más caliente",
         "worldwide": "personas charlando en el mundo",
         "join": "Unirse",
-        "tooLong": "Mensaje demasiado largo (200 máx)"
+        "tooLong": "Mensaje demasiado largo (200 máx)",
+        "tonight": "Esta noche en la tele",
+        "onAir": "En directo"
     },
     "de": {
         "roomName": "Raumname",
@@ -183,6 +189,8 @@
         "featured": "Gerade angesagt",
         "worldwide": "Menschen chatten weltweit",
         "join": "Beitreten",
-        "tooLong": "Nachricht zu lang (max. 200)"
+        "tooLong": "Nachricht zu lang (max. 200)",
+        "tonight": "Heute Abend im TV",
+        "onAir": "Live"
     }
 }

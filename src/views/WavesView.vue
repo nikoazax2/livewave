@@ -67,28 +67,32 @@
 
       <section v-if="marqueeRooms.length" class="marquee-wrap">
         <Marquee pause-on-hover :repeat="3" class="marquee">
-          <button v-for="chat in marqueeRooms" :key="chat.title" class="chip" @click="clickRoom(chat)">
+          <button v-for="chat in marqueeRooms" :key="chat.title" class="chip" @click="chat.slug ? $router.push(`/chat/${chat.slug}`) : clickRoom(chat)">
             <span class="chip-dot" :style="{ background: accent(chat.title) }"></span>#{{ chat.title.replace(/^#/, "") }}
           </button>
         </Marquee>
       </section>
 
-      <section v-if="featured.length && !search" class="rooms">
-        <h2 class="section-title"><v-icon size="20" class="mr-2">mdi-lightning-bolt</v-icon>{{ $texts[language]?.featured }}</h2>
+      <section v-if="tonight.length && !search" class="rooms">
+        <h2 class="section-title"><v-icon size="20" class="mr-2">mdi-television-classic</v-icon>{{ $texts[language]?.tonight }}</h2>
         <div class="featured">
-          <CardContainer v-for="chat in featured" :key="chat.id || chat.title" container-class="featured-container" class="featured-inner">
-            <CardBody class="featured-card" @click="clickRoom(chat)">
-              <CardItem :translate-z="20" class="featured-bg" :style="{ background: accent(chat.title) }"></CardItem>
-              <CardItem :translate-z="60" class="featured-avatar">{{ initials(chat.title) }}</CardItem>
-              <CardItem :translate-z="50" as="h3" class="featured-title">{{ chat.title }}</CardItem>
-              <CardItem v-if="chat.description" :translate-z="40" as="p" class="featured-desc">{{ chat.description }}</CardItem>
-              <div class="featured-footer">
-                <CardItem :translate-z="30">
-                  <span v-if="chat.livers > 0" class="live-pill"><span class="dot"></span>{{ chat.livers }} {{ $texts[language]?.live }}</span>
-                </CardItem>
-                <CardItem :translate-z="70" as="span" class="join">
-                  {{ $texts[language]?.join }} <v-icon size="16">mdi-arrow-right</v-icon>
-                </CardItem>
+          <CardContainer v-for="ev in tonight" :key="ev.name" container-class="featured-container" class="featured-inner">
+            <CardBody class="featured-card tv-card" @click="$router.push(`/chat/${ev.name}`)">
+              <CardItem v-if="ev.og" :translate-z="20" class="tv-cover">
+                <img :src="ev.og" :alt="ev.nameformat" loading="lazy" @error="ev.og = null" />
+              </CardItem>
+              <div class="tv-info">
+                <CardItem :translate-z="50" as="h3" class="featured-title">{{ ev.nameformat }}</CardItem>
+                <div class="featured-footer">
+                  <CardItem :translate-z="30" class="tv-meta">
+                    <span v-if="ev.live" class="live-pill"><span class="dot"></span>{{ $texts[language]?.onAir }}</span>
+                    <span v-else class="tv-time">{{ ev.time }}</span>
+                    <span class="tv-channel">{{ ev.channel }}</span>
+                  </CardItem>
+                  <CardItem :translate-z="70" as="span" class="join">
+                    {{ $texts[language]?.join }} <v-icon size="16">mdi-arrow-right</v-icon>
+                  </CardItem>
+                </div>
               </div>
             </CardBody>
           </CardContainer>
@@ -121,9 +125,9 @@
             @click="clickRoom(chat)"
             @keyup.enter="clickRoom(chat)"
           >
-            <div class="room-avatar" :style="{ background: accent(chat.title) }">{{ initials(chat.title) }}</div>
+            <div class="room-avatar" :style="{ background: accent(chat.title) }">{{ initials(chat.title_full || chat.title) }}</div>
             <div class="room-body">
-              <strong>{{ chat.title }}</strong>
+              <strong>{{ chat.title_full || chat.title }}</strong>
               <span v-if="chat.description" class="room-desc">{{ chat.description }}</span>
             </div>
             <span v-if="chat?.livers > 0" class="live-pill"><span class="dot"></span>{{ chat.livers }}</span>
@@ -175,6 +179,9 @@ export default {
   data() {
     return {
       chats: [],
+      events: [],
+      liveTrends: [],
+      now: Date.now(),
       search: "",
       globeConfig: {
         width: 800,
@@ -212,6 +219,7 @@ export default {
         ?.filter(
           (chat) =>
             chat.title.toLowerCase().includes(this.search.toLowerCase()) ||
+            chat.title_full?.toLowerCase().includes(this.search.toLowerCase()) ||
             chat.description?.toLowerCase().includes(this.search.toLowerCase())
         )
         .sort((a, b) => (b.livers || 0) - (a.livers || 0));
@@ -219,13 +227,23 @@ export default {
     exactMatch() {
       return this.chats?.some((chat) => chat.title.toLowerCase().includes(this.search.toLowerCase()));
     },
-    featured() {
-      return this.roomsBySearch.slice(0, 3);
+    tonight() {
+      const fmt = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit" });
+      return this.events
+        .filter((e) => new Date(e.dateend).getTime() > this.now)
+        .sort((a, b) => (b.priority || 0) - (a.priority || 0) || new Date(a.datestart) - new Date(b.datestart))
+        .slice(0, 6)
+        .map((e) => ({
+          ...e,
+          time: fmt.format(new Date(e.datestart)).replace(":", "h"),
+          live: new Date(e.datestart).getTime() <= this.now,
+        }));
     },
     gridRooms() {
-      return this.search ? this.roomsBySearch : this.roomsBySearch.slice(3);
+      return this.roomsBySearch;
     },
     marqueeRooms() {
+      if (this.liveTrends.length) return this.liveTrends.map((t) => ({ title: t.title, slug: t.slug }));
       return this.chats.slice(0, 16);
     },
     onlineCount() {
@@ -257,10 +275,19 @@ export default {
       }
     },
     async getRooms() {
-      const { data, error } = await supabase.from("chats").select("*").order("created_at", { ascending: false });
-      if (error) this.$toast.error(error.message);
-      else {
-        this.chats = data;
+      const since = new Date(Date.now() - 6 * 3600000).toISOString();
+      const until = new Date(Date.now() + 24 * 3600000).toISOString();
+      const [chats, latestTrends, events] = await Promise.all([
+        supabase.from("chats").select("*").order("created_at", { ascending: false }),
+        supabase.from("trends").select("*").order("fetched_at", { ascending: false }).order("rank").limit(10),
+        supabase.from("events").select("*").gte("dateend", since).lte("datestart", until),
+      ]);
+      if (chats.error) return this.$toast.error(chats.error.message);
+      this.chats = chats.data;
+      this.events = events.data || [];
+      const batch = latestTrends.data?.[0]?.fetched_at;
+      this.liveTrends = (latestTrends.data || []).filter((t) => t.fetched_at === batch);
+      if (!this.liveTrends.length) {
         trends.sort((a, b) => b.volume - a.volume);
         trends.forEach((trend) => {
           if (!this.chats.find((chat) => chat.title === trend.trend)) {
@@ -281,6 +308,10 @@ export default {
   },
   mounted() {
     this.getRooms();
+    this.clock = setInterval(() => (this.now = Date.now()), 60000);
+  },
+  beforeUnmount() {
+    clearInterval(this.clock);
   },
 };
 </script>
@@ -538,6 +569,65 @@ export default {
     border-color: rgba(139, 61, 255, 0.5);
     box-shadow: 0 30px 60px -20px rgba(139, 61, 255, 0.55);
   }
+}
+
+:deep(.tv-card) {
+  padding: 0 !important;
+  min-height: 0 !important;
+  gap: 0 !important;
+}
+
+:deep(.tv-cover) {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  overflow: hidden;
+  border-bottom: 1px solid var(--lw-border);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+}
+
+:deep(.tv-card:hover .tv-cover img) {
+  transform: scale(1.04);
+}
+
+.tv-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 18px;
+
+  :deep(.featured-title) {
+    font-size: 19px;
+    margin: 0;
+  }
+}
+
+:deep(.tv-meta) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--lw-muted);
+}
+
+.tv-time {
+  font-family: var(--lw-font-display);
+  font-weight: 700;
+  color: var(--lw-text);
+}
+
+.tv-channel {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--lw-border);
+  font-weight: 600;
 }
 
 :deep(.featured-bg) {
