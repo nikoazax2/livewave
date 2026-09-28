@@ -11,7 +11,7 @@ async function rest(path) {
   return res.ok ? res.json() : [];
 }
 
-export function ogImageUrl({ title, teamA, teamB, channel, time, subtitle, badge }) {
+export function ogImageUrl({ title, teamA, teamB, channel, time, subtitle, badge, bg }) {
   const q = new URLSearchParams();
   if (teamA && teamB) {
     q.set("a", teamA);
@@ -21,6 +21,7 @@ export function ogImageUrl({ title, teamA, teamB, channel, time, subtitle, badge
   if (channel) q.set("channel", channel);
   if (time) q.set("time", time);
   if (badge) q.set("badge", badge);
+  if (bg) q.set("bg", bg);
   return `${SITE}/api/og?${q}`;
 }
 

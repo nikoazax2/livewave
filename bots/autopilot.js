@@ -96,7 +96,10 @@ export async function refresh() {
   log(`tendances : ${trends.map((t) => t.title).join(", ")}`);
 
   const events = await buildEvents();
+  const { data: existing } = await client.from("events").select("name, og").in("name", events.map((e) => e.name));
+  const customOg = new Map((existing || []).filter((x) => x.og?.includes("bg=")).map((x) => [x.name, x.og]));
   for (const e of events) {
+    if (customOg.has(e.name)) e.og = customOg.get(e.name);
     const { subtitle, time, ...row } = e;
     const { error } = await client.from("events").upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "name" });
     if (error) throw error;

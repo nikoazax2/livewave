@@ -72,7 +72,27 @@ function teamBlock(name, align) {
   );
 }
 
-export function renderCard({ title = "LiveWave", subtitle = "", teamA, teamB, channel, time, badge = "EN DIRECT" }) {
+// Photo de fond optionnelle, convertie en data URI pour un rendu fiable
+async function loadBackground(url) {
+  if (!url || !/^https:\/\//.test(url)) return null;
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": "LiveWave OG" } });
+    const type = res.headers.get("content-type") || "";
+    if (!res.ok || !type.startsWith("image/")) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > 4 * 1024 * 1024) return null;
+    return `data:${type.split(";")[0]};base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+export async function renderCard(params) {
+  const photo = await loadBackground(params.bg);
+  return renderCardSync({ ...params, photo });
+}
+
+function renderCardSync({ title = "LiveWave", subtitle = "", teamA, teamB, channel, time, badge = "EN DIRECT", photo }) {
   const isMatch = teamA && teamB;
   const meta = [channel, time].filter(Boolean).join("  ·  ");
 
@@ -132,7 +152,21 @@ export function renderCard({ title = "LiveWave", subtitle = "", teamA, teamB, ch
       backgroundImage:
         "radial-gradient(circle at 20% 0%, rgba(77,124,255,0.45), transparent 45%), radial-gradient(circle at 85% 10%, rgba(255,61,139,0.35), transparent 45%), radial-gradient(circle at 50% 110%, rgba(139,61,255,0.55), transparent 55%)",
     },
-    { type: "img", props: { src: WAVE, width: 1200, height: 630, style: { position: "absolute", top: 0, left: 0 } } },
+    photo
+      ? { type: "img", props: { src: photo, width: 1200, height: 630, style: { position: "absolute", top: 0, left: 0, objectFit: "cover" } } }
+      : null,
+    photo
+      ? h("div", {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 1200,
+          height: 630,
+          backgroundImage:
+            "linear-gradient(180deg, rgba(5,6,15,0.78) 0%, rgba(5,6,15,0.35) 38%, rgba(5,6,15,0.55) 62%, rgba(5,6,15,0.95) 100%), linear-gradient(120deg, rgba(77,124,255,0.28), rgba(139,61,255,0.18) 50%, rgba(255,61,139,0.28))",
+        })
+      : null,
+    { type: "img", props: { src: WAVE, width: 1200, height: 630, style: { position: "absolute", top: 0, left: 0, opacity: photo ? 0.45 : 1 } } },
     h(
       "div",
       { position: "absolute", top: 0, left: 0, width: 1200, height: 630, flexDirection: "column", padding: "44px 56px" },
@@ -212,5 +246,14 @@ export function renderCard({ title = "LiveWave", subtitle = "", teamA, teamB, ch
 
 export function cardParamsFromQuery(searchParams) {
   const get = (k) => (searchParams.get(k) || "").slice(0, 80) || undefined;
-  return { title: get("title"), subtitle: get("subtitle"), teamA: get("a"), teamB: get("b"), channel: get("channel"), time: get("time"), badge: get("badge") };
+  return {
+    title: get("title"),
+    subtitle: get("subtitle"),
+    teamA: get("a"),
+    teamB: get("b"),
+    channel: get("channel"),
+    time: get("time"),
+    badge: get("badge"),
+    bg: (searchParams.get("bg") || "").slice(0, 500) || undefined,
+  };
 }
