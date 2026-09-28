@@ -225,7 +225,7 @@ async function hostPrompts(events) {
   const now = Date.now();
   for (const e of events) {
     if ((e.priority ?? 3) < POST_MIN_PRIORITY) continue;
-    if (now < new Date(e.datestart).getTime() || now > new Date(e.dateend).getTime()) continue;
+    if (now < new Date(e.datestart).getTime() - 30 * MIN || now > new Date(e.dateend).getTime()) continue;
     for (const s of hostSlots(e)) {
       if (s.at > now || now - s.at > 15 * MIN) continue;
       const text = hostText(e, s);
