@@ -30,6 +30,23 @@ const POST_MIN_PRIORITY = Number(process.env.POST_MIN_PRIORITY || 3);
 const SLOT_TOLERANCE_MIN = 40;
 const MIN = 60000;
 
+const INDEXNOW_KEY = "a700ca32eea4e4fe8c19ed97f938b742";
+
+// Signale les nouvelles pages aux moteurs compatibles IndexNow (Bing, Yandex, Seznam...)
+async function indexNow(urls) {
+  if (!LIVE || !urls.length) return;
+  try {
+    const res = await fetch("https://api.indexnow.org/indexnow", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ host: "www.livewave.fr", key: INDEXNOW_KEY, keyLocation: `https://www.livewave.fr/${INDEXNOW_KEY}.txt`, urlList: urls }),
+    });
+    log(`IndexNow : ${urls.length} url(s) -> ${res.status}`);
+  } catch (e) {
+    log("IndexNow echec :", e.message);
+  }
+}
+
 const log = (...a) => console.log(new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" }), ...a);
 
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -86,6 +103,7 @@ export async function refresh() {
     await ensureChat(e.name, e.nameformat, e.subtitle ? `${e.subtitle} · ${e.channel} ${e.time}` : `${e.channel} ${e.time}`);
   }
   log(`evenements : ${events.map((e) => `${e.nameformat} (${e.channel} ${e.time})`).join(", ")}`);
+  await indexNow(["https://www.livewave.fr/", ...events.map((e) => chatUrl(e.name)), ...trends.map((t) => chatUrl(t.slug))]);
   return { trends, events };
 }
 
