@@ -130,7 +130,7 @@
               <strong>{{ chat.title_full || chat.title }}</strong>
               <span v-if="chat.description" class="room-desc">{{ chat.description }}</span>
             </div>
-            <span v-if="chat?.livers > 0" class="live-pill"><span class="dot"></span>{{ chat.livers }}</span>
+            <span v-if="liveCount(chat) > 0" class="live-pill"><span class="dot"></span>{{ liveCount(chat) }}</span>
             <v-icon v-else class="room-arrow">mdi-arrow-top-right</v-icon>
           </CardSpotlight>
         </div>
@@ -222,7 +222,7 @@ export default {
             chat.title_full?.toLowerCase().includes(this.search.toLowerCase()) ||
             chat.description?.toLowerCase().includes(this.search.toLowerCase())
         )
-        .sort((a, b) => (b.livers || 0) - (a.livers || 0));
+        .sort((a, b) => this.liveCount(b) - this.liveCount(a));
     },
     exactMatch() {
       return this.chats?.some((chat) => chat.title.toLowerCase().includes(this.search.toLowerCase()));
@@ -247,10 +247,15 @@ export default {
       return this.chats.slice(0, 16);
     },
     onlineCount() {
-      return this.chats.reduce((sum, chat) => sum + (chat.livers || 0), 0);
+      return this.chats.reduce((sum, chat) => sum + this.liveCount(chat), 0);
     },
   },
   methods: {
+    // Compteur reel publie par le salon, ignore s'il n'a pas ete mis a jour depuis 3 minutes
+    liveCount(chat) {
+      if (!chat?.livers || !chat.livers_at) return 0;
+      return this.now - new Date(chat.livers_at).getTime() < 3 * 60000 ? chat.livers : 0;
+    },
     accent(title = "") {
       let hash = 0;
       for (let i = 0; i < title.length; i++) hash = title.charCodeAt(i) + ((hash << 5) - hash);

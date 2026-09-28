@@ -15,7 +15,7 @@
           <h1 class="title">{{ chat?.title_full || chat?.title }}</h1>
           <div v-if="chat?.description" class="caption">{{ chat?.description }}</div>
         </div>
-        <span class="live-pill"><span class="dot"></span><NumberTicker :value="chat?.livers || 0" :decimal-places="0" :duration="1200" /></span>
+        <span class="live-pill"><span class="dot"></span><NumberTicker :value="online" :decimal-places="0" :duration="1200" /></span>
         <div class="header-actions">
           <button class="icon-btn share-btn" :aria-label="$texts[language]?.share" @click="shareChat">
             <v-icon>mdi-share-variant</v-icon>
@@ -46,7 +46,20 @@
         @setanswer="answer = $event"
       />
 
+      <div class="reactions-layer" aria-hidden="true">
+        <span
+          v-for="f in floating"
+          :key="f.id"
+          class="floating-reaction"
+          :style="{ left: `${f.x}%`, '--drift': `${f.drift}px`, '--scale': f.scale }"
+          >{{ f.emoji }}</span
+        >
+      </div>
+
       <footer class="composer">
+        <div class="reaction-bar">
+          <button v-for="e in reactionEmojis" :key="e" class="reaction-btn" :aria-label="e" @click="react(e)">{{ e }}</button>
+        </div>
         <div class="reply-preview" v-if="answer">
           <v-icon size="18">mdi-reply</v-icon>
           <div class="reply-text">
@@ -71,8 +84,6 @@ import { pulseBackground } from "../background";
 import { useToast } from "vue-toastification";
 import LiversRedDot from "../components/LiversRedDot.vue";
 import trends from "../../public/trends.json";
-import messagesbots from "../../public/messagesbots.json";
-import usernames from "../assets/usernames.json";
 import leoProfanity from "leo-profanity";
 import bannedWords from "../assets/bannedwords.json";
 import Message from "../components/Message.vue";
@@ -109,8 +120,9 @@ export default {
     return {
       vote: null,
       implemented: false,
-      forcebot: 0,
-      enventNow: false,
+      online: 0,
+      floating: [],
+      reactionEmojis: ["🔥", "😂", "😮", "👏", "⚽", "💔", "❤️"],
       messages: [],
       newMessage: "",
       chatId: null,
@@ -177,12 +189,10 @@ export default {
 
     this.getRooms();
     await this.getChatInfo();
-    let messagesbots = await this.getEvent();
-    await this.getMessages(messagesbots);
-    this.setLivers();
-    this.liversLoop();
-    this.deleteMessagesLoop(); 
-    if (this.bots) this.sendBotMessage();
+    await this.getEvent();
+    await this.getMessages();
+    this.joinRoom();
+    this.deleteMessagesLoop();
     this.adMessage();
     this.setTeam();
     this.storeUserInfos();
@@ -218,6 +228,7 @@ export default {
   },
   beforeUnmount() {
     this.intervals.forEach(clearInterval);
+    this.leaveRoom();
     this.observer?.disconnect();
     if (this.channel) supabase.removeChannel(this.channel);
   },
@@ -284,9 +295,7 @@ export default {
         message.likes = (message.likes || 0) - 1;
         this.likedMessages = this.likedMessages.filter((msg) => msg !== id);
       } else {
-        if (message.bot) {
-          message.likes = (message.likes || 0) + 1;
-        } else {
+        {
           message.likes = (message.likes || 0) + 1;
           supabase
             .from("messages")
@@ -343,9 +352,6 @@ export default {
           }
         });
     },
-    setLivers() {
-      if (this.enventNow) this.chat.livers = Math.floor(Math.random() * 800) + 200;
-    },
     async getEvent() {
       if (!this.chat?.title) return [];
       const { data, error } = await supabase.from("events").select("*").eq("name", this.chat.title).maybeSingle();
@@ -364,17 +370,8 @@ export default {
           });
       }
 
-      this.forcebot = data?.forcebot || 0;
       this.event = data;
       if (data?.image) this.$emit("backgroundImage", data?.image || null);
-      if (data?.messages) {
-        let chatMessages = data?.messages;
-        let dateNow = new Date();
-        if (dateNow > new Date(data.datestart) && dateNow < new Date(data.dateend)) {
-          this.enventNow = true;
-        }
-        return chatMessages;
-      } else return [];
     },
 
     adMessage() {
@@ -384,8 +381,8 @@ export default {
         if (this.messages.slice(-15).findIndex((msg) => msg.shareMessage) !== -1) return;
         let msg =
           this.language === "fr"
-            ? "LiveWave à besoin de vous pour continuer à exister. <br> Aidez-nous en partageant l'événement :"
-            : "LiveWave needs you to continue to exist, <br> you can help by sharing the event :";
+            ? "C'est plus fun à plusieurs ! Invite tes amis à commenter avec toi 👇"
+            : "It's more fun together! Invite your friends to join the chat 👇";
 
         let backgroundsColor = ["#4527A0", "#283593", "#1565C0", "#0277BD", "#00838F", "#00695C", "#2E7D32", "#558B2F"];
 
@@ -396,57 +393,7 @@ export default {
           backgroundColor: backgroundsColor[Math.floor(Math.random() * backgroundsColor.length)],
           shareMessage: true, //to add share buttons
         });
-      }, 60000)); //every 1 minute
-    },
-    sendBotMessage() {
-    //   if (!this.enventNow || !this.forcebot) return;
-      let paramsForce = [
-        { min: 60 * 8, max: 60 * 10 },
-        { min: 60 * 3, max: 60 * 5 },
-        { min: 60 * 1, max: 60 * 3 },
-        { min: 30, max: 60 },
-        { min: 10, max: 30 },
-        { min: 1, max: 10 },
-        { min: 1, max: 5 },
-        { min: 1, max: 3 },
-        { min: 0.5, max: 1 },
-        { min: 0.1, max: 0.5 },
-        { min: 0.05, max: 0.1 },
-        { min: 0.01, max: 0.05 }
-      ];
-      if (!paramsForce[this.forcebot - 1]) return;
-      let minTimeS = paramsForce[this.forcebot - 1].min;
-      let maxTimeS = paramsForce[this.forcebot - 1].max;
-
-      const sendMessage = () => {
-        // if (!this.enventNow) return;
-        // Only if there is a message with bot true
-        if (this.messages.length == 0) return;
-
-        let randomIndex = Math.floor(Math.random() * usernames.length);
-        let usernameS = usernames[randomIndex] + Math.floor(Math.random() * 100);
-
-        // Get a random message minus the last 20 messages
-        let recentMessages = this.messages.slice(0, -20);
-        //let botMessages = this.messages?.filter((msg) => msg.bot && !recentMessages.includes(msg.content));
-        //let botMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
-        let randomMessage = recentMessages[Math.floor(Math.random() * recentMessages.length)];
-        let uuid = crypto.randomUUID();
-
-        if (randomMessage?.content == null) return;
-        this.messages.push({
-          username: randomMessage?.username || usernameS,
-          content: randomMessage?.content,
-          created_at: new Date().toISOString(),
-          bot: true,
-          id: uuid,
-        });
-      };
-
-      // Send the first message within 3 seconds
-      setTimeout(() => {
-        this.intervals.push(setInterval(sendMessage, Math.floor(Math.random() * (maxTimeS - minTimeS + 1) + minTimeS) * 1000));
-      }, Math.floor(Math.random() * 1000));
+      }, 180000));
     },
     deleteMessagesLoop() {
       if (!this.deleteMessages) return;
@@ -479,40 +426,20 @@ export default {
         }
       });
     },
-    async getMessages(messagesbots) {
-      const { data, error } = await supabase.from("messages").select("*").eq("chat_id", this.chatId);
+    async getMessages() {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("chat_id", this.chatId)
+        .order("created_at", { ascending: false })
+        .limit(200);
 
       if (error) {
         console.error("Error fetching messages:", error);
       } else {
-        this.messages = data;
-        let chatMessages = [];
-
-        chatMessages = messagesbots;
-        for (let i = 0; i < chatMessages.length; i++) {
-          let date5DaysAgo = new Date();
-          date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
-
-          let randomIndex = Math.floor(Math.random() * usernames.length);
-          let username = usernames[randomIndex] + Math.floor(Math.random() * 100);
-
-          let randomLike = Math.floor(Math.random() * 10) + 1 == 1 ? 1 : 0;
-
-          let uuid = crypto.randomUUID();
-
-          this.messages.push({
-            content: chatMessages[i],
-            username: username,
-            created_at: date5DaysAgo.toISOString(),
-            backgroundColor: null,
-            bot: true,
-            likes: randomLike,
-            id: uuid,
-          });
-          this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-        }
-        this.loading = false;
+        this.messages = (data || []).reverse();
       }
+      this.loading = false;
 
       this.channel = supabase
         .channel("public:messages")
@@ -573,28 +500,71 @@ export default {
         });
       return;
     },
-    addLiver() {
-      if (!this.chat) return;
+    // Presence reelle : chaque onglet ouvert compte pour une personne, les departs sont pris en compte
+    joinRoom() {
+      if (!this.chatId) return;
+      let key = localStorage.getItem("anonymous_id");
+      if (!key) {
+        key = crypto.randomUUID();
+        localStorage.setItem("anonymous_id", key);
+      }
+      this.presenceKey = key;
+      this.room = supabase.channel(`room:${this.chatId}`, {
+        config: { presence: { key }, broadcast: { self: true } },
+      });
+      this.room
+        .on("presence", { event: "sync" }, () => {
+          const state = this.room.presenceState();
+          this.online = Object.keys(state).length;
+          if (this.chat) this.chat.livers = this.online;
+          this.syncLivers();
+        })
+        .on("broadcast", { event: "reaction" }, ({ payload }) => this.spawnReaction(payload?.emoji))
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") await this.room.track({ username: this.username, at: Date.now() });
+        });
+      // Le premier connecte (par cle) publie le compteur pour l'accueil, une fois par minute
+      this.intervals.push(setInterval(() => this.syncLivers(true), 60000));
+    },
+    isLeader() {
+      const keys = Object.keys(this.room?.presenceState() || {}).sort();
+      return keys[0] === this.presenceKey;
+    },
+    syncLivers(force = false) {
+      if (!this.chatId || !this.isLeader()) return;
+      if (!force && this.lastLivers === this.online) return;
+      this.lastLivers = this.online;
       supabase
         .from("chats")
-        .update({ livers: this.chat.livers + 1 })
+        .update({ livers: this.online, livers_at: new Date().toISOString() })
         .eq("id", this.chatId)
-        .then(({ data, error }) => {
-          if (error) {
-            console.error("Error adding liver:", error);
-          } else {
-            this.chat.livers++;
-          }
-        });
+        .then(() => {});
     },
-    liversLoop() {
-      this.intervals.push(setInterval(() => {
-        const minutes = new Date().getMinutes();
-        const seconds = new Date().getSeconds();
-        if (minutes % 2 === 1 && seconds === 2) {
-          this.addLiver();
-        }
-      }, 1000)); // Check every second
+    leaveRoom() {
+      if (!this.room) return;
+      if (this.isLeader()) {
+        supabase
+          .from("chats")
+          .update({ livers: Math.max(0, this.online - 1), livers_at: new Date().toISOString() })
+          .eq("id", this.chatId)
+          .then(() => {});
+      }
+      this.room.untrack();
+      supabase.removeChannel(this.room);
+      this.room = null;
+    },
+    react(emoji) {
+      const now = Date.now();
+      if (now - (this.lastReaction || 0) < 350) return;
+      this.lastReaction = now;
+      this.room?.send({ type: "broadcast", event: "reaction", payload: { emoji } });
+    },
+    spawnReaction(emoji) {
+      if (!this.reactionEmojis.includes(emoji)) return;
+      const id = Math.random().toString(36).slice(2);
+      this.floating.push({ id, emoji, x: 8 + Math.random() * 80, drift: Math.round(Math.random() * 60 - 30), scale: 0.9 + Math.random() * 0.6 });
+      if (this.floating.length > 40) this.floating.shift();
+      setTimeout(() => (this.floating = this.floating.filter((f) => f.id !== id)), 2600);
     },
   },
 };
@@ -665,6 +635,70 @@ export default {
 
   :deep(.flag) {
     margin: 0 !important;
+  }
+}
+
+.reactions-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.floating-reaction {
+  position: absolute;
+  bottom: 110px;
+  font-size: 30px;
+  animation: float-up 2.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+}
+
+@keyframes float-up {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(calc(var(--drift) * 0.2), -40px) scale(var(--scale));
+  }
+  100% {
+    transform: translate(var(--drift), -380px) scale(calc(var(--scale) * 0.8));
+    opacity: 0;
+  }
+}
+
+.reaction-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.reaction-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--lw-border);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 19px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.88);
   }
 }
 
