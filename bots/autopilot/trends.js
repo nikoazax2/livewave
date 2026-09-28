@@ -9,10 +9,14 @@ const SENSITIVE_WORDS = [
   "drame", "deuil", "hommage", "incendie", "séisme", "seisme", "guerre", "otages?", "suicide", "pédo\\p{L}*", "pedo\\p{L}*",
   "nsfw", "porn\\p{L}*", "obsèques", "obseques", "disparition", "agression", "massacre", "bombardement",
 ];
+
+// Tendances sponsorisees ou promotionnelles (paris, casino, concours, codes promo...)
+const PROMO = /(bets(?![a-z])|(?<![a-z])bet(?![a-z])|betclic|winamax|unibet|parionssport|pmu|casino|poker|paris ?sportifs?|freebets?|cashback|code ?promo|promo ?code|giveaway|jeu ?concours|concours|airdrop|sponsoris)/i;
 const SENSITIVE = new RegExp(`(?<![\\p{L}\\p{N}])(${SENSITIVE_WORDS.join("|")})(?![\\p{L}\\p{N}])`, "iu");
 
 // "#RIPPac" -> "RIP Pac" pour que le filtre voie les mots
 export const isSensitive = (title) =>
+  PROMO.test(title) ||
   SENSITIVE.test(
     title
       .replace(/^#/, "")
